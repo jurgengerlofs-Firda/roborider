@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboRider — Rider Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="roborider-favicon.svg">
+<style>
+  :root{
+    --accent:#1b1a17;
+    --bg:#f3f1ec; --panel:#ffffff; --paper2:#eceae3; --line:#e6e2d9; --hair:#ded9ce;
+    --ink:#1b1a17; --soft:#56544d; --muted:#a39d92;
+    --brand:#1b1a17; --brand-d:#000000; --clay:#9a7257; --pop:#9a7257;
+    --radius:2px; --shadow:0 24px 50px -28px rgba(27,26,23,.30);
+    --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --display:'Jost','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--font);font-weight:400;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;letter-spacing:.1px;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+    padding:18px 26px;background:var(--bg);border-bottom:1px solid var(--hair);flex-wrap:wrap}
+  .logo{font-family:var(--display);font-weight:300;letter-spacing:5px;font-size:18px;color:var(--ink);text-transform:lowercase;display:flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer}
+  .logo:hover{opacity:.7}
+  .logo span{color:var(--ink)}
+  .logomark{width:30px;height:30px;flex:0 0 30px}
+  .topbar>span{color:var(--muted)!important}
+  .topbar .spacer{flex:1}
+  .langwrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .langwrap select{border:1px solid var(--hair);border-radius:0;padding:8px 8px;font-size:11px;background:transparent;color:var(--ink);font-family:var(--display);letter-spacing:1px}
+  .btn{border:none;background:none;color:var(--soft);border-radius:0;padding:8px 4px;font-family:var(--display);font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;transition:color .15s}
+  .btn:hover{color:var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--bg);padding:11px 22px;letter-spacing:2px}
+  .btn.primary:hover{background:#000;color:var(--bg)}
+  .btn.ghost{border:1px solid var(--hair);padding:10px 16px}
+  .btn.ghost:hover{border-color:var(--ink)}
+  .layout{display:grid;grid-template-columns:minmax(360px,1fr) minmax(420px,1.05fr);gap:0;height:calc(100vh - 69px)}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;height:auto}}
+  .editor{overflow-y:auto;padding:40px 38px 70px;border-right:1px solid var(--hair)}
+  .ai-box{background:none;border:none;border-top:2px solid var(--clay);padding:18px 0 0;margin:0 0 44px}
+  .ai-box h3{margin:6px 0 8px;font-size:26px;font-family:var(--display);font-weight:300;letter-spacing:.3px;line-height:1.2}
+  .ai-box p{margin:0 0 16px;color:var(--soft);font-size:13px;font-weight:300;line-height:1.6;max-width:48ch}
+  .ai-box textarea{width:100%;min-height:64px;border:none;border-bottom:1px solid var(--ink);border-radius:0;padding:8px 0;font-family:inherit;font-size:14px;font-weight:300;resize:vertical;background:transparent;color:var(--ink)}
+  .ai-box textarea:focus{outline:none}
+  .ai-box .btn{background:none;border:1px solid var(--ink);color:var(--ink);padding:10px 18px}
+  .ai-box .btn:hover{background:var(--ink);color:var(--bg)}
+  .ai-box #aiResult{color:var(--clay);display:block;margin-top:8px}
+  details.sec{background:none;border:none;border-top:1px solid var(--hair);border-radius:0;margin-bottom:0;overflow:hidden}
+  details.sec>summary{list-style:none;cursor:pointer;padding:22px 0 18px;font-family:var(--display);font-weight:300;font-size:22px;letter-spacing:.4px;display:flex;align-items:center;gap:16px;user-select:none}
+  details.sec>summary::-webkit-details-marker{display:none}
+  details.sec>summary .chev{margin-left:auto;color:var(--muted);transition:transform .15s;font-size:14px;font-weight:300}
+  details.sec[open]>summary .chev{transform:rotate(90deg)}
+  details.sec>summary .num{background:none;color:var(--muted);width:24px;font-family:var(--display);font-weight:300;font-size:12px;letter-spacing:1px;display:inline-flex}
+  details.sec[open]>summary{padding-bottom:6px}
+  details.sec[open]>summary .num{color:var(--clay)}
+  .sec-body{padding:0 0 34px 40px}
+  label.fld{display:block;margin:18px 0 7px;font-family:var(--display);font-size:10px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+  input[type=text],input[type=date],input[type=number],textarea,select{
+    width:100%;border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:8px 2px;font-family:inherit;font-weight:300;font-size:15px;background:transparent;color:var(--ink)}
+  input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:none;border-bottom-color:var(--ink)}
+  textarea{resize:vertical;min-height:60px;line-height:1.55}
+  .row{display:flex;gap:8px}
+  .row>*{flex:1}
+  .repeat{border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:6px 0 10px;margin-top:6px;background:none}
+  .repeat .row{margin-bottom:6px}
+  .mini{border:none;background:none;border:1px solid var(--hair);border-radius:0;width:30px;height:34px;font-size:15px;color:var(--muted);flex:0 0 30px}
+  .rowctl{display:flex;gap:4px;flex:0 0 auto}
+  .mini2{border:1px solid var(--hair);background:none;border-radius:0;width:24px;height:34px;font-size:11px;color:var(--muted);padding:0}
+  .mini2:hover{border-color:var(--ink);color:var(--ink)}
+  .add{margin-top:10px;font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--soft);background:none;border:1px solid var(--hair);border-radius:0;padding:10px;width:100%;font-weight:400}
+  .add:hover{border-color:var(--ink);color:var(--ink)}
+  .hint{font-size:11px;color:var(--muted);margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .chips-lbl{font-family:var(--display);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-right:3px}
+  .chip{font-family:var(--display);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 13px;font-weight:400;color:var(--soft);cursor:pointer}
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .color-presets{display:flex;gap:7px;margin-top:8px}
+  .swatch{width:24px;height:24px;border-radius:0;border:1px solid var(--hair);cursor:pointer}
+  .preview-wrap{overflow-y:auto;background:var(--paper2);padding:30px}
+  .page{background:#fff;max-width:760px;margin:0 auto 26px;padding:62px 58px;box-shadow:var(--shadow);min-height:200px;color:var(--ink)}
+  .doc-cover{padding:64px 58px}
+  .doc-logo-img{max-height:80px;max-width:55%;margin:0 0 26px;display:block;object-fit:contain}
+  .doc-band{font-family:var(--display);font-size:66px;font-weight:300;letter-spacing:4px;line-height:1;margin:0;color:var(--accent);text-transform:uppercase}
+  .doc-title{font-family:var(--display);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:24px 0 0;font-weight:400;border-top:1px solid var(--ink);padding-top:14px}
+  .doc-valid{font-family:var(--display);font-size:11px;color:var(--muted);margin-top:14px;letter-spacing:2px;text-transform:uppercase}
+  .doc-cover .contact{margin-top:40px;font-size:13px;font-weight:300;color:var(--ink)}
+  .doc-cover .contact strong{display:block;font-size:18px;font-family:var(--display);font-weight:300;letter-spacing:.5px;margin-bottom:4px}
+  h2.sec-h{font-family:var(--display);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:none;
+    display:block;padding:0 0 10px;border-bottom:1px solid var(--ink);border-radius:0;margin:0 0 18px;font-weight:400}
+  h3.sub-h{font-family:var(--display);font-size:9.5px;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:22px 0 7px;border:none;padding:0}
+  .doc p{margin:0 0 10px;white-space:pre-wrap;font-weight:300;line-height:1.6}
+  .doc ul{margin:6px 0 14px;padding-left:0;list-style:none}
+  .doc li{margin-bottom:6px;font-weight:300;padding-left:16px;position:relative}
+  .doc li::before{content:"—";position:absolute;left:0;color:var(--clay)}
+  table.grid{width:100%;border-collapse:collapse;font-size:11.5px;margin:8px 0 14px}
+  table.grid th{background:none;color:var(--muted);text-align:left;padding:7px 8px;font-family:var(--display);font-weight:400;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--ink)}
+  table.grid td{border:none;border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top;font-weight:300}
+  table.grid td:first-child{color:var(--clay)}
+  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 26px;border:none;border-top:1px solid var(--ink);border-radius:0;overflow:visible;margin-bottom:16px;padding-top:14px}
+  .contact-grid .c{padding:0;border:none}
+  .contact-grid .role{font-family:var(--display);font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:400}
+  .contact-grid .nm{font-weight:400;margin:4px 0 1px;font-size:15px}
+  .contact-grid .dt{font-size:12px;color:var(--soft);font-weight:300}
+  .stageplot-img{max-width:100%;border:1px solid var(--line);border-radius:0;margin-top:6px}
+  .drink-cols{columns:2;column-gap:28px;font-size:12.5px;font-weight:300}
+  /* ---------- Stage plot editor ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--bg);border-radius:0;width:min(960px,97vw);max-height:95vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--hair);flex-wrap:wrap}
+  .modal-head .btn{background:none;color:var(--soft);border:none}
+  .modal-head .btn:hover{color:var(--ink)}
+  .modal-head .btn.primary{background:var(--ink);color:var(--bg);padding:10px 20px}
+  .modal-head .btn.ghost{border:1px solid var(--hair)}
+  .modal-head h3{margin:0;font-family:var(--display);font-weight:300;font-size:20px;letter-spacing:.5px}
+  .modal-head .spacer{flex:1}
+  .palette{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-bottom:1px solid var(--hair);background:none}
+  .palette button{font-family:var(--display);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 12px;font-weight:400;color:var(--soft)}
+  .palette button:hover{border-color:var(--ink);color:var(--ink)}
+  .stage-scroll{padding:24px;overflow:auto;background:var(--paper2)}
+  .stagecanvas{position:relative;background:#fff;border:2px solid var(--accent);border-radius:4px;width:100%;max-width:840px;aspect-ratio:16/10;container-type:size;margin:0 auto;touch-action:none;
+    background-image:linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px);background-size:4% 4%}
+  .stage-front{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--display);font-size:2cqh;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:4px 0;border-top:1px solid var(--line);font-weight:400;pointer-events:none}
+  .pl-el{position:absolute;transform:translate(-50%,-50%);user-select:none;cursor:grab}
+  .pl-shape{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-weight:400;letter-spacing:.5px;text-transform:uppercase;
+    font-size:2.3cqh;line-height:1.05;border:1px solid var(--ink);border-radius:0;background:#fff;overflow:hidden;padding:2px;color:var(--ink);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pl-shape.sh-circle{border-radius:50%}
+  .pl-shape.sh-riser{border-style:dashed}
+  .pl-shape.sh-text{border:none;background:transparent!important}
+  .pl-el.sel .pl-shape{box-shadow:0 0 0 2px var(--clay)}
+  .pl-ctl{position:absolute;top:-9px;width:19px;height:19px;border-radius:50%;border:none;color:#fff;font-size:12px;line-height:19px;
+    text-align:center;cursor:pointer;display:none;z-index:6;padding:0}
+  .pl-el:hover .pl-ctl,.pl-el.sel .pl-ctl{display:block}
+  .pl-del{right:-9px;background:var(--ink)}
+  .pl-rot{left:-9px;background:var(--clay)}
+  .pl-resize{position:absolute;right:-7px;bottom:-7px;width:15px;height:15px;background:#fff;border:2px solid var(--clay);
+    border-radius:0;cursor:nwse-resize;display:none;z-index:6}
+  .pl-el:hover .pl-resize,.pl-el.sel .pl-resize{display:block}
+  /* read-only plot in the rider preview */
+  .plot-preview{position:relative;width:100%;aspect-ratio:16/10;border:1px solid var(--ink);border-radius:0;
+    container-type:size;background:#fff;margin-top:4px}
+  .plot-preview .pl-el{cursor:default}
+  @media print{
+    .topbar,.editor,.ai-box{display:none!important}
+    .layout{display:block;height:auto}
+    .preview-wrap{padding:0;background:#fff;overflow:visible}
+    .page{box-shadow:none;margin:0;max-width:100%;padding:24mm 18mm;page-break-after:always}
+    .page:last-child{page-break-after:auto}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="index.html" title="Home"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></a>
+  <span id="tagline" style="color:var(--muted);font-size:12px"></span>
+  <div class="spacer"></div>
+  <div class="langwrap">
+    <span id="langLabel"></span>
+    <select id="langSel" onchange="setLang(this.value)">
+      <option value="en">English</option>
+      <option value="nl">Nederlands</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+    </select>
+  </div>
+  <button class="btn ghost" id="btnNew" onclick="newDoc()"></button>
+  <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
+  <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
+  <button class="btn" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
+  <button class="btn" id="btnOpen" onclick="importJSON()"></button>
+  <button class="btn" id="btnSave" onclick="exportJSON()"></button>
+  <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
+</div>
+
+<div class="layout">
+  <div class="editor" id="editor">
+    <div class="ai-box">
+      <h3 id="aiTitle"></h3>
+      <p id="aiDesc"></p>
+      <textarea id="aiInput"></textarea>
+      <button class="btn primary" id="aiBtn" style="margin-top:10px" onclick="runAI()"></button>
+      <span id="aiResult" class="hint"></span>
+    </div>
+    <div id="formMount"></div>
+  </div>
+  <div class="preview-wrap">
+    <div id="preview" class="doc"></div>
+  </div>
+</div>
+
+<!-- Stage plot editor modal -->
+<div class="modal-bg" id="plotModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="plotTitle"></h3>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="plotClear" onclick="clearPlot()"></button>
+      <button class="btn primary" id="plotDone" onclick="closePlotModal()"></button>
+    </div>
+    <div class="palette" id="plotPalette"></div>
+    <div style="padding:8px 16px 0;font-size:12px;color:var(--muted)" id="plotHint"></div>
+    <div class="stage-scroll">
+      <div class="stagecanvas" id="stagecanvas" onclick="if(event.target===this){selPlot=null;highlightSel();}">
+        <div class="stage-front" id="stageFront"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== i18n ===================== */
+const I18N = {
+  en:{
+    tagline:"Rider Builder · demo", lang_label:"Language",
+    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate",
+    confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
+    ai_title:"✨ Paste your old rider or describe your setup",
+    ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
+    ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Serhan hello@serhanefe.nl +31646853846'",
+    ai_btn:"Auto-fill",
+    ai_empty:"Paste some text first.", ai_recognized:"Recognized: ", ai_check:". Check and complete.", ai_none:"Nothing recognized automatically — fill in manually.",
+    plus_contact:"+ add contact", plus_role:"+ add role", plus_dietary:"+ dietary need", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ channel",
+    qa_presets:"Quick add:", qa_renumber:"↺ Renumber", qa_std:"+ Standard text",
+    hint_bullets:"One item per line = clean bullets", hint_48v:"Mark 48V with 'X'. Empty rows are hidden.",
+    hint_stageplot:"Upload your existing stage plot as an image. (Drag-and-drop plot editor in the full version.)",
+    /* editor field labels */
+    f_bandname:"Band / artist name", f_subtitle:"Subtitle", f_validuntil:"Valid until", f_logo:"Logo (image)",
+    f_accent:"Accent colour", f_intro:"Introduction text (optional)", f_contacts:"Contacts", f_travel:"Travelling party", f_guests:"Guest list",
+    f_dressing:"Dressing room requirements", f_towels:"Towels", f_catering:"Catering / meal", f_dietary:"Dietary requirements",
+    f_buyout:"Buy-out (per person)", f_drinks:"Drinks & refreshments", f_snacks:"Snacks / extra",
+    f_soundcheck:"Soundcheck / changeover", f_crew:"Local crew", f_stage:"Stage & risers", f_power:"Power",
+    f_foh:"FOH / console", f_monitors:"Monitors / in-ears", f_pa:"PA system", f_wireless:"Wireless / frequencies",
+    f_fixtures:"Fixtures / set", f_lconsole:"Lighting console", f_notes:"Notes", f_backline:"Backline", f_stageplot:"Stage plot image",
+    /* document */
+    subtitle_default:"Technical & Hospitality Rider", valid_until:"Valid until", bandname_ph:"BAND NAME",
+    sec_general:"General", sec_hospitality:"Hospitality", sec_technical:"Technical Rider", sec_lights:"Lighting",
+    sec_backline:"Backline", sec_inputlist:"Input List", sec_stageplot:"Stage Plot",
+    sub_intro:"Introduction", sub_contact:"Contact", sub_travel:"Travelling party", sub_guests:"Guest list",
+    sub_dressing:"Dressing room", sub_towels:"Towels", sub_catering:"Catering", sub_dietary:"Dietary requirements",
+    buyout_word:"Buy-out", per_person:"per person", sub_drinks:"Drinks & refreshments", sub_snacks:"Snacks",
+    sub_soundcheck:"Soundcheck & changeover", sub_crew:"Local crew", sub_stage:"Stage & risers", sub_power:"Power",
+    sub_foh:"FOH", sub_monitors:"Monitors", sub_pa:"PA", sub_wireless:"Wireless", sub_console:"Lighting console",
+    th_ch:"CH", th_input:"Input", th_micdi:"Mic/DI", th_48v:"48V", th_stand:"Stand", th_position:"Position", th_notes:"Notes",
+    plot_open:"✎ Draw stage plot", plot_title:"Stage plot editor", plot_done:"Done", plot_clear:"Clear",
+    plot_audience:"AUDIENCE / FRONT OF STAGE", plot_has:"Drawn stage plot active ✓",
+    plot_hint:"Click an element to add it, then drag to position. Drag the corner handle to resize, ↻ to rotate, × to delete.",
+    plot_or_upload:"…or upload a stage plot image instead",
+    pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bass", pt_guitar:"Guitar", pt_vocal:"Vocal/Lead", pt_riser:"Riser",
+    pt_monitor:"Monitor", pt_amp:"Amp", pt_di:"DI box", pt_power:"Power 230V", pt_mic:"Mic", pt_perc:"Perc", pt_text:"Text label"
+  },
+  nl:{
+    tagline:"Rider Builder · demo", lang_label:"Taal",
+    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal",
+    confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
+    ai_title:"✨ Plak je oude rider of beschrijf je setup",
+    ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
+    ai_ph:"Plak hier tekst uit je bestaande rider, of typ bijv.: '4-koppige band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Serhan hello@serhanefe.nl 0646853846'",
+    ai_btn:"Vul automatisch in",
+    ai_empty:"Plak eerst wat tekst.", ai_recognized:"Herkend: ", ai_check:". Controleer en vul aan.", ai_none:"Niets automatisch herkend — vul handmatig in.",
+    plus_contact:"+ contact toevoegen", plus_role:"+ rol toevoegen", plus_dietary:"+ dieetwens", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ kanaal",
+    qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst",
+    hint_bullets:"Eén item per regel = nette bullets", hint_48v:"Vink 48V aan met 'X'. Lege rijen worden niet getoond.",
+    hint_stageplot:"Upload je bestaande stageplot als afbeelding. (Drag-and-drop plot-editor komt in de volledige versie.)",
+    f_bandname:"Bandnaam / artiest", f_subtitle:"Ondertitel", f_validuntil:"Geldig tot", f_logo:"Logo (afbeelding)",
+    f_accent:"Accentkleur", f_intro:"Introductietekst (optioneel)", f_contacts:"Contacten", f_travel:"Reisgezelschap", f_guests:"Gastenlijst",
+    f_dressing:"Kleedkamer-eisen", f_towels:"Handdoeken", f_catering:"Catering / maaltijd", f_dietary:"Dieetwensen",
+    f_buyout:"Buy-out (per persoon)", f_drinks:"Drank & versnaperingen", f_snacks:"Snacks / extra",
+    f_soundcheck:"Soundcheck / changeover", f_crew:"Local crew", f_stage:"Podium & risers", f_power:"Stroom",
+    f_foh:"FOH / mengtafel", f_monitors:"Monitors / in-ears", f_pa:"PA-systeem", f_wireless:"Draadloos / frequenties",
+    f_fixtures:"Fixtures / set", f_lconsole:"Lichttafel", f_notes:"Opmerkingen", f_backline:"Backline", f_stageplot:"Stageplot-afbeelding",
+    subtitle_default:"Technische & Hospitality Rider", valid_until:"Geldig tot", bandname_ph:"BANDNAAM",
+    sec_general:"Algemeen", sec_hospitality:"Hospitality", sec_technical:"Technische rider", sec_lights:"Licht",
+    sec_backline:"Backline", sec_inputlist:"Inputlijst", sec_stageplot:"Stageplot",
+    sub_intro:"Introductie", sub_contact:"Contact", sub_travel:"Reisgezelschap", sub_guests:"Gastenlijst",
+    sub_dressing:"Kleedkamer", sub_towels:"Handdoeken", sub_catering:"Catering", sub_dietary:"Dieetwensen",
+    buyout_word:"Buy-out", per_person:"p.p.", sub_drinks:"Drank & versnaperingen", sub_snacks:"Snacks",
+    sub_soundcheck:"Soundcheck & changeover", sub_crew:"Local crew", sub_stage:"Podium & risers", sub_power:"Stroom",
+    sub_foh:"FOH", sub_monitors:"Monitors", sub_pa:"PA", sub_wireless:"Draadloos", sub_console:"Lichttafel",
+    th_ch:"CH", th_input:"Input", th_micdi:"Mic/DI", th_48v:"48V", th_stand:"Statief", th_position:"Positie", th_notes:"Notitie",
+    plot_open:"✎ Stageplot tekenen", plot_title:"Stageplot-editor", plot_done:"Klaar", plot_clear:"Wissen",
+    plot_audience:"PUBLIEK / VOORKANT PODIUM", plot_has:"Getekende stageplot actief ✓",
+    plot_hint:"Klik een element om het toe te voegen, sleep om te plaatsen. Sleep de hoek om te schalen, ↻ om te draaien, × om te verwijderen.",
+    plot_or_upload:"…of upload in plaats daarvan een stageplot-afbeelding",
+    pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bas", pt_guitar:"Gitaar", pt_vocal:"Zang/Lead", pt_riser:"Riser",
+    pt_monitor:"Monitor", pt_amp:"Versterker", pt_di:"DI-box", pt_power:"Stroom 230V", pt_mic:"Microfoon", pt_perc:"Percussie", pt_text:"Tekstlabel"
+  },
+  de:{
+    lang_label:"Sprache",
+    subtitle_default:"Technischer & Hospitality Rider", valid_until:"Gültig bis", bandname_ph:"BANDNAME",
+    sec_general:"Allgemein", sec_hospitality:"Hospitality", sec_technical:"Technischer Rider", sec_lights:"Licht",
+    sec_backline:"Backline", sec_inputlist:"Inputliste", sec_stageplot:"Bühnenplan",
+    sub_intro:"Einführung", sub_contact:"Kontakt", sub_travel:"Reisegruppe", sub_guests:"Gästeliste",
+    sub_dressing:"Garderobe", sub_towels:"Handtücher", sub_catering:"Catering", sub_dietary:"Ernährungswünsche",
+    buyout_word:"Buy-out", per_person:"pro Person", sub_drinks:"Getränke & Verpflegung", sub_snacks:"Snacks",
+    sub_soundcheck:"Soundcheck & Umbau", sub_crew:"Lokale Crew", sub_stage:"Bühne & Risers", sub_power:"Strom",
+    sub_foh:"FOH", sub_monitors:"Monitore", sub_pa:"PA", sub_wireless:"Funk", sub_console:"Lichtpult",
+    th_ch:"CH", th_input:"Input", th_micdi:"Mic/DI", th_48v:"48V", th_stand:"Stativ", th_position:"Position", th_notes:"Notiz",
+    plot_open:"✎ Bühnenplan zeichnen", plot_title:"Bühnenplan-Editor", plot_done:"Fertig", plot_clear:"Löschen",
+    plot_audience:"PUBLIKUM / BÜHNENVORDERSEITE", plot_has:"Gezeichneter Bühnenplan aktiv ✓",
+    plot_or_upload:"…oder stattdessen ein Bühnenplan-Bild hochladen"
+  },
+  fr:{
+    lang_label:"Langue",
+    subtitle_default:"Rider technique & hospitalité", valid_until:"Valable jusqu'au", bandname_ph:"NOM DU GROUPE",
+    sec_general:"Général", sec_hospitality:"Hospitalité", sec_technical:"Rider technique", sec_lights:"Lumière",
+    sec_backline:"Backline", sec_inputlist:"Liste des entrées", sec_stageplot:"Plan de scène",
+    sub_intro:"Introduction", sub_contact:"Contact", sub_travel:"Équipe en tournée", sub_guests:"Liste d'invités",
+    sub_dressing:"Loge", sub_towels:"Serviettes", sub_catering:"Restauration", sub_dietary:"Régimes alimentaires",
+    buyout_word:"Buy-out", per_person:"par personne", sub_drinks:"Boissons & rafraîchissements", sub_snacks:"En-cas",
+    sub_soundcheck:"Balance & changement de plateau", sub_crew:"Équipe locale", sub_stage:"Scène & praticables", sub_power:"Alimentation",
+    sub_foh:"FOH", sub_monitors:"Retours", sub_pa:"Sono (PA)", sub_wireless:"HF / fréquences", sub_console:"Console lumière",
+    th_ch:"CH", th_input:"Entrée", th_micdi:"Micro/DI", th_48v:"48V", th_stand:"Pied", th_position:"Position", th_notes:"Notes",
+    plot_open:"✎ Dessiner le plan de scène", plot_title:"Éditeur de plan de scène", plot_done:"Terminé", plot_clear:"Effacer",
+    plot_audience:"PUBLIC / DEVANT DE SCÈNE", plot_has:"Plan de scène dessiné actif ✓",
+    plot_or_upload:"…ou importer une image de plan de scène"
+  },
+  es:{
+    lang_label:"Idioma",
+    subtitle_default:"Rider técnico y de hospitalidad", valid_until:"Válido hasta", bandname_ph:"NOMBRE DEL GRUPO",
+    sec_general:"General", sec_hospitality:"Hospitalidad", sec_technical:"Rider técnico", sec_lights:"Iluminación",
+    sec_backline:"Backline", sec_inputlist:"Lista de entradas", sec_stageplot:"Plano de escenario",
+    sub_intro:"Introducción", sub_contact:"Contacto", sub_travel:"Equipo de gira", sub_guests:"Lista de invitados",
+    sub_dressing:"Camerino", sub_towels:"Toallas", sub_catering:"Catering", sub_dietary:"Requisitos dietéticos",
+    buyout_word:"Buy-out", per_person:"por persona", sub_drinks:"Bebidas y refrigerios", sub_snacks:"Aperitivos",
+    sub_soundcheck:"Prueba de sonido y cambio", sub_crew:"Equipo local", sub_stage:"Escenario y tarimas", sub_power:"Corriente",
+    sub_foh:"FOH", sub_monitors:"Monitores", sub_pa:"PA", sub_wireless:"Inalámbrico", sub_console:"Mesa de luces",
+    th_ch:"CH", th_input:"Entrada", th_micdi:"Micro/DI", th_48v:"48V", th_stand:"Soporte", th_position:"Posición", th_notes:"Notas",
+    plot_open:"✎ Dibujar plano de escenario", plot_title:"Editor de plano de escenario", plot_done:"Hecho", plot_clear:"Borrar",
+    plot_audience:"PÚBLICO / FRENTE DEL ESCENARIO", plot_has:"Plano de escenario dibujado activo ✓",
+    plot_or_upload:"…o sube una imagen del plano de escenario"
+  }
+};
+function L(k){const l=S.lang||"en"; return (I18N[l]&&I18N[l][k]!==undefined)?I18N[l][k]:(I18N.en[k]!==undefined?I18N.en[k]:k);}
+const DATE_LOCALE={en:"en-GB",nl:"nl-NL",de:"de-DE",fr:"fr-FR",es:"es-ES"};
+
+/* ===================== State ===================== */
+const blank = () => ({
+  lang:"en",
+  band:{name:"",subtitle:"",validUntil:"",accent:"#1a1a1a",logo:""},
+  intro:"",
+  contacts:[{role:"Tour manager",name:"",email:"",phone:""}],
+  travelParty:[{label:"",count:""}],
+  guests:"",
+  hosp:{dressing:"",towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
+  tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",wireless:""},
+  lights:{fixtures:"",console:"",notes:""},
+  backline:"",
+  inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
+  plot:{items:[]},
+  stageplot:""
+});
+let S = blank();
+
+/* ===================== Helpers ===================== */
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function bulletize(text){
+  if(!text||!text.trim()) return "";
+  const lines = text.split(/\n/).map(l=>l.replace(/^[-•*]\s?/,"").trim()).filter(Boolean);
+  if(lines.length<=1) return `<p>${esc(text)}</p>`;
+  return "<ul>"+lines.map(l=>`<li>${esc(l)}</li>`).join("")+"</ul>";
+}
+function t(x){return x&&x.trim();}
+
+/* ===================== Chrome (static i18n) ===================== */
+function applyChrome(){
+  $("tagline").textContent=L("tagline");
+  $("langLabel").textContent=L("lang_label");
+  $("langSel").value=S.lang;
+  $("btnNew").textContent=L("btn_new");
+  $("btnExample").textContent=L("btn_example");
+  $("btnOpen").textContent=L("btn_open");
+  $("btnSave").textContent=L("btn_save");
+  $("btnPdf").textContent=L("btn_pdf");
+  $("btnTranslateLbl").textContent=L("btn_translate");
+  updateAIBadge();
+  $("aiTitle").textContent=L("ai_title");
+  $("aiDesc").textContent=L("ai_desc");
+  $("aiInput").placeholder=L("ai_ph");
+  $("aiBtn").textContent=L("ai_btn");
+  $("plotTitle").textContent=L("plot_title");
+  $("plotDone").textContent=L("plot_done");
+  $("plotClear").textContent=L("plot_clear");
+  $("plotHint").textContent=L("plot_hint");
+  $("stageFront").textContent=L("plot_audience");
+  buildPalette();
+  document.documentElement.lang=S.lang;
+}
+function setLang(v){S.lang=v; applyChrome(); renderForm(); renderPreview();}
+
+/* ===================== Form ===================== */
+function field(label,val,path,opts={}){
+  const tp=opts.type||"text";
+  const ph=opts.ph?` placeholder="${opts.ph}"`:"";
+  const hint=opts.hint?`<div class="hint">${opts.hint}</div>`:"";
+  if(tp==="textarea") return `<label class="fld">${label}</label><textarea data-path="${path}"${ph}>${esc(val)}</textarea>${hint}`;
+  return `<label class="fld">${label}</label><input type="${tp}" data-path="${path}" value="${esc(val)}"${ph}>${hint}`;
+}
+let openSecs=new Set([1,2,3]);
+function captureOpenState(){
+  const els=document.querySelectorAll("#formMount details.sec");
+  if(!els.length)return;
+  els.forEach(d=>{const n=+d.dataset.sec;if(d.open)openSecs.add(n);else openSecs.delete(n);});
+}
+function section(n,title,body){
+  const open=openSecs.has(n)?"open":"";
+  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span>${title}<span class="chev">›</span></summary><div class="sec-body">${body}</div></details>`;
+}
+function renderForm(){
+  captureOpenState();
+  const scrollY=$("editor")?$("editor").scrollTop:0;
+  let h="";
+  h+=section(1,L("sec_general"),`
+    ${field(L("f_bandname"),S.band.name,"band.name")}
+    ${field(L("f_subtitle"),S.band.subtitle,"band.subtitle",{ph:L("subtitle_default")})}
+    ${field(L("f_validuntil"),S.band.validUntil,"band.validUntil",{type:"date"})}
+    <label class="fld">${L("f_logo")}</label>
+    <input type="file" accept="image/*" onchange="readImg(event,'band.logo')">
+    <label class="fld">${L("f_accent")}</label>
+    <input type="color" data-path="band.accent" value="${S.band.accent}" style="width:46px;height:34px;padding:2px">
+    <div class="color-presets">
+      ${["#1a1a1a","#6d28d9","#0f766e","#b91c1c","#1d4ed8"].map(c=>`<div class="swatch" style="background:${c}" onclick="setPath('band.accent','${c}');sync()"></div>`).join("")}
+    </div>
+    ${field(L("f_intro"),S.intro,"intro",{type:"textarea"})}
+    <label class="fld">${L("f_contacts")}</label>
+    <div id="rep-contacts"></div>
+    <button class="add" onclick="addRow('contacts',{role:'',name:'',email:'',phone:''})">${L("plus_contact")}</button>
+    <label class="fld">${L("f_travel")} <span style="color:var(--brand)">(Σ ${travelTotal()})</span></label>
+    <div id="rep-travelParty"></div>
+    <button class="add" onclick="addRow('travelParty',{label:'',count:''})">${L("plus_role")}</button>
+    ${field(L("f_guests"),S.guests,"guests")}
+  `);
+  h+=section(2,L("sec_hospitality"),`
+    ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('hosp.dressing','dressing')}
+    ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
+    ${field(L("f_catering"),S.hosp.catering,"hosp.catering",{type:"textarea"})}
+    <label class="fld">${L("f_dietary")}</label>
+    <div id="rep-dietary"></div>
+    <button class="add" onclick="addRow('hosp.dietary','')">${L("plus_dietary")}</button>
+    ${quickChips('dietary')}
+    ${field(L("f_buyout"),S.hosp.buyout,"hosp.buyout",{ph:"€25"})}
+    <label class="fld">${L("f_drinks")}</label>
+    <div id="rep-drinks"></div>
+    <button class="add" onclick="addRow('hosp.drinks',{item:'',qty:''})">${L("plus_item")}</button>
+    ${quickChips('drinks')}
+    ${field(L("f_snacks"),S.hosp.snacks,"hosp.snacks",{type:"textarea"})}
+  `);
+  h+=section(3,L("sec_technical"),`
+    ${field(L("f_soundcheck"),S.tech.soundcheck,"tech.soundcheck",{type:"textarea"})}
+    <label class="fld">${L("f_crew")}</label>
+    <div id="rep-crew"></div>
+    <button class="add" onclick="addRow('tech.crew',{role:'',count:''})">${L("plus_crew")}</button>
+    ${quickChips('crew')}
+    ${field(L("f_stage"),S.tech.stage,"tech.stage",{type:"textarea"})}
+    ${field(L("f_power"),S.tech.power,"tech.power")}
+    ${field(L("f_foh"),S.tech.foh,"tech.foh",{type:"textarea"})}
+    ${textChip('tech.foh','foh')}
+    ${field(L("f_monitors"),S.tech.monitors,"tech.monitors",{type:"textarea"})}
+    ${textChip('tech.monitors','monitors')}
+    ${field(L("f_pa"),S.tech.pa,"tech.pa",{type:"textarea"})}
+    ${textChip('tech.pa','pa')}
+    ${field(L("f_wireless"),S.tech.wireless,"tech.wireless",{type:"textarea"})}
+  `);
+  h+=section(4,L("sec_lights"),`
+    ${field(L("f_fixtures"),S.lights.fixtures,"lights.fixtures",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('lights.fixtures','lights')}
+    ${field(L("f_lconsole"),S.lights.console,"lights.console")}
+    ${field(L("f_notes"),S.lights.notes,"lights.notes",{type:"textarea"})}
+  `);
+  h+=section(5,L("sec_backline"),`
+    ${field(L("f_backline"),S.backline,"backline",{type:"textarea",hint:L("hint_bullets")})}
+  `);
+  h+=section(6,L("sec_inputlist"),`
+    ${inputPresetChips()}
+    <div class="hint">${L("hint_48v")}</div>
+    <div id="rep-inputs"></div>
+    <button class="add" onclick="addInput()">${L("plus_channel")}</button>
+  `);
+  h+=section(7,L("sec_stageplot"),`
+    <button class="btn primary" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
+    ${S.plot.items.length?`<div class="hint" style="color:#16a34a;font-weight:600">${L("plot_has")} (${S.plot.items.length})</div>`:""}
+    <label class="fld">${L("plot_or_upload")}</label>
+    <input type="file" accept="image/*" onchange="readImg(event,'stageplot')">
+    <div class="hint">${L("hint_stageplot")}</div>
+  `);
+  $("formMount").innerHTML=h;
+  renderRepeats();
+  bindInputs();
+  if($("editor"))$("editor").scrollTop=scrollY;
+}
+
+function renderRepeats(){
+  mountRepeat("rep-contacts",S.contacts,(c,i)=>`
+    <div class="repeat">
+      <div class="row">
+        <input type="text" placeholder="${L('sub_contact')}" data-rep="contacts.${i}.role" value="${esc(c.role)}">
+        <input type="text" data-rep="contacts.${i}.name" value="${esc(c.name)}">
+        <button class="mini" onclick="delRow('contacts',${i})">×</button>
+      </div>
+      <div class="row">
+        <input type="text" placeholder="@" data-rep="contacts.${i}.email" value="${esc(c.email)}">
+        <input type="text" placeholder="☎" data-rep="contacts.${i}.phone" value="${esc(c.phone)}">
+      </div>
+      ${rowCtl('contacts',i)}
+    </div>`);
+  mountRepeat("rep-travelParty",S.travelParty,(c,i)=>`
+    <div class="repeat"><div class="row">
+      <input type="text" data-rep="travelParty.${i}.label" value="${esc(c.label)}">
+      <input type="text" placeholder="#" style="flex:0 0 70px" data-rep="travelParty.${i}.count" value="${esc(c.count)}">
+      ${rowCtl('travelParty',i)}
+    </div></div>`);
+  mountRepeat("rep-dietary",S.hosp.dietary,(c,i)=>`
+    <div class="repeat"><div class="row">
+      <input type="text" data-rep="hosp.dietary.${i}" value="${esc(c)}">
+      ${rowCtl('hosp.dietary',i)}
+    </div></div>`);
+  mountRepeat("rep-drinks",S.hosp.drinks,(c,i)=>`
+    <div class="repeat"><div class="row">
+      <input type="text" data-rep="hosp.drinks.${i}.item" value="${esc(c.item)}">
+      <input type="text" placeholder="#" style="flex:0 0 90px" data-rep="hosp.drinks.${i}.qty" value="${esc(c.qty)}">
+      ${rowCtl('hosp.drinks',i)}
+    </div></div>`);
+  mountRepeat("rep-crew",S.tech.crew,(c,i)=>`
+    <div class="repeat"><div class="row">
+      <input type="text" data-rep="tech.crew.${i}.role" value="${esc(c.role)}">
+      <input type="text" placeholder="#" style="flex:0 0 70px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">
+      ${rowCtl('tech.crew',i)}
+    </div></div>`);
+  mountRepeat("rep-inputs",S.inputs,(c,i)=>`
+    <div class="repeat">
+      <div class="row">
+        <input type="text" placeholder="${L('th_ch')}" style="flex:0 0 48px" data-rep="inputs.${i}.ch" value="${esc(c.ch)}">
+        <input type="text" placeholder="${L('th_input')}" data-rep="inputs.${i}.input" value="${esc(c.input)}">
+        <input type="text" placeholder="${L('th_micdi')}" style="flex:0 0 90px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
+        ${rowCtl('inputs',i)}
+      </div>
+      <div class="row">
+        <input type="text" placeholder="${L('th_48v')}" style="flex:0 0 48px" data-rep="inputs.${i}.p48" value="${esc(c.p48)}">
+        <input type="text" placeholder="${L('th_stand')}" data-rep="inputs.${i}.stand" value="${esc(c.stand)}">
+        <input type="text" placeholder="${L('th_position')}" data-rep="inputs.${i}.pos" value="${esc(c.pos)}">
+      </div>
+      <input type="text" placeholder="${L('th_notes')}" data-rep="inputs.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+    </div>`);
+}
+function mountRepeat(id,arr,tpl){const el=$(id);if(!el)return;el.innerHTML=arr.map(tpl).join("");
+  el.querySelectorAll("[data-rep]").forEach(inp=>inp.addEventListener("input",e=>{setRep(e.target.dataset.rep,e.target.value);renderPreview();}));}
+
+function setPath(p,v){const k=p.split(".");let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;}
+function getPath(p){return p.split(".").reduce((o,k)=>o&&o[k],S);}
+function setRep(p,v){const k=p.split(".");let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;}
+function addRow(p,item){const a=getPath(p);a.push(typeof item==="object"?JSON.parse(JSON.stringify(item)):item);renderForm();renderPreview();}
+function addInput(){const a=S.inputs;a.push({ch:String(a.length+1),input:"",micdi:"",p48:"",stand:"",pos:"",notes:""});renderForm();renderPreview();}
+function delRow(p,i){const a=getPath(p);a.splice(i,1);if(p==="inputs")renumberInputs();renderForm();renderPreview();}
+function moveRow(p,i,dir){const a=getPath(p);const j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];if(p==="inputs")renumberInputs();renderForm();renderPreview();}
+function dupRow(p,i){const a=getPath(p);const it=a[i];a.splice(i+1,0,(typeof it==="object")?JSON.parse(JSON.stringify(it)):it);if(p==="inputs")renumberInputs();renderForm();renderPreview();}
+function rowCtl(p,i){return `<div class="rowctl">`+
+  `<button class="mini2" title="up" onclick="moveRow('${p}',${i},-1)">↑</button>`+
+  `<button class="mini2" title="down" onclick="moveRow('${p}',${i},1)">↓</button>`+
+  `<button class="mini2" title="duplicate" onclick="dupRow('${p}',${i})">⧉</button>`+
+  `<button class="mini2" title="delete" onclick="delRow('${p}',${i})">×</button></div>`;}
+function travelTotal(){return S.travelParty.reduce((s,x)=>s+(parseInt(x.count,10)||0),0);}
+/* Standard text blocks per free-text field (language-aware) */
+const TEXTPRESETS={
+  dressing:{en:"Clean, lockable dressing room for the full party\nHeating/AC, ventilation, running water\nLarge mirror, sofa/chairs, WiFi + password",
+            nl:"Schone, afsluitbare kleedkamer voor het hele gezelschap\nVerwarming/airco, ventilatie, stromend water\nGrote spiegel, bank/stoelen, WiFi + wachtwoord"},
+  pa:{en:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics / d&b / Adamson or equivalent). We respect a 103 dB LAeq (15 min) limit unless agreed otherwise.",
+      nl:"Full-range PA, fase- en tijd-gelijk, gelijkmatige dekking voor de hele zaal (L-Acoustics / d&b / Adamson of gelijkwaardig). Wij respecteren een limiet van 103 dB LAeq (15 min), tenzij anders afgesproken."},
+  foh:{en:"FOH at 2/3 of the room, centered, max 30 m from stage. Not under a balcony, protected from weather, on a flat surface (no riser).",
+       nl:"FOH op 2/3 van de zaal, gecentreerd, max. 30 m van het podium. Niet onder een balkon, beschermd tegen weer, op een vlakke ondergrond (geen riser)."},
+  monitors:{en:"Monitors mixed from FOH. We bring our own IEM packs. Please provide clear, conflict-free monitor sends as listed in the input list.",
+            nl:"Monitors gemixt vanaf FOH. Wij nemen eigen IEM-packs mee. Graag duidelijke, conflictvrije monitor-sends zoals vermeld in de inputlijst."},
+  lights:{en:"Full moving-head rig (spots + washes), audience blinders, 1 hazer, control over house lights. GrandMA3 preferred. Please send patch & plot in advance.",
+          nl:"Volledige moving-head set (spots + washes), audience blinders, 1 hazer, controle over houselights. GrandMA3 voorkeur. Stuur patch & plot vooraf."}
+};
+function addTextPreset(path,key){
+  const c=(TEXTPRESETS[key]||{})[S.lang]||(TEXTPRESETS[key]||{}).en||"";
+  const cur=getPath(path);
+  setPath(path,(cur&&cur.trim())?cur+"\n"+c:c);
+  renderForm();renderPreview();
+}
+function textChip(path,key){return `<div class="chips"><button class="chip" onclick="addTextPreset('${path}','${key}')">${L('qa_std')}</button></div>`;}
+function bindInputs(){
+  document.querySelectorAll("#formMount [data-path]").forEach(inp=>{
+    inp.addEventListener("input",e=>{setPath(e.target.dataset.path,e.target.value);renderPreview();});
+  });
+}
+function sync(){renderForm();renderPreview();}
+function readImg(ev,path){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{setPath(path,r.result);renderPreview();};r.readAsDataURL(f);}
+
+/* ===================== Preview ===================== */
+function renderPreview(){
+  document.documentElement.style.setProperty("--accent",S.band.accent||"#1a1a1a");
+  let h="";
+  /* cover */
+  h+=`<div class="page doc-cover">
+    ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}">`:""}
+    <h1 class="doc-band">${esc(S.band.name||L("bandname_ph"))}</h1>
+    <div class="doc-title">${esc(S.band.subtitle||L("subtitle_default"))}</div>
+    ${S.band.validUntil?`<div class="doc-valid">${L("valid_until")} ${formatDate(S.band.validUntil)}</div>`:""}
+    ${coverContacts()}
+  </div>`;
+  /* general */
+  let gen="";
+  if(t(S.intro)) gen+=`<h3 class="sub-h">${L("sub_intro")}</h3><p>${esc(S.intro)}</p>`;
+  if(S.contacts.some(c=>c.name.trim()||c.email.trim())) gen+=`<h3 class="sub-h">${L("sub_contact")}</h3>${contactGrid()}`;
+  const tp=S.travelParty.filter(x=>x.label.trim());
+  if(tp.length) gen+=`<h3 class="sub-h">${L("sub_travel")}</h3><ul>${tp.map(x=>`<li>${esc(x.label)}${x.count?` — ${esc(x.count)}`:""}</li>`).join("")}</ul>`;
+  if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests)}</p>`;
+  if(gen) h+=pageBlock(L("sec_general"),gen);
+  /* hospitality */
+  let hp="";
+  if(t(S.hosp.dressing)) hp+=`<h3 class="sub-h">${L("sub_dressing")}</h3>${bulletize(S.hosp.dressing)}`;
+  if(t(S.hosp.towels)) hp+=`<h3 class="sub-h">${L("sub_towels")}</h3><p>${esc(S.hosp.towels)}</p>`;
+  if(t(S.hosp.catering)) hp+=`<h3 class="sub-h">${L("sub_catering")}</h3><p>${esc(S.hosp.catering)}</p>`;
+  const diet=S.hosp.dietary.filter(d=>d&&d.trim());
+  if(diet.length) hp+=`<h3 class="sub-h">${L("sub_dietary")}</h3><ul>${diet.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`;
+  if(t(S.hosp.buyout)) hp+=`<p><strong>${L("buyout_word")}:</strong> ${esc(S.hosp.buyout)} ${L("per_person")}</p>`;
+  const drinks=S.hosp.drinks.filter(d=>d.item&&d.item.trim());
+  if(drinks.length) hp+=`<h3 class="sub-h">${L("sub_drinks")}</h3><div class="drink-cols">${drinks.map(d=>`<div>• ${esc(d.item)}${d.qty?` (${esc(d.qty)})`:""}</div>`).join("")}</div>`;
+  if(t(S.hosp.snacks)) hp+=`<h3 class="sub-h">${L("sub_snacks")}</h3><p>${esc(S.hosp.snacks)}</p>`;
+  if(hp) h+=pageBlock(L("sec_hospitality"),hp);
+  /* technical */
+  let tc="";
+  if(t(S.tech.soundcheck)) tc+=`<h3 class="sub-h">${L("sub_soundcheck")}</h3><p>${esc(S.tech.soundcheck)}</p>`;
+  const crew=S.tech.crew.filter(c=>c.role.trim());
+  if(crew.length) tc+=`<h3 class="sub-h">${L("sub_crew")}</h3><ul>${crew.map(c=>`<li>${c.count?esc(c.count)+"× ":""}${esc(c.role)}</li>`).join("")}</ul>`;
+  if(t(S.tech.stage)) tc+=`<h3 class="sub-h">${L("sub_stage")}</h3><p>${esc(S.tech.stage)}</p>`;
+  if(t(S.tech.power)) tc+=`<h3 class="sub-h">${L("sub_power")}</h3><p>${esc(S.tech.power)}</p>`;
+  if(t(S.tech.foh)) tc+=`<h3 class="sub-h">${L("sub_foh")}</h3><p>${esc(S.tech.foh)}</p>`;
+  if(t(S.tech.monitors)) tc+=`<h3 class="sub-h">${L("sub_monitors")}</h3><p>${esc(S.tech.monitors)}</p>`;
+  if(t(S.tech.pa)) tc+=`<h3 class="sub-h">${L("sub_pa")}</h3><p>${esc(S.tech.pa)}</p>`;
+  if(t(S.tech.wireless)) tc+=`<h3 class="sub-h">${L("sub_wireless")}</h3><p>${esc(S.tech.wireless)}</p>`;
+  if(tc) h+=pageBlock(L("sec_technical"),tc);
+  /* lights */
+  let li="";
+  if(t(S.lights.fixtures)) li+=bulletize(S.lights.fixtures);
+  if(t(S.lights.console)) li+=`<p><strong>${L("sub_console")}:</strong> ${esc(S.lights.console)}</p>`;
+  if(t(S.lights.notes)) li+=`<p>${esc(S.lights.notes)}</p>`;
+  if(li) h+=pageBlock(L("sec_lights"),li);
+  /* backline */
+  if(t(S.backline)) h+=pageBlock(L("sec_backline"),bulletize(S.backline));
+  /* input list */
+  const inputs=S.inputs.filter(r=>r.input&&r.input.trim());
+  if(inputs.length){
+    let tbl=`<table class="grid"><thead><tr><th>${L("th_ch")}</th><th>${L("th_input")}</th><th>${L("th_micdi")}</th><th>${L("th_48v")}</th><th>${L("th_stand")}</th><th>${L("th_position")}</th><th>${L("th_notes")}</th></tr></thead><tbody>`;
+    inputs.forEach(r=>tbl+=`<tr><td>${esc(r.ch)}</td><td>${esc(r.input)}</td><td>${esc(r.micdi)}</td><td>${esc(r.p48)}</td><td>${esc(r.stand)}</td><td>${esc(r.pos)}</td><td>${esc(r.notes)}</td></tr>`);
+    tbl+=`</tbody></table>`;
+    h+=pageBlock(L("sec_inputlist"),tbl);
+  }
+  /* stageplot */
+  if(S.plot&&S.plot.items.length) h+=pageBlock(L("sec_stageplot"),plotPreviewHTML());
+  else if(S.stageplot) h+=pageBlock(L("sec_stageplot"),`<img class="stageplot-img" src="${S.stageplot}">`);
+  $("preview").innerHTML=h;
+  saveLocal();
+}
+function pageBlock(title,inner){return `<div class="page"><h2 class="sec-h">${esc(title)}</h2>${inner}</div>`;}
+function coverContacts(){
+  const m=S.contacts.find(c=>c.name.trim());if(!m)return"";
+  return `<div class="contact"><strong>${esc(m.name)}</strong>${m.role?esc(m.role)+"<br>":""}${m.email?esc(m.email)+"<br>":""}${esc(m.phone)}</div>`;
+}
+function contactGrid(){
+  const cs=S.contacts.filter(c=>c.name.trim()||c.email.trim());
+  return `<div class="contact-grid">${cs.map(c=>`<div class="c"><div class="role">${esc(c.role)}</div><div class="nm">${esc(c.name)}</div><div class="dt">${esc(c.email)}</div><div class="dt">${esc(c.phone)}</div></div>`).join("")}</div>`;
+}
+function formatDate(d){try{return new Date(d).toLocaleDateString(DATE_LOCALE[S.lang]||"en-GB",{day:"numeric",month:"long",year:"numeric"});}catch(e){return d;}}
+
+/* ===================== Stage plot editor ===================== */
+const PLOT_TYPES={
+  drums:{lbl:"DRUMS",w:20,h:24,sh:"box",c:"#ffffff"},
+  keys:{lbl:"KEYS",w:20,h:14,sh:"box",c:"#ffffff"},
+  bass:{lbl:"BASS",w:15,h:12,sh:"box",c:"#ffffff"},
+  guitar:{lbl:"GUITAR",w:15,h:12,sh:"box",c:"#ffffff"},
+  vocal:{lbl:"LEAD",w:13,h:12,sh:"box",c:"#ffffff"},
+  riser:{lbl:"RISER",w:26,h:26,sh:"riser",c:"#efe9dc"},
+  monitor:{lbl:"MON",w:10,h:9,sh:"wedge",c:"#e6dfce"},
+  amp:{lbl:"AMP",w:11,h:9,sh:"box",c:"#f4f1e9"},
+  di:{lbl:"DI",w:7,h:8,sh:"box",c:"#f4f1e9"},
+  power:{lbl:"230V",w:8,h:8,sh:"box",c:"#e9e2d3"},
+  mic:{lbl:"MIC",w:8,h:10,sh:"circle",c:"#ffffff"},
+  perc:{lbl:"PERC",w:13,h:12,sh:"box",c:"#ffffff"},
+  text:{lbl:"Text",w:16,h:8,sh:"text",c:"transparent"}
+};
+let selPlot=null;
+const WEDGE="polygon(0% 100%,100% 100%,80% 0%,20% 0%)";
+const Z_ORDER={riser:1,drums:3,keys:3,bass:3,guitar:3,vocal:3,amp:3,perc:3,di:5,power:5,mic:6,text:7};
+function zOf(type){return Z_ORDER[type]||3;}
+const PLOT_ICONS={drums:"🥁",keys:"🎹",bass:"🎸",guitar:"🎸",vocal:"🎤",riser:"",monitor:"🔈",amp:"🎛️",di:"",power:"⚡",mic:"🎤",perc:"🪘",text:""};
+const SNAP=2; /* grid step in % for alignment */
+function snap(v){return Math.round(v/SNAP)*SNAP;}
+function plotLabelHTML(it){return esc(it.label);}
+function uid(){return Math.random().toString(36).slice(2,9);}
+function addPlotItem(type){
+  const d=PLOT_TYPES[type];
+  S.plot.items.push({id:uid(),type,label:d.lbl,x:50,y:42,w:d.w,h:d.h,rot:0});
+  selPlot=S.plot.items[S.plot.items.length-1].id;
+  renderPlotEditor();renderPreview();
+}
+function buildPalette(){
+  const p=$("plotPalette");if(!p)return;
+  p.innerHTML=Object.keys(PLOT_TYPES).map(tp=>`<button onclick="addPlotItem('${tp}')">+ ${L('pt_'+tp)}</button>`).join("");
+}
+function shapeStyle(d,it){
+  let s=`background:${d.sh==='text'?'transparent':d.c};`;
+  if(d.sh==='wedge')s+=`clip-path:${WEDGE};-webkit-clip-path:${WEDGE};`;
+  return s;
+}
+function buildPlotEl(it){
+  const d=PLOT_TYPES[it.type]||PLOT_TYPES.text;
+  const el=document.createElement("div");
+  el.className="pl-el"+(it.id===selPlot?" sel":"");
+  el.style.left=it.x+"%";el.style.top=it.y+"%";el.style.width=it.w+"%";el.style.height=it.h+"%";
+  el.style.transform=`translate(-50%,-50%) rotate(${it.rot||0}deg)`;
+  el.style.zIndex=(it.id===selPlot?99:zOf(it.type));
+  el.dataset.id=it.id;
+  const shape=document.createElement("div");
+  shape.className="pl-shape sh-"+d.sh;
+  shape.setAttribute("style",shapeStyle(d,it));
+  shape.innerHTML=plotLabelHTML(it);
+  el.appendChild(shape);
+  const del=document.createElement("button");del.className="pl-ctl pl-del";del.textContent="×";
+  del.onclick=ev=>{ev.stopPropagation();S.plot.items=S.plot.items.filter(x=>x.id!==it.id);selPlot=null;renderPlotEditor();renderPreview();};
+  const rot=document.createElement("button");rot.className="pl-ctl pl-rot";rot.textContent="↻";
+  rot.onclick=ev=>{ev.stopPropagation();it.rot=((it.rot||0)+45)%360;el.style.transform=`translate(-50%,-50%) rotate(${it.rot}deg)`;renderPreview();};
+  const rz=document.createElement("div");rz.className="pl-resize";
+  el.appendChild(del);el.appendChild(rot);el.appendChild(rz);
+  el.addEventListener("pointerdown",e=>startDrag(e,it,el));
+  rz.addEventListener("pointerdown",e=>startResize(e,it,el));
+  el.addEventListener("dblclick",e=>{e.stopPropagation();editPlotLabel(it);});
+  return el;
+}
+function editPlotLabel(it){const v=prompt("Label:",it.label);if(v!==null){it.label=v;renderPlotEditor();renderPreview();}}
+function highlightSel(){document.querySelectorAll("#stagecanvas .pl-el").forEach(n=>{
+  const on=n.dataset.id===selPlot;n.classList.toggle("sel",on);
+  const it=S.plot.items.find(x=>x.id===n.dataset.id);
+  n.style.zIndex=on?99:(it?zOf(it.type):3);
+});}
+function startDrag(e,it,el){
+  if(e.target.classList.contains("pl-resize")||e.target.classList.contains("pl-ctl"))return;
+  e.preventDefault();selPlot=it.id;highlightSel();
+  const canvas=el.parentElement,r=canvas.getBoundingClientRect();
+  try{el.setPointerCapture(e.pointerId);}catch(_){}
+  const move=ev=>{
+    it.x=Math.max(0,Math.min(100,snap(((ev.clientX-r.left)/r.width)*100)));
+    it.y=Math.max(0,Math.min(100,snap(((ev.clientY-r.top)/r.height)*100)));
+    el.style.left=it.x+"%";el.style.top=it.y+"%";
+  };
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);renderPreview();};
+  el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
+}
+function startResize(e,it,el){
+  e.preventDefault();e.stopPropagation();
+  const canvas=el.parentElement,r=canvas.getBoundingClientRect();
+  try{el.setPointerCapture(e.pointerId);}catch(_){}
+  const cx=r.left+r.width*it.x/100, cy=r.top+r.height*it.y/100;
+  const move=ev=>{
+    it.w=Math.max(4,Math.min(94,snap((Math.abs(ev.clientX-cx)*2/r.width)*100)));
+    it.h=Math.max(4,Math.min(94,snap((Math.abs(ev.clientY-cy)*2/r.height)*100)));
+    el.style.width=it.w+"%";el.style.height=it.h+"%";
+  };
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);renderPreview();};
+  el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
+}
+function renderPlotEditor(){
+  const c=$("stagecanvas");if(!c)return;
+  c.querySelectorAll(".pl-el").forEach(n=>n.remove());
+  S.plot.items.forEach(it=>c.appendChild(buildPlotEl(it)));
+}
+function openPlotModal(){$("plotModal").classList.add("open");renderPlotEditor();}
+function closePlotModal(){$("plotModal").classList.remove("open");renderForm();renderPreview();}
+function clearPlot(){if(S.plot.items.length&&confirm(L("plot_clear")+"?")){S.plot.items=[];selPlot=null;renderPlotEditor();renderPreview();}}
+function plotPreviewHTML(){
+  const els=S.plot.items.map(it=>{
+    const d=PLOT_TYPES[it.type]||PLOT_TYPES.text;
+    return `<div class="pl-el" style="left:${it.x}%;top:${it.y}%;width:${it.w}%;height:${it.h}%;z-index:${zOf(it.type)};transform:translate(-50%,-50%) rotate(${it.rot||0}deg)">`+
+      `<div class="pl-shape sh-${d.sh}" style="${shapeStyle(d,it)}">${plotLabelHTML(it)}</div></div>`;
+  }).join("");
+  return `<div class="plot-preview">${els}<div class="stage-front">${L("plot_audience")}</div></div>`;
+}
+
+/* ===================== Quick-add presets ===================== */
+/* Input list channel bundles. ch = [input, mic/di, 48V, stand, position, notes?] */
+const INPUT_PRESETS={
+  drumkit:{lbl:{en:"Drum kit",nl:"Drumstel"},ch:[["Kick In","Mic","","","Drums"],["Kick Out","Mic","","Short","Drums"],["Snare Top","SM57","","Short","Drums"],["Snare Btm","e904","","Short","Drums"],["Hihat","CC8","X","","Drums"],["Rack Tom","e904","","","Drums"],["Floor Tom","e904","","","Drums"],["OH L","414","X","Tall","Drums"],["OH R","414","X","Tall","Drums"]]},
+  bass:{lbl:{en:"Bass",nl:"Bas"},ch:[["Bass DI","DI","","","Bass"]]},
+  egtr:{lbl:{en:"E-guitar (st)",nl:"E-gitaar (st)"},ch:[["El Gtr L","XLR","","","Guitar"],["El Gtr R","XLR","","","Guitar"]]},
+  acgtr:{lbl:{en:"Ac. guitar",nl:"Ak. gitaar"},ch:[["Ac. Guitar","DI","X","","Guitar"]]},
+  keys:{lbl:{en:"Keys (st)",nl:"Keys (st)"},ch:[["Keys L","DI","X","","Keys","Stereo DI"],["Keys R","DI","X","","Keys","Stereo DI"]]},
+  synth:{lbl:{en:"Synth",nl:"Synth"},ch:[["Synth","DI","X","","Keys"]]},
+  lead:{lbl:{en:"Lead vox",nl:"Leadzang"},ch:[["Lead Vocal","XLR","","","Center"]]},
+  bv:{lbl:{en:"Backing vox",nl:"Backing"},ch:[["BV Vocal","XLR","","",""]]},
+  talkback:{lbl:{en:"Talkback",nl:"Talkback"},ch:[["Talkback","XLR","","","","Not in mix"]]},
+  playback:{lbl:{en:"Playback (st)",nl:"Playback (st)"},ch:[["Playback L","DI","X","",""],["Playback R","DI","X","",""]]},
+  perc:{lbl:{en:"Perc",nl:"Percussie"},ch:[["Percussion","Mic","","","Perc"]]}
+};
+function renumberInputs(){S.inputs.forEach((r,i)=>r.ch=String(i+1));}
+function addInputPreset(key){
+  const p=INPUT_PRESETS[key];if(!p)return;
+  if(S.inputs.length===1&&!S.inputs[0].input.trim())S.inputs=[];
+  p.ch.forEach(a=>S.inputs.push({ch:"",input:a[0],micdi:a[1]||"",p48:a[2]||"",stand:a[3]||"",pos:a[4]||"",notes:a[5]||""}));
+  renumberInputs();renderForm();renderPreview();
+}
+function inputPresetChips(){
+  const lang=S.lang;
+  return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+
+    Object.keys(INPUT_PRESETS).map(k=>`<button class="chip" onclick="addInputPreset('${k}')">+ ${esc(INPUT_PRESETS[k].lbl[lang]||INPUT_PRESETS[k].lbl.en)}</button>`).join("")+
+    `<button class="chip" style="color:var(--muted)" onclick="renumberInputs();renderForm();renderPreview()">${L('qa_renumber')}</button></div>`;
+}
+/* Drinks / crew / dietary quick adds (language-aware content) */
+const QUICK={
+  drinks:[
+    {id:"water",en:{item:"Water (room temp.)",qty:"12 bottles"},nl:{item:"Water (kamertemp.)",qty:"12 flessen"}},
+    {id:"waterc",en:{item:"Water (chilled)",qty:"12 bottles"},nl:{item:"Water (gekoeld)",qty:"12 flessen"}},
+    {id:"soft",en:{item:"Soft drinks (Coke/Zero/Fanta)",qty:"12 cans"},nl:{item:"Frisdrank (Coke/Zero/Fanta)",qty:"12 blik"}},
+    {id:"beer",en:{item:"Beer (local selection)",qty:"24 bottles"},nl:{item:"Bier (lokale selectie)",qty:"24 flesjes"}},
+    {id:"beer0",en:{item:"Alcohol-free beer",qty:"8 bottles"},nl:{item:"Alcoholvrij bier",qty:"8 flesjes"}},
+    {id:"coffee",en:{item:"Coffee & tea",qty:"unlimited"},nl:{item:"Koffie & thee",qty:"onbeperkt"}},
+    {id:"wine",en:{item:"Dry white wine",qty:"1 bottle"},nl:{item:"Droge witte wijn",qty:"1 fles"}},
+    {id:"energy",en:{item:"Energy drink (Red Bull)",qty:"6 cans"},nl:{item:"Energydrink (Red Bull)",qty:"6 blik"}}
+  ],
+  crew:[
+    {id:"pm",en:"Production manager",nl:"Productiemanager"},
+    {id:"sm",en:"Stage manager",nl:"Stagemanager"},
+    {id:"hand",en:"Stagehand",nl:"Stagehand"},
+    {id:"audio",en:"Audio technician",nl:"Audiotechnicus"},
+    {id:"mon",en:"Monitor technician",nl:"Monitortechnicus"},
+    {id:"light",en:"Lighting technician",nl:"Lichttechnicus"},
+    {id:"backline",en:"Backline technician",nl:"Backlinetechnicus"}
+  ],
+  dietary:[
+    {id:"veg",en:"1× vegetarian",nl:"1× vegetarisch"},
+    {id:"vegan",en:"1× vegan",nl:"1× vegan"},
+    {id:"gf",en:"Gluten-free",nl:"Glutenvrij"},
+    {id:"lf",en:"Lactose-free",nl:"Lactosevrij"},
+    {id:"nuts",en:"Nut allergy",nl:"Notenallergie"},
+    {id:"halal",en:"Halal",nl:"Halal"}
+  ]
+};
+function addQuick(group,id){
+  const e=QUICK[group].find(x=>x.id===id);if(!e)return;const lang=S.lang;
+  if(group==="drinks"){const c=e[lang]||e.en;if(S.hosp.drinks.length===1&&!S.hosp.drinks[0].item.trim())S.hosp.drinks=[];S.hosp.drinks.push({item:c.item,qty:c.qty});}
+  else if(group==="crew"){const r=e[lang]||e.en;if(S.tech.crew.length===1&&!S.tech.crew[0].role.trim())S.tech.crew=[];S.tech.crew.push({role:r,count:"1"});}
+  else if(group==="dietary"){const txt=e[lang]||e.en;if(S.hosp.dietary.length===1&&!S.hosp.dietary[0].trim())S.hosp.dietary=[];S.hosp.dietary.push(txt);}
+  renderForm();renderPreview();
+}
+function quickChips(group){
+  const lang=S.lang;
+  return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+QUICK[group].map(e=>{
+    const lab=group==="drinks"?(e[lang]||e.en).item:(e[lang]||e.en);
+    return `<button class="chip" onclick="addQuick('${group}','${e.id}')">+ ${esc(lab)}</button>`;
+  }).join("")+`</div>`;
+}
+
+/* ===================== Save / load ===================== */
+function saveLocal(){try{localStorage.setItem("roborider",JSON.stringify(S));}catch(e){}}
+function loadLocal(){try{const d=localStorage.getItem("roborider");if(d){S=Object.assign(blank(),JSON.parse(d));return true;}}catch(e){}return false;}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=(S.band.name||"rider").replace(/\s+/g,"-").toLowerCase()+".json";a.click();
+}
+function newDoc(){
+  if(!confirm(L("confirm_new")))return;
+  const lang=S.lang;
+  S=blank();S.lang=lang;selPlot=null;
+  try{localStorage.removeItem("roborider");}catch(e){}
+  if($("aiInput"))$("aiInput").value="";if($("aiResult"))$("aiResult").textContent="";
+  applyChrome();renderForm();renderPreview();
+}
+function importJSON(){
+  const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";
+  inp.onchange=e=>{const f=e.target.files[0];const r=new FileReader();
+    r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));applyChrome();renderForm();renderPreview();}catch(err){alert("Could not read file.");}};
+    r.readAsText(f);};
+  inp.click();
+}
+
+/* ===================== AI import & translation ===================== */
+let AI_KEY=(function(){try{return localStorage.getItem("roborider_key")||"";}catch(e){return"";}})();
+function setAIKey(v){AI_KEY=v.trim();try{localStorage.setItem("roborider_key",AI_KEY);}catch(e){}updateAIBadge();}
+function updateAIBadge(){const b=$("aiKeyState");if(b)b.textContent=AI_KEY?"● live AI":"○ demo";}
+function promptAIKey(){
+  const v=prompt("OpenAI API key (sk-…). Stored only in this browser (localStorage). Leave empty to use offline demo mode.",AI_KEY);
+  if(v!==null)setAIKey(v);
+}
+/* dispatcher: real model when a key is set, otherwise heuristic */
+async function runAI(){
+  const raw=$("aiInput").value;
+  if(!raw.trim()){$("aiResult").textContent=L("ai_empty");return;}
+  if(AI_KEY){return runAIModel(raw);}
+  runAIHeuristic();
+}
+async function callOpenAI(system,user){
+  const res=await fetch("https://api.openai.com/v1/chat/completions",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+AI_KEY},
+    body:JSON.stringify({model:"gpt-4o-mini",temperature:0.2,response_format:{type:"json_object"},
+      messages:[{role:"system",content:system},{role:"user",content:user}]})
+  });
+  if(!res.ok)throw new Error("API "+res.status);
+  const j=await res.json();
+  return JSON.parse(j.choices[0].message.content);
+}
+function mergeAI(obj){
+  if(!obj||typeof obj!=="object")return;
+  const b=obj.band||{}; ["name","subtitle","validUntil"].forEach(k=>{if(b[k])S.band[k]=b[k];});
+  if(obj.intro)S.intro=obj.intro;
+  if(Array.isArray(obj.contacts)&&obj.contacts.length)S.contacts=obj.contacts.map(c=>({role:c.role||"Contact",name:c.name||"",email:c.email||"",phone:c.phone||""}));
+  if(Array.isArray(obj.travelParty)&&obj.travelParty.length)S.travelParty=obj.travelParty.map(x=>({label:x.label||"",count:String(x.count||"")}));
+  if(obj.guests)S.guests=obj.guests;
+  const H=obj.hospitality||{};
+  ["dressing","towels","catering","buyout","snacks"].forEach(k=>{if(H[k])S.hosp[k]=H[k];});
+  if(Array.isArray(H.dietary)&&H.dietary.length)S.hosp.dietary=H.dietary;
+  if(Array.isArray(H.drinks)&&H.drinks.length)S.hosp.drinks=H.drinks.map(d=>({item:d.item||"",qty:String(d.qty||"")}));
+  const T=obj.technical||{};
+  ["soundcheck","stage","power","foh","monitors","pa","wireless"].forEach(k=>{if(T[k])S.tech[k]=T[k];});
+  if(Array.isArray(T.crew)&&T.crew.length)S.tech.crew=T.crew.map(c=>({role:c.role||"",count:String(c.count||"")}));
+  const Li=obj.lights||{}; ["fixtures","console","notes"].forEach(k=>{if(Li[k])S.lights[k]=Li[k];});
+  if(obj.backline)S.backline=obj.backline;
+  if(Array.isArray(obj.inputs)&&obj.inputs.length){
+    S.inputs=obj.inputs.map((r,i)=>({ch:String(r.ch||i+1),input:r.input||"",micdi:r.micdi||"",p48:r.p48||"",stand:r.stand||"",pos:r.pos||r.position||"",notes:r.notes||""}));
+  }
+}
+async function runAIModel(raw){
+  $("aiResult").textContent="⏳ AI…";
+  const schema=`Return STRICT JSON with this shape (omit unknown fields): {band:{name,subtitle,validUntil},intro,contacts:[{role,name,email,phone}],travelParty:[{label,count}],guests,hospitality:{dressing,towels,catering,dietary:[],buyout,drinks:[{item,qty}],snacks},technical:{soundcheck,crew:[{role,count}],stage,power,foh,monitors,pa,wireless},lights:{fixtures,console,notes},backline,inputs:[{ch,input,micdi,p48,stand,pos,notes}]}`;
+  try{
+    const obj=await callOpenAI(
+      "You are a touring production assistant. Extract a band's technical & hospitality rider from the user's text into structured data. Use the same language as the user's text. p48 is 'X' if 48V phantom is needed. "+schema,
+      raw);
+    mergeAI(obj);renderForm();renderPreview();
+    $("aiResult").textContent="✓ AI";
+  }catch(e){
+    $("aiResult").textContent="AI error ("+e.message+") — using demo parser.";
+    runAIHeuristic();
+  }
+}
+async function translateRider(){
+  const target=$("langSel").value;
+  if(!AI_KEY){alert("Translation of your own text needs an API key (top-right ✦ AI). Section labels already follow the Language selector.");return;}
+  const btn=$("btnTranslate");const old=btn.textContent;btn.textContent="⏳";
+  const payload={intro:S.intro,guests:S.guests,hosp:S.hosp,tech:S.tech,lights:S.lights,backline:S.backline,band:{subtitle:S.band.subtitle}};
+  try{
+    const obj=await callOpenAI(
+      "Translate ALL human-readable string values in this rider JSON to the target language code '"+target+"'. Keep keys, structure, numbers, gear/brand names and channel input names unchanged. Return the same JSON shape.",
+      JSON.stringify(payload));
+    if(obj.intro!==undefined)S.intro=obj.intro;
+    if(obj.guests!==undefined)S.guests=obj.guests;
+    if(obj.band&&obj.band.subtitle)S.band.subtitle=obj.band.subtitle;
+    if(obj.hosp)Object.assign(S.hosp,obj.hosp);
+    if(obj.tech)Object.assign(S.tech,obj.tech);
+    if(obj.lights)Object.assign(S.lights,obj.lights);
+    if(obj.backline!==undefined)S.backline=obj.backline;
+    renderForm();renderPreview();
+  }catch(e){alert("Translation failed: "+e.message);}
+  btn.textContent=old;
+}
+function runAIHeuristic(){
+  const raw=$("aiInput").value;
+  if(!raw.trim()){$("aiResult").textContent=L("ai_empty");return;}
+  let found=[];
+  const email=raw.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+  const phone=raw.match(/(\+?\d[\d\s().-]{7,}\d)/);
+  if(email||phone){
+    if(!S.contacts[0])S.contacts=[{role:"Contact",name:"",email:"",phone:""}];
+    if(email){S.contacts[0].email=email[0];found.push("email");}
+    if(phone){S.contacts[0].phone=phone[0].trim();found.push("phone");}
+  }
+  const caps=raw.match(/^\s*([A-Z][A-Z0-9' ]{1,18})\s*$/m);
+  if(caps&&!S.band.name){S.band.name=caps[1].trim();found.push("band name");}
+  const tp=raw.match(/(?:travel\s*party|reisgezelschap|touring party|reisegruppe|équipe|bestaat uit|band\s*\+?\s*crew)\D{0,12}(\d{1,2})/i)||raw.match(/(\d{1,2})\s*[- ]?(?:koppige|piece|piéce|köpfige)/i)||raw.match(/(\d{1,2})\s*(?:persons|personen|personnes|personas|people)/i);
+  if(tp){S.travelParty=[{label:"Band + crew",count:tp[1]}];found.push("travel party");}
+  const bo=raw.match(/buy[\s-]?out[^€$\d]{0,12}[€$]?\s*(\d{1,3})/i)||raw.match(/[€$]\s*(\d{1,3})[,.]?-?\s*(?:p\.?p\.?|per person|pro person|par personne)/i);
+  if(bo){S.hosp.buyout="€"+bo[1];found.push("buy-out");}
+  const diet=[];
+  if(/diabe|keto/i.test(raw))diet.push("Band member with diabetes — low-carb (keto)");
+  if(/vegan/i.test(raw))diet.push("1× vegan");
+  if(/vega|vegetar|végét/i.test(raw)&&!/vegan/i.test(raw))diet.push("1× vegetarian");
+  const allerg=raw.match(/(no shrimp|geen garnalen|gluten[- ]?free|glutenvrij|lactose[- ]?free|nut allerg|notenallergie)/i);
+  if(allerg)diet.push(allerg[1]);
+  if(diet.length){S.hosp.dietary=diet;found.push(diet.length+" dietary");}
+  const inLines=[...raw.matchAll(/^\s*(\d{1,2})[\s.)|]+([A-Za-z][A-Za-z0-9 \/&'+-]{2,30})/gm)];
+  if(inLines.length>=3){
+    S.inputs=inLines.slice(0,48).map(m=>({ch:m[1],input:m[2].trim(),micdi:"",p48:"",stand:"",pos:"",notes:""}));
+    found.push(inLines.length+" input channels");
+  }
+  renderForm();renderPreview();
+  $("aiResult").textContent=found.length?(L("ai_recognized")+found.join(", ")+L("ai_check")):L("ai_none");
+}
+
+/* ===================== Example (English, international) ===================== */
+function loadExample(){
+  const lang=S.lang;
+  S=blank(); S.lang=lang;
+  S.band={name:"NONA",subtitle:I18N[lang]?I18N[lang].subtitle_default+" 2026":"Technical & Hospitality Rider 2026",validUntil:"2026-03-31",accent:"#1a1a1a",logo:""};
+  S.intro="Thanks for reading our rider. We look forward to playing at your venue and to a smooth, professional show day together with the local crew. Any questions — call, message or email anytime.";
+  S.contacts=[{role:"Tour manager & LD",name:"Serhan Efe",email:"hello@serhanefe.nl",phone:"+31 6 46 85 38 46"}];
+  S.travelParty=[{label:"Band",count:"4"},{label:"Crew",count:"4"}];
+  S.guests="20 guest spots per show. Name list provided on the day of the show.";
+  S.hosp={
+    dressing:"Two separate, lockable dressing rooms in the same building as the stage\nLarge enough for ~5 people each, ±20°C, ventilation/AC or heating\nLarge lit mirror, WiFi + password",
+    towels:"7 small + 3 large black towels",
+    catering:"A warm, healthy and fresh meal for the full touring party (±8 people). No fast food or deep-fried dishes please.",
+    dietary:["1× vegetarian (fish ok if veg not possible)","1× no shrimp"],
+    buyout:"€25",
+    drinks:[{item:"Water (room temp.)",qty:"12 bottles"},{item:"Water (chilled)",qty:"12 bottles"},{item:"Soft drinks (Coke/Zero/Fanta/Sprite/Red Bull)",qty:"12 cans"},{item:"Beer (local selection)",qty:"24 bottles"},{item:"Coffee & tea",qty:"unlimited"}],
+    snacks:"Fresh fruit, nuts, crisps and chocolate."
+  };
+  S.tech={
+    soundcheck:"Allow ~1 hour for setup. Minimum changeover 30 minutes.",
+    crew:[{role:"Production manager",count:"1"},{role:"Stage manager",count:"1"},{role:"Stagehand",count:"2"},{role:"Audio technician",count:"2"},{role:"Lighting technician",count:"1"}],
+    stage:"Clean, black (ballet) floor without monitors or loose cables. 2 risers of 200×200 cm — keys at 20 cm, drums at 40 cm, skirted in black.",
+    power:"230V-50Hz at marked positions (see stage plot).",
+    foh:"We travel with our own console. 1× CAT5e from stage to FOH. We send L/R/Sub-Mono. FOH preferably not under a balcony.",
+    monitors:"IEM from FOH: 1 wireless + 4 wired beltpacks (our own). House stands: 6× tall, 6× short, 1× round base.",
+    pa:"Full-range, phase/time aligned, covering the whole room (L-Acoustics, d&b, Adamson or equivalent).",
+    wireless:"1× wireless handheld from the house, preferably Shure QLXD / ULXD / Axient."
+  };
+  S.lights={fixtures:"6 washes + 1 spot from the house on the floor\n8 Astera tubes (tour) hung in the backdrop bar, ±10 kg",console:"GrandMA3 (own command wing, sACN/Art-Net). House desk fine if it's a GrandMA3.",notes:"We'd like control over the house lights; dim bar lights as much as possible during the set."};
+  S.backline="We bring all our own backline.";
+  S.inputs=[
+    {ch:"1",input:"Kick In",micdi:"Beta 91",p48:"",stand:"",pos:"Drums",notes:""},
+    {ch:"2",input:"Kick Out",micdi:"Mic",p48:"",stand:"Short",pos:"Drums",notes:""},
+    {ch:"3",input:"Snare Top",micdi:"SM57",p48:"",stand:"Short",pos:"Drums",notes:""},
+    {ch:"4",input:"Snare Btm",micdi:"E906",p48:"",stand:"Short",pos:"Drums",notes:""},
+    {ch:"5",input:"Hihat",micdi:"CC8",p48:"X",stand:"",pos:"Drums",notes:""},
+    {ch:"6",input:"Rack Tom",micdi:"E904/604",p48:"",stand:"",pos:"Drums",notes:""},
+    {ch:"7",input:"Floor Tom",micdi:"E904/604",p48:"",stand:"",pos:"Drums",notes:""},
+    {ch:"8",input:"OH L",micdi:"414UL",p48:"X",stand:"Tall",pos:"Drums",notes:""},
+    {ch:"9",input:"OH R",micdi:"414UL",p48:"X",stand:"Tall",pos:"Drums",notes:""},
+    {ch:"10",input:"Bass DI",micdi:"DI",p48:"",stand:"",pos:"Bass",notes:""},
+    {ch:"11",input:"El Gtr L",micdi:"XLR",p48:"",stand:"",pos:"Guitar",notes:""},
+    {ch:"12",input:"El Gtr R",micdi:"XLR",p48:"",stand:"",pos:"Guitar",notes:""},
+    {ch:"13",input:"Keys 1 L",micdi:"DI",p48:"X",stand:"",pos:"Keys",notes:"Stereo DI"},
+    {ch:"14",input:"Keys 1 R",micdi:"DI",p48:"X",stand:"",pos:"Keys",notes:"Stereo DI"},
+    {ch:"15",input:"Lead Vocal",micdi:"XLR",p48:"",stand:"",pos:"Center",notes:""},
+    {ch:"16",input:"Talkback",micdi:"XLR",p48:"",stand:"Short",pos:"Keys",notes:"Not in mix"}
+  ];
+  S.stageplot="";
+  applyChrome();renderForm();renderPreview();
+  $("aiResult").textContent="";
+}
+
+/* ===================== Boot ===================== */
+loadLocal();
+applyChrome();
+renderForm();
+renderPreview();
+</script>
+</body>
+</html>

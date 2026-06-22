@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboRider — Build a pro rider in minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="roborider-favicon.svg">
+<style>
+  :root{--ink:#1b1a17;--soft:#56544d;--muted:#a39d92;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#ffffff;--paper2:#eceae3;--clay:#9a7257;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --display:'Jost','Inter',-apple-system,sans-serif}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);font-weight:300;color:var(--ink);line-height:1.6;background:var(--bg);-webkit-font-smoothing:antialiased;letter-spacing:.1px}
+  h1,h2,h3,.logo,.amt{font-family:var(--display);font-weight:300}
+  a{color:inherit}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 30px}
+  .kick{font-family:var(--display);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:400}
+  /* nav */
+  nav{position:sticky;top:0;background:rgba(243,241,236,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);z-index:10}
+  nav .wrap{display:flex;align-items:center;gap:18px;padding:20px 30px}
+  .logo{font-weight:300;font-size:18px;letter-spacing:5px;text-transform:lowercase;color:var(--ink);display:flex;align-items:center;gap:11px}
+  .logo span{color:var(--ink)}
+  .logomark{width:30px;height:30px;flex:0 0 30px}
+  nav .spacer{flex:1}
+  .lang{display:flex;gap:6px}
+  .lang button{border:1px solid var(--hair);background:none;border-radius:0;padding:6px 10px;font-family:var(--display);font-size:10px;letter-spacing:1.5px;cursor:pointer;color:var(--muted)}
+  .lang button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .btn{display:inline-block;border:none;border-radius:0;padding:14px 26px;font-family:var(--display);font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .15s,color .15s}
+  .btn.primary,.btn.pop{background:var(--ink);color:var(--bg)}
+  .btn.primary:hover,.btn.pop:hover{background:#000}
+  .btn.outline{border:1px solid var(--ink);background:none;color:var(--ink)}
+  .btn.outline:hover{background:var(--ink);color:var(--bg)}
+  .btn.sm{padding:10px 16px}
+  /* hero */
+  .hero{background:var(--bg);color:var(--ink);padding:120px 0 110px;text-align:center;border-bottom:1px solid var(--hair)}
+  .hero h1{font-size:72px;line-height:1.02;letter-spacing:.5px;margin:0 0 26px;font-weight:300}
+  .hero h1 em{font-style:italic;color:var(--clay)}
+  .hero p.sub{font-size:18px;font-weight:300;color:var(--soft);max-width:600px;margin:0 auto 38px;line-height:1.7}
+  .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
+  .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
+  /* sections */
+  section{padding:96px 0}
+  h2.sec{font-size:40px;letter-spacing:.5px;text-align:center;margin:0 0 14px;font-weight:300}
+  p.lead{text-align:center;color:var(--soft);max-width:600px;margin:0 auto 56px;font-size:16px;font-weight:300}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--hair)}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}.hero h1{font-size:44px}}
+  .card{border:none;border-bottom:1px solid var(--hair);border-right:1px solid var(--hair);border-radius:0;padding:38px 30px;background:none}
+  .grid .card:nth-child(3n){border-right:none}
+  .card .ic{font-size:20px;filter:grayscale(1);opacity:.55}
+  .card h3{margin:18px 0 8px;font-size:20px;font-weight:400}
+  .card p{margin:0;color:var(--soft);font-size:14px;font-weight:300;line-height:1.65}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;counter-reset:s}
+  @media(max-width:820px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;padding:30px 0 0;border-top:1px solid var(--ink)}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:var(--display);font-weight:300;font-size:13px;letter-spacing:2px;color:var(--clay)}
+  .step h3{margin:10px 0 8px;font-size:21px;font-weight:400}
+  .step p{margin:0;color:var(--soft);font-size:14px;font-weight:300}
+  /* pricing */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;align-items:stretch;border-top:1px solid var(--hair)}
+  @media(max-width:820px){.price-grid{grid-template-columns:1fr}}
+  .plan{border:none;border-right:1px solid var(--hair);border-radius:0;padding:38px 30px;display:flex;flex-direction:column}
+  .price-grid .plan:last-child{border-right:none}
+  .plan.feat{border-top:2px solid var(--clay);box-shadow:none;background:var(--card)}
+  .plan h3{margin:0 0 6px;font-size:20px;font-weight:400}
+  .plan .amt{font-size:42px;font-weight:300;margin:10px 0}
+  .plan .amt small{font-size:13px;font-weight:300;color:var(--muted);font-family:var(--font)}
+  .plan ul{list-style:none;padding:0;margin:18px 0 24px;flex:1}
+  .plan li{padding:8px 0 8px 18px;position:relative;font-size:13.5px;color:var(--soft);font-weight:300;border-bottom:1px solid var(--line)}
+  .plan li::before{content:"—";position:absolute;left:0;color:var(--clay)}
+  .tag{font-family:var(--display);font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--clay);margin-bottom:6px}
+  /* feedback */
+  .feedback{background:var(--card);border:1px solid var(--hair);border-radius:0;padding:70px 48px;text-align:center}
+  .feedback h2{margin:0 0 14px;font-size:34px}
+  .feedback p{color:var(--soft);max-width:540px;margin:0 auto 30px;font-weight:300}
+  footer{padding:44px 0;border-top:1px solid var(--hair);color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;font-family:var(--display);text-align:center}
+  [data-i]{}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></div>
+  <div class="spacer"></div>
+  <a class="btn outline sm" href="rider-builder.html" data-i="nav_try">Open the builder</a>
+  <div class="lang">
+    <button onclick="setLang('en')" id="lg-en" class="on">EN</button>
+    <button onclick="setLang('nl')" id="lg-nl">NL</button>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="badge" data-i="hero_badge">For touring musicians & bands</span>
+  <h1 data-i="hero_h"></h1>
+  <p class="sub" data-i="hero_sub"></p>
+  <div class="cta">
+    <a class="btn pop" href="rider-builder.html" data-i="hero_cta1">Build my rider — free</a>
+    <a class="btn outline" href="#features" data-i="hero_cta2">See how it works</a>
+  </div>
+  <div class="note" data-i="hero_note"></div>
+</div></header>
+
+<section id="features"><div class="wrap">
+  <h2 class="sec" data-i="feat_h"></h2>
+  <p class="lead" data-i="feat_lead"></p>
+  <div class="grid">
+    <div class="card"><div class="ic">🤖</div><h3 data-i="f1_h"></h3><p data-i="f1_p"></p></div>
+    <div class="card"><div class="ic">🎚️</div><h3 data-i="f2_h"></h3><p data-i="f2_p"></p></div>
+    <div class="card"><div class="ic">🍽️</div><h3 data-i="f3_h"></h3><p data-i="f3_p"></p></div>
+    <div class="card"><div class="ic">🌍</div><h3 data-i="f4_h"></h3><p data-i="f4_p"></p></div>
+    <div class="card"><div class="ic">📄</div><h3 data-i="f5_h"></h3><p data-i="f5_p"></p></div>
+    <div class="card"><div class="ic">⚡</div><h3 data-i="f6_h"></h3><p data-i="f6_p"></p></div>
+  </div>
+</div></section>
+
+<section style="background:#fafafa;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <h2 class="sec" data-i="how_h"></h2>
+  <p class="lead" data-i="how_lead"></p>
+  <div class="steps">
+    <div class="step"><h3 data-i="s1_h"></h3><p data-i="s1_p"></p></div>
+    <div class="step"><h3 data-i="s2_h"></h3><p data-i="s2_p"></p></div>
+    <div class="step"><h3 data-i="s3_h"></h3><p data-i="s3_p"></p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 class="sec" data-i="price_h"></h2>
+  <p class="lead" data-i="price_lead"></p>
+  <div class="price-grid">
+    <div class="plan">
+      <h3 data-i="p1_h"></h3><div class="amt">€0</div>
+      <ul><li data-i="p1_1"></li><li data-i="p1_2"></li><li data-i="p1_3"></li></ul>
+      <a class="btn outline" href="rider-builder.html" data-i="p1_cta"></a>
+    </div>
+    <div class="plan feat">
+      <span class="tag" data-i="p2_tag"></span>
+      <h3 data-i="p2_h"></h3><div class="amt">€7<small> /mo · €49/yr</small></div>
+      <ul><li data-i="p2_1"></li><li data-i="p2_2"></li><li data-i="p2_3"></li><li data-i="p2_4"></li></ul>
+      <a class="btn primary" href="#feedback" data-i="p2_cta"></a>
+    </div>
+    <div class="plan">
+      <h3 data-i="p3_h"></h3><div class="amt">€15<small> /mo</small></div>
+      <ul><li data-i="p3_1"></li><li data-i="p3_2"></li><li data-i="p3_3"></li></ul>
+      <a class="btn outline" href="#feedback" data-i="p3_cta"></a>
+    </div>
+  </div>
+  <p class="note" style="text-align:center" data-i="price_note"></p>
+</div></section>
+
+<section id="feedback"><div class="wrap">
+  <div class="feedback">
+    <h2 data-i="fb_h"></h2>
+    <p data-i="fb_p"></p>
+    <a class="btn primary" id="fbMail" href="#" data-i="fb_cta"></a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  RoboRider · <span data-i="foot"></span> · <a href="rider-builder.html">Open the builder →</a>
+</div></footer>
+
+<script>
+const EMAIL="jurgen.gerlofs@gmail.com";
+const T={
+ en:{
+  nav_try:"Open the builder",
+  hero_badge:"For touring musicians & bands",
+  hero_h:"Your technical &amp; hospitality rider, <em>done in minutes</em>",
+  hero_sub:"Stop wrestling with old Word files. Build a clean, professional rider — with a drag-and-drop stage plot and input list — and export a polished PDF. In any language.",
+  hero_cta1:"Build my rider — free",
+  hero_cta2:"See how it works",
+  hero_note:"No account needed to start · works in your browser · your data stays on your device.",
+  feat_h:"Everything a rider needs, nothing it doesn't",
+  feat_lead:"Built by a touring musician who got tired of editing PDFs the night before a show.",
+  f1_h:"AI auto-fill",
+  f1_p:"Paste your old rider or just describe your setup — it fills every section, the input list and a first stage plot.",
+  f2_h:"Drag-and-drop stage plot",
+  f2_p:"Place drums, keys, monitors, risers, DI and power from a top-down view. Drag, resize, rotate. It prints in your PDF.",
+  f3_h:"Hospitality done right",
+  f3_p:"Dressing room, catering, dietary needs, drinks and buy-out — the part most tools ignore, with smart presets.",
+  f4_h:"Any language",
+  f4_p:"One click switches the whole rider between English, Dutch, German, French and Spanish for foreign bookings.",
+  f5_h:"Polished PDF export",
+  f5_p:"Clean A4 layout with your logo and accent colour. Looks like it came from a production company.",
+  f6_h:"Smart presets",
+  f6_p:"Add a full drum kit input list, standard PA/FOH/monitor text or a dressing-room block in one click.",
+  how_h:"From zero to sent in three steps",
+  how_lead:"Made for the way tours actually work.",
+  s1_h:"Describe or paste",
+  s1_p:"Type your setup or drop in your existing rider. AI structures it for you.",
+  s2_h:"Tweak & draw",
+  s2_p:"Adjust the details, draw your stage plot, pick your language and colours.",
+  s3_h:"Export & send",
+  s3_p:"Download a clean PDF and send it to the venue. Reuse it for the next show.",
+  price_h:"Simple pricing",
+  price_lead:"Start free. Pay when you tour enough to need it.",
+  p1_h:"Free", p1_1:"1 rider", p1_2:"AI auto-fill (basic)", p1_3:"PDF with watermark", p1_cta:"Start free",
+  p2_tag:"Most popular", p2_h:"Pro", p2_1:"Unlimited riders", p2_2:"No watermark + your branding", p2_3:"Translate your own text", p2_4:"Stage plot editor", p2_cta:"Get early access",
+  p3_h:"Band", p3_1:"Multiple riders & tours", p3_2:"Shareable venue links", p3_3:"Version history", p3_cta:"Get early access",
+  price_note:"Prices indicative — this is an early preview. Tell me what you'd actually pay.",
+  fb_h:"Help shape it",
+  fb_p:"This is an early version. What's missing? What would make you switch from your current rider? Two lines of feedback genuinely help.",
+  fb_cta:"Send feedback",
+  foot:"an early preview"
+ },
+ nl:{
+  nav_try:"Open de tool",
+  hero_badge:"Voor tourende muzikanten & bands",
+  hero_h:"Je technische &amp; hospitality rider, <em>klaar in minuten</em>",
+  hero_sub:"Stop met klooien in oude Word-bestanden. Bouw een strakke, professionele rider — met een drag-and-drop stageplot en inputlijst — en exporteer een verzorgde PDF. In elke taal.",
+  hero_cta1:"Maak mijn rider — gratis",
+  hero_cta2:"Bekijk hoe het werkt",
+  hero_note:"Geen account nodig om te starten · werkt in je browser · je gegevens blijven op je apparaat.",
+  feat_h:"Alles wat een rider nodig heeft, niets te veel",
+  feat_lead:"Gebouwd door een tourende muzikant die geen zin meer had om de avond voor een show PDF's te editen.",
+  f1_h:"AI vult automatisch in",
+  f1_p:"Plak je oude rider of beschrijf je setup — alle secties, de inputlijst en een eerste stageplot worden ingevuld.",
+  f2_h:"Drag-and-drop stageplot",
+  f2_p:"Zet drums, keys, monitors, risers, DI en stroom neer in bovenaanzicht. Slepen, schalen, draaien. Komt mee in je PDF.",
+  f3_h:"Hospitality op orde",
+  f3_p:"Kleedkamer, catering, dieetwensen, drank en buy-out — het deel dat de meeste tools negeren, met slimme presets.",
+  f4_h:"Elke taal",
+  f4_p:"Eén klik schakelt de hele rider tussen Engels, Nederlands, Duits, Frans en Spaans voor buitenlandse boekingen.",
+  f5_h:"Verzorgde PDF-export",
+  f5_p:"Strakke A4-opmaak met je logo en accentkleur. Alsof het van een productiebedrijf komt.",
+  f6_h:"Slimme presets",
+  f6_p:"Voeg een volledige drum-inputlijst, standaard PA/FOH/monitor-tekst of een kleedkamerblok toe in één klik.",
+  how_h:"Van nul tot verstuurd in drie stappen",
+  how_lead:"Gemaakt voor hoe een tour echt werkt.",
+  s1_h:"Beschrijf of plak",
+  s1_p:"Typ je setup of plak je bestaande rider. AI structureert het voor je.",
+  s2_h:"Bijschaven & tekenen",
+  s2_p:"Pas de details aan, teken je stageplot, kies je taal en kleuren.",
+  s3_h:"Exporteer & verstuur",
+  s3_p:"Download een nette PDF en stuur 'm naar de zaal. Hergebruik 'm voor de volgende show.",
+  price_h:"Simpele prijzen",
+  price_lead:"Begin gratis. Betaal als je genoeg tourt om het nodig te hebben.",
+  p1_h:"Gratis", p1_1:"1 rider", p1_2:"AI auto-invullen (basis)", p1_3:"PDF met watermerk", p1_cta:"Gratis starten",
+  p2_tag:"Populairst", p2_h:"Pro", p2_1:"Onbeperkt riders", p2_2:"Geen watermerk + eigen huisstijl", p2_3:"Vertaal je eigen tekst", p2_4:"Stageplot-editor", p2_cta:"Vroege toegang",
+  p3_h:"Band", p3_1:"Meerdere riders & tours", p3_2:"Deelbare zaal-links", p3_3:"Versiehistorie", p3_cta:"Vroege toegang",
+  price_note:"Prijzen indicatief — dit is een vroege preview. Vertel me wat je écht zou betalen.",
+  fb_h:"Denk mee",
+  fb_p:"Dit is een vroege versie. Wat mist er? Wat zou je laten overstappen van je huidige rider? Twee regels feedback helpen echt.",
+  fb_cta:"Stuur feedback",
+  foot:"een vroege preview"
+ }
+};
+function setLang(l){
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.remove("on"));
+  document.getElementById("lg-"+l).classList.add("on");
+  document.documentElement.lang=l;
+  const d=T[l];
+  document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(d[k]!==undefined)el.innerHTML=d[k];});
+  const subj=encodeURIComponent("RoboRider feedback");
+  document.getElementById("fbMail").href="mailto:"+EMAIL+"?subject="+subj;
+}
+setLang("en");
+</script>
+</body>
+</html>

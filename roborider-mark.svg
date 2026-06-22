@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="RoboRider">
+  <defs>
+    <radialGradient id="micM" cx="36%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#f7f7f9"/>
+      <stop offset="48%" stop-color="#c7c8cc"/>
+      <stop offset="100%" stop-color="#86888f"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(0,4)">
+    <line x1="32" y1="18" x2="32" y2="11" stroke="#1b1a17" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="32" cy="7.5" r="3.6" fill="url(#micM)" stroke="#1b1a17" stroke-width="0.7"/>
+    <line x1="29.3" y1="5.6" x2="34.7" y2="9.4" stroke="#ffffff" stroke-width="0.7" opacity="0.7" stroke-linecap="round"/>
+    <rect x="11" y="18" width="42" height="30" fill="none" stroke="#1b1a17" stroke-width="2.8" stroke-linejoin="round"/>
+    <rect x="11" y="45.6" width="42" height="2.4" fill="#1b1a17"/>
+    <rect x="17" y="24" width="11" height="9" fill="#1b1a17"/>
+    <rect x="36" y="24" width="11" height="9" fill="#1b1a17"/>
+    <ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/>
+  </g>
+</svg>
