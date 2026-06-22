@@ -202,7 +202,8 @@
 </div></section>
 
 <footer><div class="wrap">
-  RoboRider · <span data-i="foot"></span> · <a href="rider-builder.html">Open the builder →</a>
+  <span data-i="foot"></span><br>
+  RoboRider · © 2026 · <a id="footMail" href="#" data-i="foot_contact">Contact</a> · <a href="rider-builder.html" data-i="foot_open">Open the builder →</a>
 </div></footer>
 
 <script>
@@ -248,7 +249,7 @@ const T={
   fb_h:"Help shape it",
   fb_p:"This is an early version. What's missing? What would make you switch from your current rider? Two lines of feedback genuinely help.",
   fb_cta:"Send feedback",
-  foot:"an early preview"
+  foot:"Made by a touring musician · an early preview", foot_contact:"Contact", foot_open:"Open the builder →"
  },
  nl:{
   nav_try:"Open de tool",
@@ -290,7 +291,7 @@ const T={
   fb_h:"Denk mee",
   fb_p:"Dit is een vroege versie. Wat mist er? Wat zou je laten overstappen van je huidige rider? Twee regels feedback helpen echt.",
   fb_cta:"Stuur feedback",
-  foot:"een vroege preview"
+  foot:"Gemaakt door een tourende muzikant · een vroege preview", foot_contact:"Contact", foot_open:"Open de tool →"
  }
 };
 function setLang(l){
@@ -301,6 +302,7 @@ function setLang(l){
   document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(d[k]!==undefined)el.innerHTML=d[k];});
   const subj=encodeURIComponent("RoboRider feedback");
   document.getElementById("fbMail").href="mailto:"+EMAIL+"?subject="+subj;
+  document.getElementById("footMail").href="mailto:"+EMAIL;
 }
 setLang("en");
 </script>
