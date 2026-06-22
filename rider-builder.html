@@ -474,23 +474,23 @@ function renderForm(){
     <button class="add" onclick="addRow('travelParty',{label:'',count:''})">${L("plus_role")}</button>
     ${field(L("f_guests"),S.guests,"guests")}
   `);
-  h+=section(2,L("sec_hospitality"),`
-    ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
-    ${textChip('hosp.dressing','dressing')}
-    ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
-    ${field(L("f_catering"),S.hosp.catering,"hosp.catering",{type:"textarea"})}
-    <label class="fld">${L("f_dietary")}</label>
-    <div id="rep-dietary"></div>
-    <button class="add" onclick="addRow('hosp.dietary','')">${L("plus_dietary")}</button>
-    ${quickChips('dietary')}
-    ${field(L("f_buyout"),S.hosp.buyout,"hosp.buyout",{ph:"€25"})}
-    <label class="fld">${L("f_drinks")}</label>
-    <div id="rep-drinks"></div>
-    <button class="add" onclick="addRow('hosp.drinks',{item:'',qty:''})">${L("plus_item")}</button>
-    ${quickChips('drinks')}
-    ${field(L("f_snacks"),S.hosp.snacks,"hosp.snacks",{type:"textarea"})}
+  h+=section(2,L("sec_stageplot"),`
+    <button class="btn primary" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
+    ${S.plot.items.length?`<div class="hint" style="color:#16a34a;font-weight:600">${L("plot_has")} (${S.plot.items.length})</div>`:""}
+    <label class="fld">${L("plot_or_upload")}</label>
+    <input type="file" accept="image/*" onchange="readImg(event,'stageplot')">
+    <div class="hint">${L("hint_stageplot")}</div>
   `);
-  h+=section(3,L("sec_technical"),`
+  h+=section(3,L("sec_inputlist"),`
+    ${inputPresetChips()}
+    <div class="hint">${L("hint_48v")}</div>
+    <div id="rep-inputs"></div>
+    <button class="add" onclick="addInput()">${L("plus_channel")}</button>
+  `);
+  h+=section(4,L("sec_backline"),`
+    ${field(L("f_backline"),S.backline,"backline",{type:"textarea",hint:L("hint_bullets")})}
+  `);
+  h+=section(5,L("sec_technical"),`
     ${field(L("f_soundcheck"),S.tech.soundcheck,"tech.soundcheck",{type:"textarea"})}
     <label class="fld">${L("f_crew")}</label>
     <div id="rep-crew"></div>
@@ -506,27 +506,27 @@ function renderForm(){
     ${textChip('tech.pa','pa')}
     ${field(L("f_wireless"),S.tech.wireless,"tech.wireless",{type:"textarea"})}
   `);
-  h+=section(4,L("sec_lights"),`
+  h+=section(6,L("sec_lights"),`
     ${field(L("f_fixtures"),S.lights.fixtures,"lights.fixtures",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('lights.fixtures','lights')}
     ${field(L("f_lconsole"),S.lights.console,"lights.console")}
     ${field(L("f_notes"),S.lights.notes,"lights.notes",{type:"textarea"})}
   `);
-  h+=section(5,L("sec_backline"),`
-    ${field(L("f_backline"),S.backline,"backline",{type:"textarea",hint:L("hint_bullets")})}
-  `);
-  h+=section(6,L("sec_inputlist"),`
-    ${inputPresetChips()}
-    <div class="hint">${L("hint_48v")}</div>
-    <div id="rep-inputs"></div>
-    <button class="add" onclick="addInput()">${L("plus_channel")}</button>
-  `);
-  h+=section(7,L("sec_stageplot"),`
-    <button class="btn primary" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
-    ${S.plot.items.length?`<div class="hint" style="color:#16a34a;font-weight:600">${L("plot_has")} (${S.plot.items.length})</div>`:""}
-    <label class="fld">${L("plot_or_upload")}</label>
-    <input type="file" accept="image/*" onchange="readImg(event,'stageplot')">
-    <div class="hint">${L("hint_stageplot")}</div>
+  h+=section(7,L("sec_hospitality"),`
+    ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('hosp.dressing','dressing')}
+    ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
+    ${field(L("f_catering"),S.hosp.catering,"hosp.catering",{type:"textarea"})}
+    <label class="fld">${L("f_dietary")}</label>
+    <div id="rep-dietary"></div>
+    <button class="add" onclick="addRow('hosp.dietary','')">${L("plus_dietary")}</button>
+    ${quickChips('dietary')}
+    ${field(L("f_buyout"),S.hosp.buyout,"hosp.buyout",{ph:"€25"})}
+    <label class="fld">${L("f_drinks")}</label>
+    <div id="rep-drinks"></div>
+    <button class="add" onclick="addRow('hosp.drinks',{item:'',qty:''})">${L("plus_item")}</button>
+    ${quickChips('drinks')}
+    ${field(L("f_snacks"),S.hosp.snacks,"hosp.snacks",{type:"textarea"})}
   `);
   $("formMount").innerHTML=h;
   renderRepeats();
@@ -645,6 +645,7 @@ function renderPreview(){
     ${S.band.validUntil?`<div class="doc-valid">${L("valid_until")} ${formatDate(S.band.validUntil)}</div>`:""}
     ${coverContacts()}
   </div>`;
+  /* ---- build each block (order of assembly set further down) ---- */
   /* general */
   let gen="";
   if(t(S.intro)) gen+=`<h3 class="sub-h">${L("sub_intro")}</h3><p>${esc(S.intro)}</p>`;
@@ -652,7 +653,36 @@ function renderPreview(){
   const tp=S.travelParty.filter(x=>x.label.trim());
   if(tp.length) gen+=`<h3 class="sub-h">${L("sub_travel")}</h3><ul>${tp.map(x=>`<li>${esc(x.label)}${x.count?` — ${esc(x.count)}`:""}</li>`).join("")}</ul>`;
   if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests)}</p>`;
-  if(gen) h+=pageBlock(L("sec_general"),gen);
+  /* stage plot */
+  let plot="";
+  if(S.plot&&S.plot.items.length) plot=plotPreviewHTML();
+  else if(S.stageplot) plot=`<img class="stageplot-img" src="${S.stageplot}">`;
+  /* input list */
+  let inp="";
+  const inputs=S.inputs.filter(r=>r.input&&r.input.trim());
+  if(inputs.length){
+    inp=`<table class="grid"><thead><tr><th>${L("th_ch")}</th><th>${L("th_input")}</th><th>${L("th_micdi")}</th><th>${L("th_48v")}</th><th>${L("th_stand")}</th><th>${L("th_position")}</th><th>${L("th_notes")}</th></tr></thead><tbody>`;
+    inputs.forEach(r=>inp+=`<tr><td>${esc(r.ch)}</td><td>${esc(r.input)}</td><td>${esc(r.micdi)}</td><td>${esc(r.p48)}</td><td>${esc(r.stand)}</td><td>${esc(r.pos)}</td><td>${esc(r.notes)}</td></tr>`);
+    inp+=`</tbody></table>`;
+  }
+  /* backline */
+  let bl=""; if(t(S.backline)) bl=bulletize(S.backline);
+  /* technical (other) */
+  let tc="";
+  if(t(S.tech.soundcheck)) tc+=`<h3 class="sub-h">${L("sub_soundcheck")}</h3><p>${esc(S.tech.soundcheck)}</p>`;
+  const crew=S.tech.crew.filter(c=>c.role.trim());
+  if(crew.length) tc+=`<h3 class="sub-h">${L("sub_crew")}</h3><ul>${crew.map(c=>`<li>${c.count?esc(c.count)+"× ":""}${esc(c.role)}</li>`).join("")}</ul>`;
+  if(t(S.tech.stage)) tc+=`<h3 class="sub-h">${L("sub_stage")}</h3><p>${esc(S.tech.stage)}</p>`;
+  if(t(S.tech.power)) tc+=`<h3 class="sub-h">${L("sub_power")}</h3><p>${esc(S.tech.power)}</p>`;
+  if(t(S.tech.foh)) tc+=`<h3 class="sub-h">${L("sub_foh")}</h3><p>${esc(S.tech.foh)}</p>`;
+  if(t(S.tech.monitors)) tc+=`<h3 class="sub-h">${L("sub_monitors")}</h3><p>${esc(S.tech.monitors)}</p>`;
+  if(t(S.tech.pa)) tc+=`<h3 class="sub-h">${L("sub_pa")}</h3><p>${esc(S.tech.pa)}</p>`;
+  if(t(S.tech.wireless)) tc+=`<h3 class="sub-h">${L("sub_wireless")}</h3><p>${esc(S.tech.wireless)}</p>`;
+  /* lights */
+  let li="";
+  if(t(S.lights.fixtures)) li+=bulletize(S.lights.fixtures);
+  if(t(S.lights.console)) li+=`<p><strong>${L("sub_console")}:</strong> ${esc(S.lights.console)}</p>`;
+  if(t(S.lights.notes)) li+=`<p>${esc(S.lights.notes)}</p>`;
   /* hospitality */
   let hp="";
   if(t(S.hosp.dressing)) hp+=`<h3 class="sub-h">${L("sub_dressing")}</h3>${bulletize(S.hosp.dressing)}`;
@@ -664,38 +694,14 @@ function renderPreview(){
   const drinks=S.hosp.drinks.filter(d=>d.item&&d.item.trim());
   if(drinks.length) hp+=`<h3 class="sub-h">${L("sub_drinks")}</h3><div class="drink-cols">${drinks.map(d=>`<div>• ${esc(d.item)}${d.qty?` (${esc(d.qty)})`:""}</div>`).join("")}</div>`;
   if(t(S.hosp.snacks)) hp+=`<h3 class="sub-h">${L("sub_snacks")}</h3><p>${esc(S.hosp.snacks)}</p>`;
-  if(hp) h+=pageBlock(L("sec_hospitality"),hp);
-  /* technical */
-  let tc="";
-  if(t(S.tech.soundcheck)) tc+=`<h3 class="sub-h">${L("sub_soundcheck")}</h3><p>${esc(S.tech.soundcheck)}</p>`;
-  const crew=S.tech.crew.filter(c=>c.role.trim());
-  if(crew.length) tc+=`<h3 class="sub-h">${L("sub_crew")}</h3><ul>${crew.map(c=>`<li>${c.count?esc(c.count)+"× ":""}${esc(c.role)}</li>`).join("")}</ul>`;
-  if(t(S.tech.stage)) tc+=`<h3 class="sub-h">${L("sub_stage")}</h3><p>${esc(S.tech.stage)}</p>`;
-  if(t(S.tech.power)) tc+=`<h3 class="sub-h">${L("sub_power")}</h3><p>${esc(S.tech.power)}</p>`;
-  if(t(S.tech.foh)) tc+=`<h3 class="sub-h">${L("sub_foh")}</h3><p>${esc(S.tech.foh)}</p>`;
-  if(t(S.tech.monitors)) tc+=`<h3 class="sub-h">${L("sub_monitors")}</h3><p>${esc(S.tech.monitors)}</p>`;
-  if(t(S.tech.pa)) tc+=`<h3 class="sub-h">${L("sub_pa")}</h3><p>${esc(S.tech.pa)}</p>`;
-  if(t(S.tech.wireless)) tc+=`<h3 class="sub-h">${L("sub_wireless")}</h3><p>${esc(S.tech.wireless)}</p>`;
+  /* ---- assemble: general → technical (plot, inputs, backline, other, lights) → hospitality ---- */
+  if(gen) h+=pageBlock(L("sec_general"),gen);
+  if(plot) h+=pageBlock(L("sec_stageplot"),plot);
+  if(inp) h+=pageBlock(L("sec_inputlist"),inp);
+  if(bl) h+=pageBlock(L("sec_backline"),bl);
   if(tc) h+=pageBlock(L("sec_technical"),tc);
-  /* lights */
-  let li="";
-  if(t(S.lights.fixtures)) li+=bulletize(S.lights.fixtures);
-  if(t(S.lights.console)) li+=`<p><strong>${L("sub_console")}:</strong> ${esc(S.lights.console)}</p>`;
-  if(t(S.lights.notes)) li+=`<p>${esc(S.lights.notes)}</p>`;
   if(li) h+=pageBlock(L("sec_lights"),li);
-  /* backline */
-  if(t(S.backline)) h+=pageBlock(L("sec_backline"),bulletize(S.backline));
-  /* input list */
-  const inputs=S.inputs.filter(r=>r.input&&r.input.trim());
-  if(inputs.length){
-    let tbl=`<table class="grid"><thead><tr><th>${L("th_ch")}</th><th>${L("th_input")}</th><th>${L("th_micdi")}</th><th>${L("th_48v")}</th><th>${L("th_stand")}</th><th>${L("th_position")}</th><th>${L("th_notes")}</th></tr></thead><tbody>`;
-    inputs.forEach(r=>tbl+=`<tr><td>${esc(r.ch)}</td><td>${esc(r.input)}</td><td>${esc(r.micdi)}</td><td>${esc(r.p48)}</td><td>${esc(r.stand)}</td><td>${esc(r.pos)}</td><td>${esc(r.notes)}</td></tr>`);
-    tbl+=`</tbody></table>`;
-    h+=pageBlock(L("sec_inputlist"),tbl);
-  }
-  /* stageplot */
-  if(S.plot&&S.plot.items.length) h+=pageBlock(L("sec_stageplot"),plotPreviewHTML());
-  else if(S.stageplot) h+=pageBlock(L("sec_stageplot"),`<img class="stageplot-img" src="${S.stageplot}">`);
+  if(hp) h+=pageBlock(L("sec_hospitality"),hp);
   $("preview").innerHTML=h;
   saveLocal();
 }
