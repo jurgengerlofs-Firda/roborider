@@ -68,7 +68,17 @@
   .ai-box textarea:focus{outline:none}
   .ai-box .btn{background:none;border:1px solid var(--ink);color:var(--ink);padding:10px 18px}
   .ai-box .btn:hover{background:var(--ink);color:var(--bg)}
-  .ai-box #aiResult{color:var(--clay);display:block;margin-top:8px}
+  .wiz-kick{font-family:var(--display);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--clay);font-weight:400}
+  .wiz-desc{margin:8px 0 4px;color:var(--soft);font-size:13px;font-weight:300;line-height:1.6}
+  .wz-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px;margin:4px 0 2px}
+  .wzrow{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:13px;font-weight:300;cursor:pointer}
+  .wzrow input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;accent-color:var(--ink);cursor:pointer}
+  .wzrow span{flex:1}
+  .wzrow input[type=number]{width:44px;border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:3px 2px;font-size:13px}
+  .wz-radios{display:flex;gap:18px;flex-wrap:wrap;margin:6px 0 2px}
+  .wz-radios label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:300;cursor:pointer}
+  .wz-radios input[type=radio]{accent-color:var(--ink);cursor:pointer}
+  @media(max-width:860px){.wz-grid{grid-template-columns:1fr}}
   details.sec{background:none;border:none;border-top:1px solid var(--hair);border-radius:0;margin-bottom:0;overflow:hidden}
   details.sec>summary{list-style:none;cursor:pointer;padding:22px 0 18px;font-family:var(--display);font-weight:300;font-size:22px;letter-spacing:.4px;display:flex;align-items:center;gap:16px;user-select:none}
   details.sec>summary::-webkit-details-marker{display:none}
@@ -206,13 +216,7 @@
 </div>
 <div class="layout show-edit" id="layout">
   <div class="editor" id="editor">
-    <div class="ai-box">
-      <h3 id="aiTitle"></h3>
-      <p id="aiDesc"></p>
-      <textarea id="aiInput"></textarea>
-      <button class="btn primary" id="aiBtn" style="margin-top:10px" onclick="runAI()"></button>
-      <span id="aiResult" class="hint"></span>
-    </div>
+    <div class="ai-box" id="wizard"></div>
     <div id="formMount"></div>
   </div>
   <div class="preview-wrap">
@@ -251,6 +255,14 @@ const I18N = {
     ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com +31 6 12 34 56 78'",
     ai_btn:"Auto-fill",
     ai_empty:"Paste some text first.", ai_recognized:"Recognized: ", ai_check:". Check and complete.", ai_none:"Nothing recognized automatically — fill in manually.",
+    wiz_title:"Quick start", wiz_desc:"Answer a few questions — we'll build the input list, stage plot and a technical starting point you can fine-tune.",
+    wiz_name:"Band / artist name", wiz_members:"Who's on stage?", wiz_monitoring:"Monitoring", wiz_mon_wedges:"Wedges", wiz_mon_iem:"In-ears",
+    wiz_backline:"Backline", wiz_back_own:"We bring our own", wiz_back_house:"From the house", wiz_build:"Build my rider",
+    wiz_t_wedges:"Wedge monitors as per the input list; mixes from FOH.", wiz_t_iem:"In-ear monitoring; we bring our own packs, mixed from FOH.",
+    wiz_t_back_own:"We bring our own backline.", wiz_t_back_house:"Backline requested from the house — details on advance.",
+    wiz_t_pa:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics, d&b, Adamson or equivalent).",
+    wiz_t_foh:"FOH at front of house, centred, not under a balcony. Any decent digital console (24+ channels).",
+    wiz_t_power:"230V at marked positions.", wiz_t_soundcheck:"Allow ~45–60 min setup and 20–30 min changeover.",
     plus_contact:"+ add contact", plus_role:"+ add role", plus_dietary:"+ dietary need", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ channel",
     qa_presets:"Quick add:", qa_renumber:"↺ Renumber", qa_std:"+ Standard text",
     hint_bullets:"One item per line = clean bullets", hint_48v:"Mark 48V with 'X'. Empty rows are hidden.",
@@ -289,6 +301,14 @@ const I18N = {
     ai_ph:"Plak hier tekst uit je bestaande rider, of typ bijv.: '4-koppige band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com 06 12 34 56 78'",
     ai_btn:"Vul automatisch in",
     ai_empty:"Plak eerst wat tekst.", ai_recognized:"Herkend: ", ai_check:". Controleer en vul aan.", ai_none:"Niets automatisch herkend — vul handmatig in.",
+    wiz_title:"Snel starten", wiz_desc:"Beantwoord een paar vragen — wij bouwen de inputlijst, stageplot en een technisch startpunt dat je daarna kunt bijschaven.",
+    wiz_name:"Bandnaam / artiest", wiz_members:"Wie staan er op het podium?", wiz_monitoring:"Monitoring", wiz_mon_wedges:"Wedges", wiz_mon_iem:"In-ears",
+    wiz_backline:"Backline", wiz_back_own:"Nemen we zelf mee", wiz_back_house:"Van het huis", wiz_build:"Bouw mijn rider",
+    wiz_t_wedges:"Wedge-monitors volgens de inputlijst; mixes vanaf FOH.", wiz_t_iem:"In-ear monitoring; wij nemen eigen packs mee, gemixt vanaf FOH.",
+    wiz_t_back_own:"Wij nemen onze eigen backline mee.", wiz_t_back_house:"Backline van het huis gewenst — details bij de advancing.",
+    wiz_t_pa:"Full-range PA, fase- en tijd-gelijk, gelijkmatige dekking voor de hele zaal (L-Acoustics, d&b, Adamson of gelijkwaardig).",
+    wiz_t_foh:"FOH front-of-house, gecentreerd, niet onder een balkon. Een degelijke digitale tafel (24+ kanalen).",
+    wiz_t_power:"230V op gemarkeerde posities.", wiz_t_soundcheck:"Reken op ~45–60 min opbouw en 20–30 min changeover.",
     plus_contact:"+ contact toevoegen", plus_role:"+ rol toevoegen", plus_dietary:"+ dieetwens", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ kanaal",
     qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst",
     hint_bullets:"Eén item per regel = nette bullets", hint_48v:"Vink 48V aan met 'X'. Lege rijen worden niet getoond.",
@@ -408,10 +428,7 @@ function applyChrome(){
   $("btnPdf").textContent=L("btn_pdf");
   $("btnTranslateLbl").textContent=L("btn_translate");
   updateAIBadge();
-  $("aiTitle").textContent=L("ai_title");
-  $("aiDesc").textContent=L("ai_desc");
-  $("aiInput").placeholder=L("ai_ph");
-  $("aiBtn").textContent=L("ai_btn");
+  renderWizard();
   $("plotTitle").textContent=L("plot_title");
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
@@ -827,6 +844,92 @@ function plotPreviewHTML(){
       `<div class="pl-shape sh-${d.sh}" style="${shapeStyle(d,it)}">${plotLabelHTML(it)}</div></div>`;
   }).join("");
   return `<div class="plot-preview">${els}<div class="stage-front">${L("plot_audience")}</div></div>`;
+}
+
+/* ===================== Quick start wizard ===================== */
+const WIZ_INSTR=[
+  {k:"leadvocal",en:"Lead vocal",nl:"Leadzang",qty:false,def:true},
+  {k:"bgvocal",en:"Backing vocals",nl:"Backing vocals",qty:true},
+  {k:"drums",en:"Drums",nl:"Drums",qty:false},
+  {k:"percussion",en:"Percussion",nl:"Percussie",qty:false},
+  {k:"bass",en:"Bass",nl:"Bas",qty:false},
+  {k:"eguitar",en:"Electric guitar",nl:"Elektrische gitaar",qty:true},
+  {k:"acguitar",en:"Acoustic guitar",nl:"Akoestische gitaar",qty:true},
+  {k:"keys",en:"Keys / synth",nl:"Keys / synth",qty:true},
+  {k:"dj",en:"DJ / playback",nl:"DJ / playback",qty:false},
+  {k:"horns",en:"Horns / brass",nl:"Blazers",qty:true}
+];
+function renderWizard(){
+  const m=$("wizard");if(!m)return;const lang=S.lang;
+  const il=WIZ_INSTR.map(it=>{
+    const lab=it[lang]||it.en;
+    const q=it.qty?`<input type="number" min="1" value="1" id="wzq-${it.k}" title="#">`:"";
+    return `<label class="wzrow"><input type="checkbox" id="wz-${it.k}"${it.def?" checked":""}><span>${lab}</span>${q}</label>`;
+  }).join("");
+  m.innerHTML=`
+    <div class="wiz-kick">✦ ${L("wiz_title")}</div>
+    <p class="wiz-desc">${L("wiz_desc")}</p>
+    <label class="fld">${L("wiz_name")}</label>
+    <input type="text" id="wz-name" placeholder="${L("bandname_ph")}">
+    <label class="fld">${L("wiz_members")}</label>
+    <div class="wz-grid">${il}</div>
+    <label class="fld">${L("wiz_monitoring")}</label>
+    <div class="wz-radios">
+      <label><input type="radio" name="wzmon" value="wedges" checked>${L("wiz_mon_wedges")}</label>
+      <label><input type="radio" name="wzmon" value="iem">${L("wiz_mon_iem")}</label>
+    </div>
+    <label class="fld">${L("wiz_backline")}</label>
+    <div class="wz-radios">
+      <label><input type="radio" name="wzback" value="own" checked>${L("wiz_back_own")}</label>
+      <label><input type="radio" name="wzback" value="house">${L("wiz_back_house")}</label>
+    </div>
+    <button class="btn primary" style="margin-top:14px;width:100%" onclick="wizardBuild()">${L("wiz_build")}</button>`;
+}
+function wizardBuild(){
+  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null;
+  const nm=($("wz-name").value||"").trim(); if(nm)S.band.name=nm;
+  const on=k=>$("wz-"+k)&&$("wz-"+k).checked;
+  const qty=k=>{const e=$("wzq-"+k);return e?Math.max(1,parseInt(e.value,10)||1):1;};
+  S.inputs=[];
+  const add=(input,micdi,p48,pos,notes)=>S.inputs.push({ch:"",input:input,micdi:micdi||"",p48:p48||"",stand:"",pos:pos||"",notes:notes||""});
+  if(on("drums")){add("Kick","Mic","","Drums");add("Snare Top","SM57","","Drums");add("Hihat","Mic","X","Drums");add("Rack Tom","Mic","","Drums");add("Floor Tom","Mic","","Drums");add("OH L","Mic","X","Drums");add("OH R","Mic","X","Drums");}
+  if(on("percussion"))add("Percussion","Mic","","Perc");
+  if(on("bass"))add("Bass DI","DI","","Bass");
+  if(on("eguitar")){const n=qty("eguitar");for(let i=1;i<=n;i++)add(n>1?("El Gtr "+i):"El Guitar","XLR","","Guitar");}
+  if(on("acguitar")){const n=qty("acguitar");for(let i=1;i<=n;i++)add(n>1?("Ac Gtr "+i):"Ac Guitar","DI","X","Guitar");}
+  if(on("keys")){const n=qty("keys");for(let i=1;i<=n;i++){const p=n>1?(" "+i):"";add("Keys"+p+" L","DI","X","Keys","Stereo DI");add("Keys"+p+" R","DI","X","Keys","Stereo DI");}}
+  if(on("dj")){add("Playback L","DI","X","DJ");add("Playback R","DI","X","DJ");}
+  if(on("horns")){const n=qty("horns");for(let i=1;i<=n;i++)add(n>1?("Horn "+i):"Horn","Mic","","Horns");}
+  if(on("bgvocal")){const n=qty("bgvocal");for(let i=1;i<=n;i++)add(n>1?("BV "+i):"Backing Vocal","XLR","","");}
+  if(on("leadvocal"))add("Lead Vocal","XLR","","Centre");
+  if(S.inputs.length===0)S.inputs=[{ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}];
+  renumberInputs();
+  let mus=0;
+  if(on("drums"))mus++; if(on("percussion"))mus++; if(on("bass"))mus++;
+  if(on("eguitar"))mus+=qty("eguitar"); if(on("acguitar"))mus+=qty("acguitar");
+  if(on("keys"))mus+=qty("keys"); if(on("horns"))mus+=qty("horns"); if(on("dj"))mus++;
+  if(mus===0&&on("leadvocal"))mus=1;
+  S.travelParty=[{label:"Band",count:String(Math.max(1,mus))}];
+  const mon=(document.querySelector('input[name=wzmon]:checked')||{}).value||"wedges";
+  S.tech.monitors = mon==="iem" ? L("wiz_t_iem") : L("wiz_t_wedges");
+  const bk=(document.querySelector('input[name=wzback]:checked')||{}).value||"own";
+  S.backline = bk==="house" ? L("wiz_t_back_house") : L("wiz_t_back_own");
+  S.tech.pa=L("wiz_t_pa"); S.tech.foh=L("wiz_t_foh"); S.tech.power=L("wiz_t_power"); S.tech.soundcheck=L("wiz_t_soundcheck");
+  S.plot.items=[];
+  const P=(type,x,y,extra)=>{const d=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:d.lbl,x:x,y:y,w:d.w,h:d.h,rot:0},extra||{}));};
+  if(on("drums"))P("drums",52,24);
+  if(on("percussion"))P("perc",76,26);
+  if(on("keys")){const n=qty("keys");P("keys",24,26);if(n>1)P("keys",24,42,{label:"KEYS 2"});}
+  if(on("dj"))P("keys",50,28,{label:"DJ"});
+  if(on("bass"))P("bass",20,54);
+  if(on("eguitar")){const n=qty("eguitar");P("guitar",80,54);if(n>1)P("guitar",66,42,{label:"GTR 2"});}
+  if(on("acguitar"))P("guitar",40,46,{label:"AC GTR"});
+  if(on("horns"))P("amp",62,30,{label:"HORNS"});
+  if(on("leadvocal"))P("vocal",50,62);
+  const monN=Math.min(5,Math.max(2,mus));
+  for(let i=0;i<monN;i++){const x=(monN===1)?20:Math.round(18+i*(64/(monN-1)));P("monitor",x,76);}
+  P("power",12,40);P("power",86,40);
+  applyChrome();renderForm();renderPreview();
 }
 
 /* ===================== Quick-add presets ===================== */
