@@ -188,7 +188,7 @@
 <body>
 
 <div class="topbar">
-  <a class="logo" href="index.html" title="Home"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></a>
+  <a class="logo" href="index.html" title="Home"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><line x1="29" y1="6.5" x2="35" y2="6.5" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><line x1="28.7" y1="8.3" x2="35.3" y2="8.3" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></a>
   <span id="tagline" style="color:var(--muted);font-size:12px"></span>
   <div class="spacer"></div>
   <div class="langwrap">
@@ -1238,6 +1238,7 @@ loadLocal();
 applyChrome();
 renderForm();
 renderPreview();
+if(/demo/i.test(location.search+location.hash)) loadExample();
 </script>
 </body>
 </html>
