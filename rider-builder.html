@@ -104,6 +104,10 @@
   .add{margin-top:10px;font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--soft);background:none;border:1px solid var(--hair);border-radius:0;padding:10px;width:100%;font-weight:400}
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
+  .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
+  .onboard{display:flex;align-items:flex-start;gap:10px;background:#f6f1e9;border:1px solid #e3d6bf;border-left:3px solid var(--clay);padding:11px 13px;margin-bottom:18px;font-size:12.5px;color:var(--soft);line-height:1.5}
+  .onboard button{margin-left:auto;flex:0 0 auto;border:none;background:none;font-size:16px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
+  .onboard button:hover{color:var(--ink)}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
   .chips-lbl{font-family:var(--display);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-right:3px}
   .chip{font-family:var(--display);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 13px;font-weight:400;color:var(--soft);cursor:pointer}
@@ -191,6 +195,7 @@
   <a class="logo" href="index.html" title="Home"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><line x1="29" y1="6.5" x2="35" y2="6.5" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><line x1="28.7" y1="8.3" x2="35.3" y2="8.3" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></a>
   <span id="tagline" style="color:var(--muted);font-size:12px"></span>
   <div class="spacer"></div>
+  <span id="saveStatus" class="save-ind"></span>
   <div class="langwrap">
     <span id="langLabel"></span>
     <select id="langSel" onchange="setLang(this.value)">
@@ -216,6 +221,7 @@
 </div>
 <div class="layout show-edit" id="layout">
   <div class="editor" id="editor">
+    <div id="onboard" class="onboard" style="display:none"></div>
     <div class="ai-box" id="wizard"></div>
     <div id="formMount"></div>
   </div>
@@ -248,7 +254,7 @@
 const I18N = {
   en:{
     tagline:"Rider Builder · demo", lang_label:"Language",
-    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview",
+    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
@@ -290,11 +296,11 @@ const I18N = {
     plot_hint:"Click an element to add it, then drag to position. Drag the corner handle to resize, ↻ to rotate, × to delete.",
     plot_or_upload:"…or upload a stage plot image instead",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bass", pt_guitar:"Guitar", pt_vocal:"Vocal/Lead", pt_riser:"Riser",
-    pt_monitor:"Monitor", pt_amp:"Amp", pt_di:"DI box", pt_power:"Power 230V", pt_mic:"Mic", pt_perc:"Perc", pt_text:"Text label"
+    pt_monitor:"Monitor", pt_amp:"Amp", pt_di:"DI box", pt_power:"Power 230V", pt_mic:"Mic", pt_perc:"Perc", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Stool", pt_mstand:"Music stand", pt_laptop:"Laptop", pt_text:"Text label"
   },
   nl:{
     tagline:"Rider Builder · demo", lang_label:"Taal",
-    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld",
+    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
@@ -334,7 +340,7 @@ const I18N = {
     plot_hint:"Klik een element om het toe te voegen, sleep om te plaatsen. Sleep de hoek om te schalen, ↻ om te draaien, × om te verwijderen.",
     plot_or_upload:"…of upload in plaats daarvan een stageplot-afbeelding",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bas", pt_guitar:"Gitaar", pt_vocal:"Zang/Lead", pt_riser:"Riser",
-    pt_monitor:"Monitor", pt_amp:"Versterker", pt_di:"DI-box", pt_power:"Stroom 230V", pt_mic:"Microfoon", pt_perc:"Percussie", pt_text:"Tekstlabel"
+    pt_monitor:"Monitor", pt_amp:"Versterker", pt_di:"DI-box", pt_power:"Stroom 230V", pt_mic:"Microfoon", pt_perc:"Percussie", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Kruk", pt_mstand:"Muziekstandaard", pt_laptop:"Laptop", pt_text:"Tekstlabel"
   },
   de:{
     lang_label:"Sprache",
@@ -429,6 +435,8 @@ function applyChrome(){
   $("btnTranslateLbl").textContent=L("btn_translate");
   updateAIBadge();
   renderWizard();
+  if($("saveStatus"))$("saveStatus").textContent="✓ "+L("saved");
+  initOnboard();
   $("plotTitle").textContent=L("plot_title");
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
@@ -747,6 +755,11 @@ const PLOT_TYPES={
   power:{lbl:"230V",w:8,h:8,sh:"box",c:"#e9e2d3"},
   mic:{lbl:"MIC",w:8,h:10,sh:"circle",c:"#ffffff"},
   perc:{lbl:"PERC",w:13,h:12,sh:"box",c:"#ffffff"},
+  sub:{lbl:"SUB",w:12,h:10,sh:"box",c:"#e9e2d3"},
+  sidefill:{lbl:"SIDE",w:11,h:9,sh:"wedge",c:"#e6dfce"},
+  stool:{lbl:"STOOL",w:8,h:8,sh:"circle",c:"#ffffff"},
+  mstand:{lbl:"STAND",w:8,h:8,sh:"box",c:"#ffffff"},
+  laptop:{lbl:"LAPTOP",w:11,h:8,sh:"box",c:"#f4f1e9"},
   text:{lbl:"Text",w:16,h:8,sh:"text",c:"transparent"}
 };
 let selPlot=null;
@@ -1006,7 +1019,16 @@ function quickChips(group){
 }
 
 /* ===================== Save / load ===================== */
-function saveLocal(){try{localStorage.setItem("roborider",JSON.stringify(S));}catch(e){}}
+function saveLocal(){try{localStorage.setItem("roborider",JSON.stringify(S));}catch(e){}flashSaved();}
+function flashSaved(){const e=$("saveStatus");if(!e)return;e.textContent="✓ "+L("saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(()=>{e.style.color="var(--muted)";},1100);}
+function initOnboard(){
+  const e=$("onboard");if(!e)return;
+  let seen;try{seen=localStorage.getItem("rr_seen");}catch(_){}
+  if(seen){e.style.display="none";return;}
+  e.innerHTML=`<span>${L("onboard")}</span><button onclick="dismissOnboard()" aria-label="dismiss">×</button>`;
+  e.style.display="flex";
+}
+function dismissOnboard(){try{localStorage.setItem("rr_seen","1");}catch(_){}const e=$("onboard");if(e)e.style.display="none";}
 function loadLocal(){try{const d=localStorage.getItem("roborider");if(d){S=Object.assign(blank(),JSON.parse(d));return true;}}catch(e){}return false;}
 function exportJSON(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
