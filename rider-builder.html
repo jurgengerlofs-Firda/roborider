@@ -224,7 +224,7 @@ const I18N = {
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
-    ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Serhan hello@serhanefe.nl +31646853846'",
+    ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com +31 6 12 34 56 78'",
     ai_btn:"Auto-fill",
     ai_empty:"Paste some text first.", ai_recognized:"Recognized: ", ai_check:". Check and complete.", ai_none:"Nothing recognized automatically — fill in manually.",
     plus_contact:"+ add contact", plus_role:"+ add role", plus_dietary:"+ dietary need", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ channel",
@@ -262,7 +262,7 @@ const I18N = {
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
-    ai_ph:"Plak hier tekst uit je bestaande rider, of typ bijv.: '4-koppige band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Serhan hello@serhanefe.nl 0646853846'",
+    ai_ph:"Plak hier tekst uit je bestaande rider, of typ bijv.: '4-koppige band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com 06 12 34 56 78'",
     ai_btn:"Vul automatisch in",
     ai_empty:"Plak eerst wat tekst.", ai_recognized:"Herkend: ", ai_check:". Controleer en vul aan.", ai_none:"Niets automatisch herkend — vul handmatig in.",
     plus_contact:"+ contact toevoegen", plus_role:"+ rol toevoegen", plus_dietary:"+ dieetwens", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ kanaal",
@@ -997,57 +997,95 @@ function runAIHeuristic(){
   $("aiResult").textContent=found.length?(L("ai_recognized")+found.join(", ")+L("ai_check")):L("ai_none");
 }
 
-/* ===================== Example (English, international) ===================== */
+/* ===================== Example (random, fictional) ===================== */
+function _pick(a){return a[Math.floor(Math.random()*a.length)];}
+function _int(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function _chance(p){return Math.random()<p;}
+function _shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+const EX={
+  bands:["Violet Static","Cobalt Hours","Paper Tigers","Mara Vale","Lowlight","Neon Hymns","The Driftwood","Saffron Road","Echo Mirage","Northern Glow","Halcyon Bay","Smoke & Ember","Wild Antenna","Marble Skies","Riverside Noise","Glasshouse","Tidal Veil","Golden Hour Club","Velvet Approach","Paper Moons"],
+  subtitle:["Technical & Hospitality Rider","Tour Rider","Technical Rider","Live Rider"],
+  first:["Sam","Noa","Liam","Ava","Finn","Mila","Luca","Ivy","Jonas","Lena","Max","Robin","Tess","Cas","Jade","Ruben","Sara","Bram","Nina","Daan"],
+  last:["de Vries","Janssen","Bakker","Visser","Smit","Meijer","Hart","Stone","Rivers","Vance","Brandt","Koster","Novak","Ferro","Kane","Holt","Reyes","Vale","Mercer","Lund"],
+  roles:["Tour manager","Tour manager & FOH","Production manager","Booking & advance"],
+  domains:["example.com","example.org","mail.example","band-mgmt.example"]
+};
+function _person(){return _pick(EX.first)+" "+_pick(EX.last);}
+function _email(name){return name.toLowerCase().replace(/[^a-z]+/g,".").replace(/^\.+|\.+$/g,"")+"@"+_pick(EX.domains);}
+function _phone(){return "+31 6 "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99);}
 function loadExample(){
-  const lang=S.lang;
-  S=blank(); S.lang=lang;
-  S.band={name:"NONA",subtitle:I18N[lang]?I18N[lang].subtitle_default+" 2026":"Technical & Hospitality Rider 2026",validUntil:"2026-03-31",accent:"#1a1a1a",logo:""};
-  S.intro="Thanks for reading our rider. We look forward to playing at your venue and to a smooth, professional show day together with the local crew. Any questions — call, message or email anytime.";
-  S.contacts=[{role:"Tour manager & LD",name:"Serhan Efe",email:"hello@serhanefe.nl",phone:"+31 6 46 85 38 46"}];
-  S.travelParty=[{label:"Band",count:"4"},{label:"Crew",count:"4"}];
-  S.guests="20 guest spots per show. Name list provided on the day of the show.";
-  S.hosp={
-    dressing:"Two separate, lockable dressing rooms in the same building as the stage\nLarge enough for ~5 people each, ±20°C, ventilation/AC or heating\nLarge lit mirror, WiFi + password",
-    towels:"7 small + 3 large black towels",
-    catering:"A warm, healthy and fresh meal for the full touring party (±8 people). No fast food or deep-fried dishes please.",
-    dietary:["1× vegetarian (fish ok if veg not possible)","1× no shrimp"],
-    buyout:"€25",
-    drinks:[{item:"Water (room temp.)",qty:"12 bottles"},{item:"Water (chilled)",qty:"12 bottles"},{item:"Soft drinks (Coke/Zero/Fanta/Sprite/Red Bull)",qty:"12 cans"},{item:"Beer (local selection)",qty:"24 bottles"},{item:"Coffee & tea",qty:"unlimited"}],
-    snacks:"Fresh fruit, nuts, crisps and chocolate."
-  };
-  S.tech={
-    soundcheck:"Allow ~1 hour for setup. Minimum changeover 30 minutes.",
-    crew:[{role:"Production manager",count:"1"},{role:"Stage manager",count:"1"},{role:"Stagehand",count:"2"},{role:"Audio technician",count:"2"},{role:"Lighting technician",count:"1"}],
-    stage:"Clean, black (ballet) floor without monitors or loose cables. 2 risers of 200×200 cm — keys at 20 cm, drums at 40 cm, skirted in black.",
-    power:"230V-50Hz at marked positions (see stage plot).",
-    foh:"We travel with our own console. 1× CAT5e from stage to FOH. We send L/R/Sub-Mono. FOH preferably not under a balcony.",
-    monitors:"IEM from FOH: 1 wireless + 4 wired beltpacks (our own). House stands: 6× tall, 6× short, 1× round base.",
-    pa:"Full-range, phase/time aligned, covering the whole room (L-Acoustics, d&b, Adamson or equivalent).",
-    wireless:"1× wireless handheld from the house, preferably Shure QLXD / ULXD / Axient."
-  };
-  S.lights={fixtures:"6 washes + 1 spot from the house on the floor\n8 Astera tubes (tour) hung in the backdrop bar, ±10 kg",console:"GrandMA3 (own command wing, sACN/Art-Net). House desk fine if it's a GrandMA3.",notes:"We'd like control over the house lights; dim bar lights as much as possible during the set."};
-  S.backline="We bring all our own backline.";
-  S.inputs=[
-    {ch:"1",input:"Kick In",micdi:"Beta 91",p48:"",stand:"",pos:"Drums",notes:""},
-    {ch:"2",input:"Kick Out",micdi:"Mic",p48:"",stand:"Short",pos:"Drums",notes:""},
-    {ch:"3",input:"Snare Top",micdi:"SM57",p48:"",stand:"Short",pos:"Drums",notes:""},
-    {ch:"4",input:"Snare Btm",micdi:"E906",p48:"",stand:"Short",pos:"Drums",notes:""},
-    {ch:"5",input:"Hihat",micdi:"CC8",p48:"X",stand:"",pos:"Drums",notes:""},
-    {ch:"6",input:"Rack Tom",micdi:"E904/604",p48:"",stand:"",pos:"Drums",notes:""},
-    {ch:"7",input:"Floor Tom",micdi:"E904/604",p48:"",stand:"",pos:"Drums",notes:""},
-    {ch:"8",input:"OH L",micdi:"414UL",p48:"X",stand:"Tall",pos:"Drums",notes:""},
-    {ch:"9",input:"OH R",micdi:"414UL",p48:"X",stand:"Tall",pos:"Drums",notes:""},
-    {ch:"10",input:"Bass DI",micdi:"DI",p48:"",stand:"",pos:"Bass",notes:""},
-    {ch:"11",input:"El Gtr L",micdi:"XLR",p48:"",stand:"",pos:"Guitar",notes:""},
-    {ch:"12",input:"El Gtr R",micdi:"XLR",p48:"",stand:"",pos:"Guitar",notes:""},
-    {ch:"13",input:"Keys 1 L",micdi:"DI",p48:"X",stand:"",pos:"Keys",notes:"Stereo DI"},
-    {ch:"14",input:"Keys 1 R",micdi:"DI",p48:"X",stand:"",pos:"Keys",notes:"Stereo DI"},
-    {ch:"15",input:"Lead Vocal",micdi:"XLR",p48:"",stand:"",pos:"Center",notes:""},
-    {ch:"16",input:"Talkback",micdi:"XLR",p48:"",stand:"Short",pos:"Keys",notes:"Not in mix"}
-  ];
+  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null;
+  const formation=_pick(["solo","duo","trio","four","five","dj"]);
+  const band=_pick(EX.bands);
+  S.band={name:band, subtitle:_pick(EX.subtitle)+(_chance(.6)?(" "+_int(2026,2027)):""), validUntil:"", accent:_pick(["#1b1a17","#33405a","#3a4a3f","#5a3a3a","#46405a"]), logo:""};
+  S.intro=_pick([
+    "Thanks for having us. We keep it simple and friendly — let's make a great show together with your crew.",
+    "We're an easy, well-prepared act. A few essentials below to keep the day smooth for everyone.",
+    "Looking forward to playing your venue. Anything unclear, just call or email — we're happy to help."
+  ]);
+  const tm=_person();
+  S.contacts=[{role:_pick(EX.roles),name:tm,email:_email(tm),phone:_phone()}];
+  if(_chance(.5)){const p=_person();S.contacts.push({role:"FOH engineer",name:p,email:_email(p),phone:_phone()});}
+  let members;
+  if(formation==="solo") members=["lead-ac"];
+  else if(formation==="duo") members=_pick([["lead-ac","keys"],["lead-ac","guitar"],["lead","keys"]]);
+  else if(formation==="trio") members=["drums","bass","lead-guitar"];
+  else if(formation==="four") members=["drums","bass","guitar","lead-keys"];
+  else if(formation==="five") members=_pick([["drums","bass","guitar","keys","lead"],["drums","bass","guitar","guitar2","lead-keys"]]);
+  else members=["dj"];
+  const partyCount = formation==="solo"?_int(1,2):formation==="duo"?_int(2,3):formation==="dj"?_int(1,3):_int(4,8);
+  S.travelParty=[{label:"Band + crew",count:String(partyCount)}];
+  S.guests=_pick(["10 guest spots per show.","Guest list of "+_int(6,20)+" per show.","A few guest spots, list on the day."]);
+  S.hosp.dressing="Clean, lockable dressing room for "+partyCount+" people\nHeating/AC, water, mirror, WiFi + password";
+  S.hosp.towels=_int(partyCount,partyCount+4)+" clean towels";
+  S.hosp.catering=_pick(["Warm, healthy meal for the party — no fast food.","A fresh hot meal on arrival, please.","Catering for the full party; veggie-friendly appreciated."]);
+  S.hosp.dietary=_shuffle(["1× vegetarian","1× vegan","1× gluten-free","1× no nuts","1× no shrimp","1× lactose-free"]).slice(0,_int(0,2));
+  if(S.hosp.dietary.length===0)S.hosp.dietary=[""];
+  S.hosp.buyout="€"+_pick([20,25,30]);
+  S.hosp.drinks=_shuffle([{item:"Water (still)",qty:"12"},{item:"Water (sparkling)",qty:"6"},{item:"Soft drinks",qty:"12"},{item:"Beer (local)",qty:String(_int(12,24))},{item:"Coffee & tea",qty:"unlimited"},{item:"Energy drink",qty:"6"},{item:"Dry white wine",qty:"1"}]).slice(0,_int(3,5));
+  S.hosp.snacks=_pick(["Fruit, nuts and chocolate.","Some fresh fruit and crisps.","Healthy snacks appreciated."]);
+  const w=(formation==="solo"||formation==="dj")?_int(5,7):_int(7,10);
+  const d=_int(5,7);
+  S.tech.soundcheck=_pick(["Allow ~45 min setup, 20 min changeover.","About 1 hour setup; 30 min changeover.","Quick line check if risers are pre-built."]);
+  const crew=[{role:"Sound engineer (house)",count:"1"},{role:"Stagehand",count:String(_int(1,2))}];
+  if(formation!=="solo"&&formation!=="dj")crew.push({role:"Lighting tech",count:"1"});
+  S.tech.crew=crew;
+  S.tech.stage="Stable stage, min. "+w+" m wide × "+d+" m deep."+((formation==="four"||formation==="five")?" 1–2 risers for keys/drums.":"");
+  S.tech.power="230V at marked positions.";
+  S.tech.foh=_pick(["House console fine (no Behringer X32, please).","We bring our own console; 1× CAT to FOH.","Any decent digital console with 24+ channels."]);
+  S.tech.monitors=formation==="dj"?"2 wedges at the booth.":("IEM/wedges as per input list; "+_int(2,5)+" mixes.");
+  S.tech.pa="Full-range, even coverage (L-Acoustics, d&b, Adamson or equivalent).";
+  S.tech.wireless=_chance(.5)?"1× wireless handheld from the house.":"";
+  S.backline=_pick(["We bring our own backline.","House backline requested — list on advance.","Mostly our own; drum shells from house."]);
+  S.inputs=[];
+  const add=(input,micdi,p48,pos,notes)=>S.inputs.push({ch:"",input:input,micdi:micdi||"",p48:p48||"",stand:"",pos:pos||"",notes:notes||""});
+  if(members.includes("drums")){add("Kick","Mic","","Drums");add("Snare","SM57","","Drums");add("Hihat","Mic","X","Drums");add("OH L","Mic","X","Drums");add("OH R","Mic","X","Drums");}
+  if(members.includes("bass")) add("Bass DI","DI","","Bass");
+  if(members.includes("guitar")||members.includes("lead-guitar")) add("Guitar","XLR","","Guitar");
+  if(members.includes("guitar2")) add("Guitar 2","XLR","","Guitar");
+  if(members.includes("keys")||members.includes("lead-keys")){add("Keys L","DI","X","Keys","Stereo DI");add("Keys R","DI","X","Keys","Stereo DI");}
+  if(members.includes("lead-ac")) add("Ac. Guitar","DI","X","Centre");
+  if(members.includes("dj")){add("Playback L","DI","X","DJ");add("Playback R","DI","X","DJ");}
+  if(!members.includes("dj")||_chance(.7)) add("Lead Vocal","XLR","","Centre");
+  if((formation==="four"||formation==="five")&&_chance(.6)) add("BV Vocal","XLR","");
+  renumberInputs();
+  S.plot.items=[];
+  const P=(type,x,y,extra)=>{const dft=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:dft.lbl,x:x,y:y,w:dft.w,h:dft.h,rot:0},extra||{}));};
+  if(members.includes("drums")) P("drums",_chance(.5)?52:50,24);
+  if(members.includes("keys")||members.includes("lead-keys")) P("keys",24,26);
+  if(members.includes("bass")) P("bass",20,52);
+  if(members.includes("guitar")||members.includes("lead-guitar")) P("guitar",78,52);
+  if(members.includes("guitar2")) P("guitar",64,40,{label:"GTR 2"});
+  if(members.includes("dj")) P("keys",50,30,{label:"DJ"});
+  if(members.includes("lead-ac")) P("vocal",50,46,{label:"LEAD"});
+  if(!members.includes("lead-ac")&&!members.includes("dj")) P("vocal",50,62);
+  const monN=(formation==="solo")?1:_int(2,4);
+  for(let i=0;i<monN;i++){const x=(monN===1)?20:(18+i*(64/(monN-1)));P("monitor",Math.round(x),74);}
+  if(_chance(.7)) P("power",12,40);
+  if(_chance(.5)) P("power",86,40);
   S.stageplot="";
   applyChrome();renderForm();renderPreview();
-  $("aiResult").textContent="";
+  if($("aiResult"))$("aiResult").textContent="";
 }
 
 /* ===================== Boot ===================== */
