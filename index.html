@@ -8,14 +8,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="RoboRider — Build a pro rider in minutes">
 <meta property="og:description" content="A clean technical & hospitality rider with a drag-and-drop stage plot, input list and PDF export. Free, for touring musicians.">
-<meta property="og:url" content="https://roborider.nl/">
-<meta property="og:image" content="https://roborider.nl/roborider-og.png">
+<meta property="og:url" content="https://jurgengerlofs-firda.github.io/roborider/">
+<meta property="og:image" content="https://jurgengerlofs-firda.github.io/roborider/roborider-og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RoboRider — Build a pro rider in minutes">
 <meta name="twitter:description" content="A clean technical & hospitality rider with a drag-and-drop stage plot, input list and PDF export. Free, for touring musicians.">
-<meta name="twitter:image" content="https://roborider.nl/roborider-og.png">
+<meta name="twitter:image" content="https://jurgengerlofs-firda.github.io/roborider/roborider-og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -92,6 +92,28 @@
   .feedback h2{margin:0 0 14px;font-size:34px}
   .feedback p{color:var(--soft);max-width:540px;margin:0 auto 30px;font-weight:300}
   footer{padding:44px 0;border-top:1px solid var(--hair);color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;font-family:var(--display);text-align:center}
+  /* showcase sample rider */
+  .showcase{padding:90px 0;text-align:center;background:#efece4;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .sheet-frame{max-width:720px;margin:46px auto 0;background:#fff;border:1px solid var(--hair);box-shadow:0 40px 80px -42px rgba(27,26,23,.4);padding:52px 54px;text-align:left}
+  .sheet-eyebrow{display:flex;justify-content:space-between;border-bottom:1px solid var(--ink);padding-bottom:10px;font-family:var(--display);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+  .sheet-band{font-family:var(--display);font-weight:300;font-size:56px;letter-spacing:2px;text-transform:uppercase;margin:22px 0 0;line-height:1}
+  .sheet-deck{font-family:var(--display);font-weight:300;font-size:15px;color:var(--soft);margin:10px 0 0}
+  .sheet-h{display:flex;align-items:center;gap:12px;margin:32px 0 12px}
+  .sheet-h .t{font-family:var(--display);font-size:10px;letter-spacing:2.5px;text-transform:uppercase}
+  .sheet-h .n{font-family:var(--display);font-size:13px;color:var(--clay)}
+  .sheet-h .ln{height:1px;background:var(--hair);flex:1}
+  .sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px}
+  .sheet-grid .k{font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .sheet-grid .v{font-size:13px}
+  table.sheet-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px}
+  table.sheet-tbl th{text-align:left;font-family:var(--display);font-weight:400;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink);padding:6px}
+  table.sheet-tbl td{border-bottom:1px solid var(--line);padding:6px}
+  table.sheet-tbl td:first-child{color:var(--clay)}
+  .sheet-plot{position:relative;border:1px solid var(--ink);aspect-ratio:16/9;margin-top:4px}
+  .sheet-plot .blk{position:absolute;border:1px solid var(--ink);background:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:9px;letter-spacing:1px;text-transform:uppercase}
+  .sheet-plot .star{position:absolute;width:18px;height:14px;border-radius:50%;background:var(--clay);transform:translate(-50%,-50%)}
+  .sheet-plot .front{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--display);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding:4px}
+  @media(max-width:620px){.sheet-frame{padding:28px 20px}.sheet-band{font-size:36px}.sheet-grid{grid-template-columns:1fr}}
   [data-i]{}
   @media(max-width:620px){
     nav .wrap{flex-wrap:wrap;gap:10px 14px;padding:14px 20px}
@@ -145,6 +167,42 @@
   </div>
   <div class="note" data-i="hero_note"></div>
 </div></header>
+
+<section class="showcase"><div class="wrap">
+  <h2 class="sec" data-i="show_h"></h2>
+  <p class="lead" data-i="show_lead"></p>
+  <div class="sheet-frame">
+    <div class="sheet-eyebrow"><span>Technical &amp; Hospitality Rider</span><span>2026 · Clubtour</span></div>
+    <div class="sheet-band">Velvet Hours</div>
+    <div class="sheet-deck">A clean, professional show day — together with your local crew.</div>
+    <div class="sheet-h"><span class="n">01</span><span class="t">Contact</span><span class="ln"></span></div>
+    <div class="sheet-grid">
+      <div><div class="k">Tour manager</div><div class="v">Robin Vance</div></div>
+      <div><div class="k">Email</div><div class="v">booking@example.com</div></div>
+      <div><div class="k">Travelling party</div><div class="v">Band 4 · Crew 2</div></div>
+      <div><div class="k">Stage</div><div class="v">8 × 6 m · 2 risers</div></div>
+    </div>
+    <div class="sheet-h"><span class="n">02</span><span class="t">Stage plot</span><span class="ln"></span></div>
+    <div class="sheet-plot">
+      <div class="blk" style="left:16%;top:12%;width:24%;height:34%">Keys</div>
+      <div class="blk" style="left:58%;top:12%;width:26%;height:42%">Drums</div>
+      <div class="blk" style="left:10%;top:60%;width:16%;height:18%">Bass</div>
+      <div class="blk" style="left:74%;top:60%;width:16%;height:18%">Guitar</div>
+      <div class="star" style="left:50%;top:70%"></div>
+      <div class="front">Audience</div>
+    </div>
+    <div class="sheet-h"><span class="n">03</span><span class="t">Input list</span><span class="ln"></span></div>
+    <table class="sheet-tbl">
+      <tr><th>CH</th><th>Input</th><th>Mic / DI</th><th>48V</th><th>Position</th></tr>
+      <tr><td>1</td><td>Kick</td><td>Beta 91</td><td></td><td>Drums</td></tr>
+      <tr><td>3</td><td>Snare Top</td><td>SM57</td><td></td><td>Drums</td></tr>
+      <tr><td>8</td><td>Overhead L</td><td>AKG 414</td><td>X</td><td>Drums</td></tr>
+      <tr><td>13</td><td>Keys L</td><td>DI</td><td>X</td><td>Keys</td></tr>
+      <tr><td>15</td><td>Lead Vocal</td><td>XLR</td><td></td><td>Centre</td></tr>
+    </table>
+  </div>
+  <a class="btn outline sm" href="rider-builder.html?demo=1" data-i="show_cta" style="margin-top:30px;display:inline-block"></a>
+</div></section>
 
 <section id="features"><div class="wrap">
   <h2 class="sec" data-i="feat_h"></h2>
@@ -217,6 +275,9 @@ const T={
   hero_cta1:"Build my rider — free",
   hero_cta2:"See how it works",
   hero_sample:"See a sample rider",
+  show_h:"This is what you'll send",
+  show_lead:"A clean, consistent rider — cover, stage plot, input list and hospitality — exported as a polished PDF.",
+  show_cta:"Open this in the builder",
   hero_note:"No account needed to start · works in your browser · your data stays on your device.",
   feat_h:"Everything a rider needs, nothing it doesn't",
   feat_lead:"Built by a touring musician who got tired of editing PDFs the night before a show.",
@@ -259,6 +320,9 @@ const T={
   hero_cta1:"Maak mijn rider — gratis",
   hero_cta2:"Bekijk hoe het werkt",
   hero_sample:"Bekijk een voorbeeldrider",
+  show_h:"Dit is wat je verstuurt",
+  show_lead:"Een strakke, consistente rider — cover, stageplot, inputlijst en hospitality — geëxporteerd als verzorgde PDF.",
+  show_cta:"Open dit in de builder",
   hero_note:"Geen account nodig om te starten · werkt in je browser · je gegevens blijven op je apparaat.",
   feat_h:"Alles wat een rider nodig heeft, niets te veel",
   feat_lead:"Gebouwd door een tourende muzikant die geen zin meer had om de avond voor een show PDF's te editen.",
