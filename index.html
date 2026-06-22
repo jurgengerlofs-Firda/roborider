@@ -40,6 +40,8 @@
   .hero h1{font-size:72px;line-height:1.02;letter-spacing:.5px;margin:0 0 26px;font-weight:300}
   .hero h1 em{font-style:italic;color:var(--clay)}
   .hero p.sub{font-size:18px;font-weight:300;color:var(--soft);max-width:600px;margin:0 auto 38px;line-height:1.7}
+  .hero-mark{width:280px;max-width:74%;margin:0 auto 34px;display:block}
+  .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
   .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
@@ -107,6 +109,24 @@
 </div></nav>
 
 <header class="hero"><div class="wrap">
+  <svg class="hero-mark" viewBox="0 0 240 240" role="img" aria-label="RoboRider — a rider built like a stage plot">
+    <defs><radialGradient id="heromic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs>
+    <line x1="120" y1="56" x2="120" y2="34" stroke="#1b1a17" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="120" cy="23" r="13" fill="url(#heromic)" stroke="#1b1a17" stroke-width="1.6"/>
+    <line x1="112" y1="18" x2="128" y2="28" stroke="#ffffff" stroke-width="1.6" opacity="0.7" stroke-linecap="round"/>
+    <rect x="28" y="56" width="184" height="150" fill="none" stroke="#1b1a17" stroke-width="4"/>
+    <rect x="28" y="198" width="184" height="8" fill="#1b1a17"/>
+    <rect x="50" y="78" width="60" height="48" fill="none" stroke="#1b1a17" stroke-width="3"/>
+    <text x="80" y="107" text-anchor="middle" font-size="13" letter-spacing="2" fill="#1b1a17">KEYS</text>
+    <rect x="130" y="78" width="60" height="54" fill="none" stroke="#1b1a17" stroke-width="3"/>
+    <text x="160" y="110" text-anchor="middle" font-size="13" letter-spacing="2" fill="#1b1a17">DRUMS</text>
+    <rect x="56" y="158" width="12" height="12" fill="#1b1a17"/>
+    <text x="62" y="186" text-anchor="middle" font-size="9.5" letter-spacing="1.5" fill="#1b1a17">BASS</text>
+    <rect x="172" y="158" width="12" height="12" fill="#1b1a17"/>
+    <text x="178" y="186" text-anchor="middle" font-size="9.5" letter-spacing="1.5" fill="#1b1a17">GUITAR</text>
+    <ellipse cx="120" cy="166" rx="15" ry="12" fill="#9a7257"/>
+    <text x="120" y="190" text-anchor="middle" font-size="9.5" letter-spacing="1.5" fill="#9a7257">LEAD</text>
+  </svg>
   <span class="badge" data-i="hero_badge">For touring musicians & bands</span>
   <h1 data-i="hero_h"></h1>
   <p class="sub" data-i="hero_sub"></p>
