@@ -38,8 +38,28 @@
   .btn.primary:hover{background:#000;color:var(--bg)}
   .btn.ghost{border:1px solid var(--hair);padding:10px 16px}
   .btn.ghost:hover{border-color:var(--ink)}
-  .layout{display:grid;grid-template-columns:minmax(360px,1fr) minmax(420px,1.05fr);gap:0;height:calc(100vh - 69px)}
-  @media(max-width:900px){.layout{grid-template-columns:1fr;height:auto}}
+  .layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(380px,1.05fr);gap:0;height:calc(100vh - 69px)}
+  .mobile-tabs{display:none}
+  @media(max-width:860px){
+    .topbar{position:static;padding:12px 16px;gap:8px 10px;row-gap:8px}
+    .logo{font-size:16px;letter-spacing:3px}
+    .layout{display:block;height:auto}
+    .mobile-tabs{display:flex;position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--hair)}
+    .mobile-tabs button{flex:1;border:none;background:none;padding:14px 0;font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
+    .mobile-tabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+    .editor,.preview-wrap{display:none}
+    .layout.show-edit .editor{display:block}
+    .layout.show-preview .preview-wrap{display:block}
+    .editor{padding:22px 18px 70px;border-right:none}
+    .preview-wrap{padding:14px}
+    .page{padding:32px 24px}
+    .doc-cover{padding:36px 24px}
+    .doc-band{font-size:46px;letter-spacing:2px}
+    .row{flex-wrap:wrap}
+    .modal-head{padding:12px 14px;gap:8px}
+    .stage-scroll{padding:12px}
+    .palette{padding:10px 14px}
+  }
   .editor{overflow-y:auto;padding:40px 38px 70px;border-right:1px solid var(--hair)}
   .ai-box{background:none;border:none;border-top:2px solid var(--clay);padding:18px 0 0;margin:0 0 44px}
   .ai-box h3{margin:6px 0 8px;font-size:26px;font-family:var(--display);font-weight:300;letter-spacing:.3px;line-height:1.2}
@@ -146,9 +166,9 @@
     container-type:size;background:#fff;margin-top:4px}
   .plot-preview .pl-el{cursor:default}
   @media print{
-    .topbar,.editor,.ai-box{display:none!important}
+    .topbar,.editor,.ai-box,.mobile-tabs{display:none!important}
     .layout{display:block;height:auto}
-    .preview-wrap{padding:0;background:#fff;overflow:visible}
+    .preview-wrap{display:block!important;padding:0;background:#fff;overflow:visible}
     .page{box-shadow:none;margin:0;max-width:100%;padding:24mm 18mm;page-break-after:always}
     .page:last-child{page-break-after:auto}
     @page{size:A4;margin:0}
@@ -180,7 +200,11 @@
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
 </div>
 
-<div class="layout">
+<div class="mobile-tabs">
+  <button id="tabEdit" class="on" onclick="setView('edit')"></button>
+  <button id="tabPreview" onclick="setView('preview')"></button>
+</div>
+<div class="layout show-edit" id="layout">
   <div class="editor" id="editor">
     <div class="ai-box">
       <h3 id="aiTitle"></h3>
@@ -220,7 +244,7 @@
 const I18N = {
   en:{
     tagline:"Rider Builder · demo", lang_label:"Language",
-    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate",
+    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
@@ -258,7 +282,7 @@ const I18N = {
   },
   nl:{
     tagline:"Rider Builder · demo", lang_label:"Taal",
-    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal",
+    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
@@ -376,6 +400,8 @@ function applyChrome(){
   $("langLabel").textContent=L("lang_label");
   $("langSel").value=S.lang;
   $("btnNew").textContent=L("btn_new");
+  if($("tabEdit"))$("tabEdit").textContent=L("btn_edit");
+  if($("tabPreview"))$("tabPreview").textContent=L("btn_preview");
   $("btnExample").textContent=L("btn_example");
   $("btnOpen").textContent=L("btn_open");
   $("btnSave").textContent=L("btn_save");
@@ -395,6 +421,16 @@ function applyChrome(){
   document.documentElement.lang=S.lang;
 }
 function setLang(v){S.lang=v; applyChrome(); renderForm(); renderPreview();}
+function setView(v){
+  const l=$("layout");if(!l)return;
+  l.classList.toggle("show-edit",v==="edit");
+  l.classList.toggle("show-preview",v==="preview");
+  const te=$("tabEdit"),tp=$("tabPreview");
+  if(te)te.classList.toggle("on",v==="edit");
+  if(tp)tp.classList.toggle("on",v==="preview");
+  if(v==="preview")renderPreview();
+  window.scrollTo(0,0);
+}
 
 /* ===================== Form ===================== */
 function field(label,val,path,opts={}){
