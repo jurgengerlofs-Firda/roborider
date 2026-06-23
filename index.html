@@ -240,12 +240,12 @@
       <span class="tag" data-i="p2_tag"></span>
       <h3 data-i="p2_h"></h3><div class="amt">€7<small> /mo · €49/yr</small></div>
       <ul><li data-i="p2_1"></li><li data-i="p2_2"></li><li data-i="p2_3"></li><li data-i="p2_4"></li></ul>
-      <a class="btn primary" href="#feedback" data-i="p2_cta"></a>
+      <a class="btn primary" id="p2btn" href="#feedback" data-i="p2_cta"></a>
     </div>
     <div class="plan">
       <h3 data-i="p3_h"></h3><div class="amt">€15<small> /mo</small></div>
       <ul><li data-i="p3_1"></li><li data-i="p3_2"></li><li data-i="p3_3"></li></ul>
-      <a class="btn outline" href="#feedback" data-i="p3_cta"></a>
+      <a class="btn outline" id="p3btn" href="#feedback" data-i="p3_cta"></a>
     </div>
   </div>
   <p class="note" style="text-align:center" data-i="price_note"></p>
@@ -266,6 +266,8 @@
 
 <script>
 const EMAIL="jurgen.gerlofs@gmail.com";
+/* Paste your Lemon Squeezy checkout link here once your product is live: */
+const CHECKOUT_URL="https://roborider.lemonsqueezy.com/buy/REPLACE-WITH-YOUR-LINK";
 const T={
  en:{
   nav_try:"Open the builder",
@@ -304,9 +306,9 @@ const T={
   price_h:"Simple pricing",
   price_lead:"Start free. Pay when you tour enough to need it.",
   p1_h:"Free", p1_1:"1 rider", p1_2:"AI auto-fill (basic)", p1_3:"PDF with watermark", p1_cta:"Start free",
-  p2_tag:"Most popular", p2_h:"Pro", p2_1:"Unlimited riders", p2_2:"No watermark + your branding", p2_3:"Translate your own text", p2_4:"Stage plot editor", p2_cta:"Get early access",
-  p3_h:"Band", p3_1:"Multiple riders & tours", p3_2:"Shareable venue links", p3_3:"Version history", p3_cta:"Get early access",
-  price_note:"Prices indicative — this is an early preview. Tell me what you'd actually pay.",
+  p2_tag:"Most popular", p2_h:"Pro", p2_1:"Unlimited riders", p2_2:"No watermark + your branding", p2_3:"Translate your own text", p2_4:"Stage plot editor", p2_cta:"Subscribe",
+  p3_h:"Band", p3_1:"Multiple riders & tours", p3_2:"Shareable venue links", p3_3:"Version history", p3_cta:"Subscribe",
+  price_note:"Free during the preview — paid plans launching soon.",
   fb_h:"Help shape it",
   fb_p:"This is an early version. What's missing? What would make you switch from your current rider? Two lines of feedback genuinely help.",
   fb_cta:"Send feedback",
@@ -349,9 +351,9 @@ const T={
   price_h:"Simpele prijzen",
   price_lead:"Begin gratis. Betaal als je genoeg tourt om het nodig te hebben.",
   p1_h:"Gratis", p1_1:"1 rider", p1_2:"AI auto-invullen (basis)", p1_3:"PDF met watermerk", p1_cta:"Gratis starten",
-  p2_tag:"Populairst", p2_h:"Pro", p2_1:"Onbeperkt riders", p2_2:"Geen watermerk + eigen huisstijl", p2_3:"Vertaal je eigen tekst", p2_4:"Stageplot-editor", p2_cta:"Vroege toegang",
-  p3_h:"Band", p3_1:"Meerdere riders & tours", p3_2:"Deelbare zaal-links", p3_3:"Versiehistorie", p3_cta:"Vroege toegang",
-  price_note:"Prijzen indicatief — dit is een vroege preview. Vertel me wat je écht zou betalen.",
+  p2_tag:"Populairst", p2_h:"Pro", p2_1:"Onbeperkt riders", p2_2:"Geen watermerk + eigen huisstijl", p2_3:"Vertaal je eigen tekst", p2_4:"Stageplot-editor", p2_cta:"Abonneren",
+  p3_h:"Band", p3_1:"Meerdere riders & tours", p3_2:"Deelbare zaal-links", p3_3:"Versiehistorie", p3_cta:"Abonneren",
+  price_note:"Gratis tijdens de preview — betaalde pakketten komen eraan.",
   fb_h:"Denk mee",
   fb_p:"Dit is een vroege versie. Wat mist er? Wat zou je laten overstappen van je huidige rider? Twee regels feedback helpen echt.",
   fb_cta:"Stuur feedback",
@@ -367,6 +369,9 @@ function setLang(l){
   const subj=encodeURIComponent("RoboRider feedback");
   document.getElementById("fbMail").href="mailto:"+EMAIL+"?subject="+subj;
   document.getElementById("footMail").href="mailto:"+EMAIL;
+  const live=CHECKOUT_URL.indexOf("REPLACE")<0;
+  const p2=document.getElementById("p2btn"),p3=document.getElementById("p3btn");
+  if(p2)p2.href=live?CHECKOUT_URL:"#feedback"; if(p3)p3.href=live?CHECKOUT_URL:"#feedback";
 }
 setLang("en");
 </script>
