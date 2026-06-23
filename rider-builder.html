@@ -415,7 +415,7 @@ let S = blank();
 
 /* ===================== Pro / subscription (Lemon Squeezy) ===================== */
 /* After you create your Lemon Squeezy product, paste its checkout link below. */
-const CHECKOUT_URL="https://roborider.lemonsqueezy.com/buy/REPLACE-WITH-YOUR-LINK";
+const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/c443be65-e05f-4ee8-a9fd-e4d61fa8b9df";
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
   const b=$("btnPro"); if(b)b.textContent=(PRO?"✓ ":"✦ ")+(PRO?L("pro_on"):L("pro_off"));
