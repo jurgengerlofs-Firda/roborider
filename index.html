@@ -114,6 +114,19 @@
   .sheet-plot .star{position:absolute;width:18px;height:14px;border-radius:50%;background:var(--clay);transform:translate(-50%,-50%)}
   .sheet-plot .front{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--display);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding:4px}
   @media(max-width:620px){.sheet-frame{padding:28px 20px}.sheet-band{font-size:36px}.sheet-grid{grid-template-columns:1fr}}
+  .founder{background:var(--bg);text-align:center}
+  .founder-q{font-family:var(--display);font-weight:300;font-size:30px;line-height:1.32;letter-spacing:.3px;max-width:760px;margin:0 auto;color:var(--ink)}
+  .founder-q::before{content:"“";color:var(--clay)} .founder-q::after{content:"”";color:var(--clay)}
+  .founder-by{font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:24px}
+  @media(max-width:620px){.founder-q{font-size:22px}}
+  .faq{background:#efece4;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .faq-list{max-width:720px;margin:20px auto 0;text-align:left}
+  .faq details{border-bottom:1px solid var(--hair)}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 2px;font-family:var(--display);font-weight:400;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";color:var(--clay);font-size:22px;font-weight:300;flex:0 0 auto}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{margin:0 0 22px;color:var(--soft);font-size:14.5px;font-weight:300;line-height:1.65;max-width:64ch}
   [data-i]{}
   @media(max-width:620px){
     nav .wrap{flex-wrap:wrap;gap:10px 14px;padding:14px 20px}
@@ -227,6 +240,11 @@
   </div>
 </div></section>
 
+<section class="founder"><div class="wrap">
+  <blockquote class="founder-q" data-i="founder_q"></blockquote>
+  <p class="founder-by" data-i="founder_by"></p>
+</div></section>
+
 <section><div class="wrap">
   <h2 class="sec" data-i="price_h"></h2>
   <p class="lead" data-i="price_lead"></p>
@@ -249,6 +267,17 @@
     </div>
   </div>
   <p class="note" style="text-align:center" data-i="price_note"></p>
+</div></section>
+
+<section class="faq"><div class="wrap">
+  <h2 class="sec" data-i="faq_h"></h2>
+  <div class="faq-list">
+    <details><summary data-i="faq_q1"></summary><p data-i="faq_a1"></p></details>
+    <details><summary data-i="faq_q2"></summary><p data-i="faq_a2"></p></details>
+    <details><summary data-i="faq_q3"></summary><p data-i="faq_a3"></p></details>
+    <details><summary data-i="faq_q4"></summary><p data-i="faq_a4"></p></details>
+    <details><summary data-i="faq_q5"></summary><p data-i="faq_a5"></p></details>
+  </div>
 </div></section>
 
 <section id="feedback"><div class="wrap">
@@ -312,7 +341,15 @@ const T={
   fb_h:"Help shape it",
   fb_p:"This is an early version. What's missing? What would make you switch from your current rider? Two lines of feedback genuinely help.",
   fb_cta:"Send feedback",
-  foot:"Made by a touring musician · an early preview", foot_contact:"Contact", foot_open:"Open the builder →"
+  foot:"Made by a touring musician · an early preview", foot_contact:"Contact", foot_open:"Open the builder →",
+  founder_q:"I built RoboRider because I was tired of rebuilding my rider in Word the night before a show. So I made the tool I wished existed.",
+  founder_by:"Jurgen — musician &amp; founder",
+  faq_h:"Frequently asked",
+  faq_q1:"Is it really free?", faq_a1:"Yes — you can build and export a full rider for free. Pro just removes the small watermark and adds extras; during the preview everything is free.",
+  faq_q2:"Do I need an account?", faq_a2:"No. RoboRider runs in your browser, so you can start right away. Save your work as a file and reopen it whenever you like.",
+  faq_q3:"Where does my data go?", faq_a3:"Nowhere — everything stays on your own device, nothing is uploaded. Visitor stats are anonymous and cookie-free.",
+  faq_q4:"What do I get — a Word file?", faq_a4:"A clean, print-ready PDF via your browser's “Save as PDF”. It looks professional in colour and in black & white.",
+  faq_q5:"Which languages?", faq_a5:"The whole rider switches between English, Dutch, German, French and Spanish with one click."
  },
  nl:{
   nav_try:"Open de tool",
@@ -357,7 +394,15 @@ const T={
   fb_h:"Denk mee",
   fb_p:"Dit is een vroege versie. Wat mist er? Wat zou je laten overstappen van je huidige rider? Twee regels feedback helpen echt.",
   fb_cta:"Stuur feedback",
-  foot:"Gemaakt door een tourende muzikant · een vroege preview", foot_contact:"Contact", foot_open:"Open de tool →"
+  foot:"Gemaakt door een tourende muzikant · een vroege preview", foot_contact:"Contact", foot_open:"Open de tool →",
+  founder_q:"Ik bouwde RoboRider omdat ik er klaar mee was om de avond voor een show mijn rider in Word in elkaar te zetten. Dus maakte ik de tool die ik zelf wilde.",
+  founder_by:"Jurgen — muzikant &amp; maker",
+  faq_h:"Veelgestelde vragen",
+  faq_q1:"Is het echt gratis?", faq_a1:"Ja — je maakt en exporteert gratis een volledige rider. Pro haalt alleen het kleine watermerk weg en voegt extra's toe; tijdens de preview is alles gratis.",
+  faq_q2:"Heb ik een account nodig?", faq_a2:"Nee. RoboRider draait in je browser, dus je kunt meteen beginnen. Sla je werk op als bestand en open het later weer.",
+  faq_q3:"Waar gaan mijn gegevens heen?", faq_a3:"Nergens — alles blijft op je eigen apparaat, er wordt niets geüpload. Bezoekersstatistieken zijn anoniem en zonder cookies.",
+  faq_q4:"Wat krijg ik — een Word-bestand?", faq_a4:"Een strakke, printklare PDF via “Opslaan als PDF” in je browser. Ziet er professioneel uit in kleur én in zwart-wit.",
+  faq_q5:"Welke talen?", faq_a5:"De hele rider schakelt met één klik tussen Engels, Nederlands, Duits, Frans en Spaans."
  }
 };
 function setLang(l){
