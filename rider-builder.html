@@ -105,6 +105,7 @@
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
+  body.free #preview .page:not(.doc-cover)::after{content:"Made with RoboRider · roborider.nl";display:block;margin-top:26px;border-top:1px solid var(--line);padding-top:8px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
   .onboard{display:flex;align-items:flex-start;gap:10px;background:#f6f1e9;border:1px solid #e3d6bf;border-left:3px solid var(--clay);padding:11px 13px;margin-bottom:18px;font-size:12.5px;color:var(--soft);line-height:1.5}
   .onboard button{margin-left:auto;flex:0 0 auto;border:none;background:none;font-size:16px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
   .onboard button:hover{color:var(--ink)}
@@ -210,6 +211,7 @@
   <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
   <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
   <button class="btn" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
+  <button class="btn" id="btnPro" onclick="activatePro()" title="RoboRider Pro"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
@@ -255,6 +257,7 @@ const I18N = {
   en:{
     tagline:"Rider Builder · demo", lang_label:"Language",
     btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
+    pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
@@ -301,6 +304,7 @@ const I18N = {
   nl:{
     tagline:"Rider Builder · demo", lang_label:"Taal",
     btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
+    pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
@@ -409,6 +413,28 @@ const blank = () => ({
 });
 let S = blank();
 
+/* ===================== Pro / subscription (Lemon Squeezy) ===================== */
+/* After you create your Lemon Squeezy product, paste its checkout link below. */
+const CHECKOUT_URL="https://roborider.lemonsqueezy.com/buy/REPLACE-WITH-YOUR-LINK";
+let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
+function updateProUI(){
+  const b=$("btnPro"); if(b)b.textContent=(PRO?"✓ ":"✦ ")+(PRO?L("pro_on"):L("pro_off"));
+  document.body.classList.toggle("free",!PRO);
+}
+function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
+async function activatePro(){
+  if(PRO){ if(confirm(L("pro_manage")))deactivatePro(); return; }
+  if(confirm(L("pro_choose"))){ if(CHECKOUT_URL.indexOf("REPLACE")>=0){alert(L("pro_soon"));}else{window.open(CHECKOUT_URL,"_blank");} return; }
+  const key=prompt(L("pro_enter")); if(!key||!key.trim())return;
+  const b=$("btnPro"); if(b)b.textContent="…";
+  try{
+    const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key.trim())});
+    const j=await r.json();
+    if(j&&j.valid){try{localStorage.setItem("rr_pro",key.trim());}catch(_){}PRO=true;updateProUI();renderPreview();alert(L("pro_ok"));}
+    else{updateProUI();alert(L("pro_bad"));}
+  }catch(err){updateProUI();alert(L("pro_err"));}
+}
+
 /* ===================== Helpers ===================== */
 const $ = id => document.getElementById(id);
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -437,6 +463,7 @@ function applyChrome(){
   renderWizard();
   if($("saveStatus"))$("saveStatus").textContent="✓ "+L("saved");
   initOnboard();
+  updateProUI();
   $("plotTitle").textContent=L("plot_title");
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
