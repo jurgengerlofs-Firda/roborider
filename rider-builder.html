@@ -188,6 +188,11 @@
     .preview-wrap{display:block!important;padding:0;background:#fff;overflow:visible}
     .page{box-shadow:none;margin:0;max-width:100%;padding:24mm 18mm;page-break-after:always}
     .page:last-child{page-break-after:auto}
+    /* long input list: never split a row, repeat the header on each printed page */
+    table.grid{page-break-inside:auto}
+    table.grid thead{display:table-header-group}
+    table.grid tr{page-break-inside:avoid;break-inside:avoid}
+    h3.sub-h{page-break-after:avoid}
     @page{size:A4;margin:0}
   }
 </style>
