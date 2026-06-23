@@ -105,6 +105,8 @@
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
+  .topbar .btn.procta{color:var(--clay);border:1px solid var(--clay);padding:7px 12px}
+  .topbar .btn.procta:hover{background:var(--clay);color:#fff}
   body.free #preview .page:not(.doc-cover)::after{content:"Made with RoboRider · roborider.nl";display:block;margin-top:26px;border-top:1px solid var(--line);padding-top:8px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
   .onboard{display:flex;align-items:flex-start;gap:10px;background:#f6f1e9;border:1px solid #e3d6bf;border-left:3px solid var(--clay);padding:11px 13px;margin-bottom:18px;font-size:12.5px;color:var(--soft);line-height:1.5}
   .onboard button{margin-left:auto;flex:0 0 auto;border:none;background:none;font-size:16px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
@@ -211,7 +213,7 @@
   <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
   <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
   <button class="btn" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
-  <button class="btn" id="btnPro" onclick="activatePro()" title="RoboRider Pro"></button>
+  <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
@@ -251,6 +253,25 @@
   </div>
 </div>
 
+<!-- Pro / subscription modal -->
+<div class="modal-bg" id="proModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head"><h3 id="proTitle">RoboRider Pro</h3><span class="spacer"></span><button class="btn ghost" onclick="closeProModal()">✕</button></div>
+    <div style="padding:24px">
+      <p id="proStatusLine" style="font-size:13px;color:var(--soft);margin:0 0 18px;line-height:1.5"></p>
+      <button class="btn primary" style="width:100%" id="proSubBtn" onclick="proSubscribe()"></button>
+      <div style="text-align:center;font-family:var(--display);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:18px 0">— <span id="proOr"></span> —</div>
+      <label class="fld" id="proKeyLbl"></label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="proKeyInput" style="flex:1" placeholder="XXXXXXXX-XXXX-XXXX">
+        <button class="btn primary" id="proActBtn" onclick="proActivate()" style="flex:0 0 auto"></button>
+      </div>
+      <p id="proMsg" class="hint" style="margin-top:8px"></p>
+      <div id="proManageWrap" style="margin-top:16px;display:none"><button class="btn ghost" id="proRemoveBtn" onclick="deactivatePro();closeProModal();"></button></div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ===================== i18n ===================== */
 const I18N = {
@@ -258,6 +279,7 @@ const I18N = {
     tagline:"Rider Builder · demo", lang_label:"Language",
     btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
+    pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Subscribe — €7 / month", pro_or:"or", pro_key_lbl:"Already subscribed? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
@@ -266,7 +288,7 @@ const I18N = {
     ai_empty:"Paste some text first.", ai_recognized:"Recognized: ", ai_check:". Check and complete.", ai_none:"Nothing recognized automatically — fill in manually.",
     wiz_title:"Quick start", wiz_desc:"Answer a few questions — we'll build the input list, stage plot and a technical starting point you can fine-tune.",
     wiz_name:"Band / artist name", wiz_members:"Who's on stage?", wiz_monitoring:"Monitoring", wiz_mon_wedges:"Wedges", wiz_mon_iem:"In-ears",
-    wiz_backline:"Backline", wiz_back_own:"We bring our own", wiz_back_house:"From the house", wiz_build:"Build my rider",
+    wiz_backline:"Backline", wiz_back_own:"We bring our own", wiz_back_house:"From the house", wiz_build:"Build my rider", wiz_other_ph:"Other instrument (e.g. cello, sax, harp)…",
     wiz_t_wedges:"Wedge monitors as per the input list; mixes from FOH.", wiz_t_iem:"In-ear monitoring; we bring our own packs, mixed from FOH.",
     wiz_t_back_own:"We bring our own backline.", wiz_t_back_house:"Backline requested from the house — details on advance.",
     wiz_t_pa:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics, d&b, Adamson or equivalent).",
@@ -305,6 +327,7 @@ const I18N = {
     tagline:"Rider Builder · demo", lang_label:"Taal",
     btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
+    pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Abonneren — €7 / maand", pro_or:"of", pro_key_lbl:"Al geabonneerd? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
@@ -313,7 +336,7 @@ const I18N = {
     ai_empty:"Plak eerst wat tekst.", ai_recognized:"Herkend: ", ai_check:". Controleer en vul aan.", ai_none:"Niets automatisch herkend — vul handmatig in.",
     wiz_title:"Snel starten", wiz_desc:"Beantwoord een paar vragen — wij bouwen de inputlijst, stageplot en een technisch startpunt dat je daarna kunt bijschaven.",
     wiz_name:"Bandnaam / artiest", wiz_members:"Wie staan er op het podium?", wiz_monitoring:"Monitoring", wiz_mon_wedges:"Wedges", wiz_mon_iem:"In-ears",
-    wiz_backline:"Backline", wiz_back_own:"Nemen we zelf mee", wiz_back_house:"Van het huis", wiz_build:"Bouw mijn rider",
+    wiz_backline:"Backline", wiz_back_own:"Nemen we zelf mee", wiz_back_house:"Van het huis", wiz_build:"Bouw mijn rider", wiz_other_ph:"Ander instrument (bijv. cello, sax, harp)…",
     wiz_t_wedges:"Wedge-monitors volgens de inputlijst; mixes vanaf FOH.", wiz_t_iem:"In-ear monitoring; wij nemen eigen packs mee, gemixt vanaf FOH.",
     wiz_t_back_own:"Wij nemen onze eigen backline mee.", wiz_t_back_house:"Backline van het huis gewenst — details bij de advancing.",
     wiz_t_pa:"Full-range PA, fase- en tijd-gelijk, gelijkmatige dekking voor de hele zaal (L-Acoustics, d&b, Adamson of gelijkwaardig).",
@@ -418,21 +441,36 @@ let S = blank();
 const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/c443be65-e05f-4ee8-a9fd-e4d61fa8b9df";
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
-  const b=$("btnPro"); if(b)b.textContent=(PRO?"✓ ":"✦ ")+(PRO?L("pro_on"):L("pro_off"));
+  const b=$("btnPro");
+  if(b){ b.textContent=PRO?("✓ "+L("pro_on")):("✦ "+L("pro_cta")); b.classList.toggle("procta",!PRO); }
   document.body.classList.toggle("free",!PRO);
 }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
-async function activatePro(){
-  if(PRO){ if(confirm(L("pro_manage")))deactivatePro(); return; }
-  if(confirm(L("pro_choose"))){ if(CHECKOUT_URL.indexOf("REPLACE")>=0){alert(L("pro_soon"));}else{window.open(CHECKOUT_URL,"_blank");} return; }
-  const key=prompt(L("pro_enter")); if(!key||!key.trim())return;
-  const b=$("btnPro"); if(b)b.textContent="…";
+function openProModal(){
+  $("proTitle").textContent="RoboRider Pro";
+  $("proStatusLine").textContent=PRO?L("pro_status_on"):L("pro_status_free");
+  $("proSubBtn").textContent=L("pro_sub_btn");
+  $("proOr").textContent=L("pro_or");
+  $("proKeyLbl").textContent=L("pro_key_lbl");
+  $("proActBtn").textContent=L("pro_act");
+  $("proRemoveBtn").textContent=L("pro_remove");
+  $("proSubBtn").style.display=PRO?"none":"block";
+  $("proManageWrap").style.display=PRO?"block":"none";
+  $("proMsg").textContent="";
+  $("proModal").classList.add("open");
+}
+function closeProModal(){$("proModal").classList.remove("open");}
+function proSubscribe(){ if(CHECKOUT_URL.indexOf("REPLACE")>=0){$("proMsg").textContent=L("pro_soon");}else{window.open(CHECKOUT_URL,"_blank");} }
+async function proActivate(){
+  const key=($("proKeyInput").value||"").trim(); if(!key){$("proMsg").textContent=L("pro_enter");return;}
+  $("proMsg").textContent="⏳"; $("proActBtn").disabled=true;
   try{
-    const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key.trim())});
+    const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
-    if(j&&j.valid){try{localStorage.setItem("rr_pro",key.trim());}catch(_){}PRO=true;updateProUI();renderPreview();alert(L("pro_ok"));}
-    else{updateProUI();alert(L("pro_bad"));}
-  }catch(err){updateProUI();alert(L("pro_err"));}
+    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}PRO=true;updateProUI();renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    else{$("proMsg").textContent=L("pro_bad");}
+  }catch(err){$("proMsg").textContent=L("pro_err");}
+  $("proActBtn").disabled=false;
 }
 
 /* ===================== Helpers ===================== */
@@ -775,7 +813,7 @@ const PLOT_TYPES={
   bass:{lbl:"BASS",w:15,h:12,sh:"box",c:"#ffffff"},
   guitar:{lbl:"GUITAR",w:15,h:12,sh:"box",c:"#ffffff"},
   vocal:{lbl:"LEAD",w:13,h:12,sh:"box",c:"#ffffff"},
-  riser:{lbl:"RISER",w:26,h:26,sh:"riser",c:"#efe9dc"},
+  riser:{lbl:"RISER 2×2×0.4m",w:26,h:26,sh:"riser",c:"#efe9dc"},
   monitor:{lbl:"MON",w:10,h:9,sh:"wedge",c:"#e6dfce"},
   amp:{lbl:"AMP",w:11,h:9,sh:"box",c:"#f4f1e9"},
   di:{lbl:"DI",w:7,h:8,sh:"box",c:"#f4f1e9"},
@@ -896,8 +934,9 @@ const WIZ_INSTR=[
   {k:"eguitar",en:"Electric guitar",nl:"Elektrische gitaar",qty:true},
   {k:"acguitar",en:"Acoustic guitar",nl:"Akoestische gitaar",qty:true},
   {k:"keys",en:"Keys / synth",nl:"Keys / synth",qty:true},
-  {k:"dj",en:"DJ / playback",nl:"DJ / playback",qty:false},
-  {k:"horns",en:"Horns / brass",nl:"Blazers",qty:true}
+  {k:"strings",en:"Strings",nl:"Strijkers",qty:true},
+  {k:"horns",en:"Horns / brass",nl:"Blazers",qty:true},
+  {k:"dj",en:"DJ / playback",nl:"DJ / playback",qty:false}
 ];
 function renderWizard(){
   const m=$("wizard");if(!m)return;const lang=S.lang;
@@ -913,6 +952,7 @@ function renderWizard(){
     <input type="text" id="wz-name" placeholder="${L("bandname_ph")}">
     <label class="fld">${L("wiz_members")}</label>
     <div class="wz-grid">${il}</div>
+    <div class="wzrow" style="margin-top:6px"><input type="text" id="wz-other-name" placeholder="${L("wiz_other_ph")}" style="flex:1;border:none;border-bottom:1px solid var(--hair);background:transparent;font:inherit;padding:5px 2px"><input type="number" min="1" value="1" id="wzq-other"></div>
     <label class="fld">${L("wiz_monitoring")}</label>
     <div class="wz-radios">
       <label><input type="radio" name="wzmon" value="wedges" checked>${L("wiz_mon_wedges")}</label>
@@ -930,60 +970,72 @@ function wizardBuild(){
   const nm=($("wz-name").value||"").trim(); if(nm)S.band.name=nm;
   const on=k=>$("wz-"+k)&&$("wz-"+k).checked;
   const qty=k=>{const e=$("wzq-"+k);return e?Math.max(1,parseInt(e.value,10)||1):1;};
+  const otherName=($("wz-other-name")?$("wz-other-name").value:"").trim();
+  const otherN=()=>{const e=$("wzq-other");return e?Math.max(1,parseInt(e.value,10)||1):1;};
+  const hasOther=otherName.length>0;
+  const mon=(document.querySelector('input[name=wzmon]:checked')||{}).value||"wedges";
+  const wedges=mon!=="iem";
   S.inputs=[];
-  const add=(input,micdi,p48,pos,notes)=>S.inputs.push({ch:"",input:input,micdi:micdi||"",p48:p48||"",stand:"",pos:pos||"",notes:notes||""});
-  if(on("drums")){add("Kick","Mic","","Drums");add("Snare Top","SM57","","Drums");add("Hihat","Mic","X","Drums");add("Rack Tom","Mic","","Drums");add("Floor Tom","Mic","","Drums");add("OH L","Mic","X","Drums");add("OH R","Mic","X","Drums");}
+  const add=(input,micdi,p48,pos)=>S.inputs.push({ch:"",input:input,micdi:micdi||"",p48:p48||"",stand:"",pos:pos||"",notes:""});
+  if(on("drums")){add("Kick","Mic","","Drums");add("Snare","Mic","","Drums");add("Hihat","Mic","","Drums");add("Rack Tom","Mic","","Drums");add("Floor Tom","Mic","","Drums");add("Overhead L","Mic","X","Drums");add("Overhead R","Mic","X","Drums");}
   if(on("percussion"))add("Percussion","Mic","","Perc");
-  if(on("bass"))add("Bass DI","DI","","Bass");
-  if(on("eguitar")){const n=qty("eguitar");for(let i=1;i<=n;i++)add(n>1?("El Gtr "+i):"El Guitar","XLR","","Guitar");}
-  if(on("acguitar")){const n=qty("acguitar");for(let i=1;i<=n;i++)add(n>1?("Ac Gtr "+i):"Ac Guitar","DI","X","Guitar");}
-  if(on("keys")){const n=qty("keys");for(let i=1;i<=n;i++){const p=n>1?(" "+i):"";add("Keys"+p+" L","DI","X","Keys","Stereo DI");add("Keys"+p+" R","DI","X","Keys","Stereo DI");}}
-  if(on("dj")){add("Playback L","DI","X","DJ");add("Playback R","DI","X","DJ");}
+  if(on("bass"))add("Bass","DI","","Bass");
+  if(on("eguitar")){const n=qty("eguitar");for(let i=1;i<=n;i++)add(n>1?("Electric Guitar "+i):"Electric Guitar","Mic","","Guitar");}
+  if(on("acguitar")){const n=qty("acguitar");for(let i=1;i<=n;i++)add(n>1?("Acoustic Guitar "+i):"Acoustic Guitar","DI","X","Guitar");}
+  if(on("keys")){const n=qty("keys");for(let i=1;i<=n;i++){const p=n>1?(" "+i):"";add("Keys"+p+" L","DI","X","Keys");add("Keys"+p+" R","DI","X","Keys");}}
+  if(on("strings")){const n=qty("strings");for(let i=1;i<=n;i++)add(n>1?("Strings "+i):"Strings","DI","X","Strings");}
   if(on("horns")){const n=qty("horns");for(let i=1;i<=n;i++)add(n>1?("Horn "+i):"Horn","Mic","","Horns");}
-  if(on("bgvocal")){const n=qty("bgvocal");for(let i=1;i<=n;i++)add(n>1?("BV "+i):"Backing Vocal","XLR","","");}
-  if(on("leadvocal"))add("Lead Vocal","XLR","","Centre");
+  if(hasOther){const n=otherN();for(let i=1;i<=n;i++)add(n>1?(otherName+" "+i):otherName,"Mic","","");}
+  if(on("dj")){add("Playback L","DI","X","DJ");add("Playback R","DI","X","DJ");}
+  if(on("bgvocal")){const n=qty("bgvocal");for(let i=1;i<=n;i++)add(n>1?("Backing Vocal "+i):"Backing Vocal","Mic","","");}
+  if(on("leadvocal"))add("Lead Vocal","Mic","","Centre");
   if(S.inputs.length===0)S.inputs=[{ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}];
   renumberInputs();
   let mus=0;
   if(on("drums"))mus++; if(on("percussion"))mus++; if(on("bass"))mus++;
   if(on("eguitar"))mus+=qty("eguitar"); if(on("acguitar"))mus+=qty("acguitar");
-  if(on("keys"))mus+=qty("keys"); if(on("horns"))mus+=qty("horns"); if(on("dj"))mus++;
+  if(on("keys"))mus+=qty("keys"); if(on("strings"))mus+=qty("strings"); if(on("horns"))mus+=qty("horns");
+  if(on("dj"))mus++; if(hasOther)mus+=otherN();
   if(mus===0&&on("leadvocal"))mus=1;
   S.travelParty=[{label:"Band",count:String(Math.max(1,mus))}];
-  const mon=(document.querySelector('input[name=wzmon]:checked')||{}).value||"wedges";
-  S.tech.monitors = mon==="iem" ? L("wiz_t_iem") : L("wiz_t_wedges");
+  S.tech.monitors = wedges ? L("wiz_t_wedges") : L("wiz_t_iem");
   const bk=(document.querySelector('input[name=wzback]:checked')||{}).value||"own";
   S.backline = bk==="house" ? L("wiz_t_back_house") : L("wiz_t_back_own");
   S.tech.pa=L("wiz_t_pa"); S.tech.foh=L("wiz_t_foh"); S.tech.power=L("wiz_t_power"); S.tech.soundcheck=L("wiz_t_soundcheck");
+  /* ---- stage plot: place each performer + a wedge in front (if wedges) ---- */
   S.plot.items=[];
-  const P=(type,x,y,extra)=>{const d=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:d.lbl,x:x,y:y,w:d.w,h:d.h,rot:0},extra||{}));};
-  if(on("drums"))P("drums",52,24);
-  if(on("percussion"))P("perc",76,26);
-  if(on("keys")){const n=qty("keys");P("keys",24,26);if(n>1)P("keys",24,42,{label:"KEYS 2"});}
-  if(on("dj"))P("keys",50,28,{label:"DJ"});
-  if(on("bass"))P("bass",20,54);
-  if(on("eguitar")){const n=qty("eguitar");P("guitar",80,54);if(n>1)P("guitar",66,42,{label:"GTR 2"});}
-  if(on("acguitar"))P("guitar",40,46,{label:"AC GTR"});
-  if(on("horns"))P("amp",62,30,{label:"HORNS"});
-  if(on("leadvocal"))P("vocal",50,62);
-  const monN=Math.min(5,Math.max(2,mus));
-  for(let i=0;i<monN;i++){const x=(monN===1)?20:Math.round(18+i*(64/(monN-1)));P("monitor",x,76);}
-  P("power",12,40);P("power",86,40);
+  const md=PLOT_TYPES.monitor;
+  const place=(type,x,y,extra)=>{const d=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:d.lbl,x:x,y:y,w:d.w,h:d.h,rot:0},extra||{}));
+    if(wedges)S.plot.items.push({id:uid(),type:"monitor",label:md.lbl,x:x,y:Math.min(82,y+15),w:md.w,h:md.h,rot:0});};
+  if(on("drums"))place("drums",52,22);
+  if(on("percussion"))place("perc",78,24,{label:"PERC"});
+  if(on("keys")){const n=qty("keys");place("keys",22,24);if(n>1)place("keys",22,42,{label:"KEYS 2"});}
+  if(on("dj"))place("keys",50,26,{label:"DJ"});
+  if(on("strings"))place("amp",32,40,{label:"STRINGS"});
+  if(on("horns"))place("amp",66,40,{label:"HORNS"});
+  if(hasOther)place("amp",50,40,{label:otherName.toUpperCase().slice(0,12)});
+  if(on("bass"))place("bass",18,56);
+  if(on("eguitar")){const n=qty("eguitar");place("guitar",82,56);if(n>1)place("guitar",68,44,{label:"GTR 2"});}
+  if(on("acguitar"))place("guitar",38,50,{label:"AC GTR"});
+  if(on("leadvocal"))place("vocal",50,64);
+  const pw=PLOT_TYPES.power;
+  S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:11,y:40,w:pw.w,h:pw.h,rot:0});
+  S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:89,y:40,w:pw.w,h:pw.h,rot:0});
   applyChrome();renderForm();renderPreview();
 }
 
 /* ===================== Quick-add presets ===================== */
 /* Input list channel bundles. ch = [input, mic/di, 48V, stand, position, notes?] */
 const INPUT_PRESETS={
-  drumkit:{lbl:{en:"Drum kit",nl:"Drumstel"},ch:[["Kick In","Mic","","","Drums"],["Kick Out","Mic","","Short","Drums"],["Snare Top","SM57","","Short","Drums"],["Snare Btm","e904","","Short","Drums"],["Hihat","CC8","X","","Drums"],["Rack Tom","e904","","","Drums"],["Floor Tom","e904","","","Drums"],["OH L","414","X","Tall","Drums"],["OH R","414","X","Tall","Drums"]]},
+  drumkit:{lbl:{en:"Drum kit",nl:"Drumstel"},ch:[["Kick","Mic","","","Drums"],["Snare","Mic","","","Drums"],["Hihat","Mic","","","Drums"],["Rack Tom","Mic","","","Drums"],["Floor Tom","Mic","","","Drums"],["Overhead L","Mic","X","","Drums"],["Overhead R","Mic","X","","Drums"]]},
   bass:{lbl:{en:"Bass",nl:"Bas"},ch:[["Bass DI","DI","","","Bass"]]},
-  egtr:{lbl:{en:"E-guitar (st)",nl:"E-gitaar (st)"},ch:[["El Gtr L","XLR","","","Guitar"],["El Gtr R","XLR","","","Guitar"]]},
+  egtr:{lbl:{en:"E-guitar",nl:"E-gitaar"},ch:[["Electric Guitar","Mic","","","Guitar"]]},
   acgtr:{lbl:{en:"Ac. guitar",nl:"Ak. gitaar"},ch:[["Ac. Guitar","DI","X","","Guitar"]]},
   keys:{lbl:{en:"Keys (st)",nl:"Keys (st)"},ch:[["Keys L","DI","X","","Keys","Stereo DI"],["Keys R","DI","X","","Keys","Stereo DI"]]},
   synth:{lbl:{en:"Synth",nl:"Synth"},ch:[["Synth","DI","X","","Keys"]]},
-  lead:{lbl:{en:"Lead vox",nl:"Leadzang"},ch:[["Lead Vocal","XLR","","","Center"]]},
-  bv:{lbl:{en:"Backing vox",nl:"Backing"},ch:[["BV Vocal","XLR","","",""]]},
-  talkback:{lbl:{en:"Talkback",nl:"Talkback"},ch:[["Talkback","XLR","","","","Not in mix"]]},
+  lead:{lbl:{en:"Lead vox",nl:"Leadzang"},ch:[["Lead Vocal","Mic","","","Centre"]]},
+  bv:{lbl:{en:"Backing vox",nl:"Backing"},ch:[["Backing Vocal","Mic","","",""]]},
+  talkback:{lbl:{en:"Talkback",nl:"Talkback"},ch:[["Talkback","Mic","","","","Not in mix"]]},
   playback:{lbl:{en:"Playback (st)",nl:"Playback (st)"},ch:[["Playback L","DI","X","",""],["Playback R","DI","X","",""]]},
   perc:{lbl:{en:"Perc",nl:"Percussie"},ch:[["Percussion","Mic","","","Perc"]]}
 };
@@ -1283,7 +1335,7 @@ function loadExample(){
 }
 
 /* ===================== Boot ===================== */
-loadLocal();
+/* Always start with an empty rider. Use Save/Open (.json) to keep work. */
 applyChrome();
 renderForm();
 renderPreview();
