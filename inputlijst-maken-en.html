@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to make an input list (stage patch list): example + guide | RoboRider</title>
+<meta name="description" content="How to build an input list for your band: what to put per channel (source, microphone, DI, 48V, stand), the right order, and a clear example you can copy.">
+<link rel="canonical" href="https://roborider.nl/inputlijst-maken-en.html">
+<link rel="alternate" hreflang="nl" href="https://roborider.nl/inputlijst-maken.html">
+<link rel="alternate" hreflang="en" href="https://roborider.nl/inputlijst-maken-en.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to make an input list (stage patch list)">
+<meta property="og:description" content="What goes in an input list, in what order, and how to make one that's clean and fast to read. With an example for bands.">
+<meta property="og:url" content="https://roborider.nl/inputlijst-maken-en.html">
+<meta property="og:image" content="https://roborider.nl/roborider-og.png">
+<link rel="icon" type="image/svg+xml" href="roborider-favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to make an input list (stage patch list)","inLanguage":"en","author":{"@type":"Organization","name":"RoboRider"},"publisher":{"@type":"Organization","name":"RoboRider"},"mainEntityOfPage":"https://roborider.nl/inputlijst-maken-en.html","image":"https://roborider.nl/roborider-og.png"}</script>
+<style>
+  :root{--ink:#1b1a17;--soft:#56544d;--muted:#a39d92;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#fff;--clay:#9a7257;--font:'Inter',-apple-system,sans-serif;--display:'Jost',-apple-system,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--clay)}
+  nav{border-bottom:1px solid var(--hair)}
+  nav .w{max-width:740px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:10px}
+  .logo{font-family:var(--display);font-weight:300;letter-spacing:5px;text-transform:lowercase;font-size:17px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+  .logomark{width:26px;height:26px}
+  nav .sp{flex:1}
+  nav a.cta{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--ink);padding:9px 14px}
+  article{max-width:740px;margin:0 auto;padding:54px 24px 30px}
+  .crumb{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+  h1{font-family:var(--display);font-weight:300;font-size:42px;line-height:1.12;letter-spacing:.3px;margin:0 0 14px}
+  .lead{font-size:18px;color:var(--soft);margin:0 0 10px}
+  article h2{font-family:var(--display);font-weight:400;font-size:25px;margin:40px 0 10px}
+  article h3{font-family:var(--display);font-weight:400;font-size:18px;margin:26px 0 6px}
+  article p,article li{font-size:16px;color:var(--soft)}
+  article ul{padding-left:20px}
+  article li{margin-bottom:7px}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--hair);color:var(--soft)}
+  th{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink)}
+  .ctabox{background:var(--card);border:1px solid var(--hair);border-top:2px solid var(--clay);padding:28px 26px;margin:40px 0;text-align:center}
+  .ctabox h3{font-family:var(--display);font-weight:300;font-size:24px;margin:0 0 10px;color:var(--ink)}
+  .ctabox p{margin:0 0 18px}
+  .btn{display:inline-block;background:var(--ink);color:var(--bg);font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:14px 26px;text-decoration:none}
+  footer{border-top:1px solid var(--hair);margin-top:40px}
+  footer .w{max-width:740px;margin:0 auto;padding:30px 24px;font-family:var(--display);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<nav><div class="w">
+  <a class="logo" href="index.html"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="#1b1a17" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="#c7c8cc" stroke="#1b1a17" stroke-width="0.7"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="#1b1a17" stroke-width="2.8"/><rect x="11" y="45.6" width="42" height="2.4" fill="#1b1a17"/><rect x="17" y="24" width="11" height="9" fill="#1b1a17"/><rect x="36" y="24" width="11" height="9" fill="#1b1a17"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg>roborider</a>
+  <span class="sp"></span>
+  <a class="cta" href="rider-builder.html">Build your rider</a>
+</div></nav>
+
+<article>
+  <div class="crumb">Guide · Input list</div>
+  <h1>How to make an input list</h1>
+  <p class="lead">The input list (or stage patch list) might be the most important page of your rider. It tells the sound engineer exactly what arrives on each channel — and largely decides how smoothly your soundcheck goes. Here's how to build one that's right the first time.</p>
+
+  <h2>What is an input list?</h2>
+  <p>An input list is a table of every audio source you plug in on stage. For each channel it shows the source, the microphone or DI you use, whether phantom power is needed, and which stand goes with it. The engineer patches each channel into the console following your list — which is why it's sometimes called a patch list.</p>
+  <p>Together with the <a href="stage-plot-maken.html">stage plot</a>, the input list is the technical heart of your <a href="rider-maken.html">technical rider</a>. A clean list means fewer questions up front, faster setup, and a professional impression.</p>
+
+  <h2>What goes on each channel?</h2>
+  <p>Keep each channel short and consistent. These are the columns an engineer wants to see:</p>
+  <ul>
+    <li><strong>Channel</strong> — the running number (1, 2, 3…).</li>
+    <li><strong>Source</strong> — what it is: kick, snare, bass, keys L/R, lead vocal, and so on.</li>
+    <li><strong>Mic / DI</strong> — a microphone or a DI box. Keep it generic (dynamic, condenser, DI); you don't need to specify a model unless you really want to.</li>
+    <li><strong>48V</strong> — phantom power yes/no (needed for condenser mics and most active DIs).</li>
+    <li><strong>Stand</strong> — tall, short, clip, or none.</li>
+  </ul>
+
+  <h2>Example input list</h2>
+  <p>A simple list for a four-piece band might look like this:</p>
+  <table>
+    <thead><tr><th>#</th><th>Source</th><th>Mic / DI</th><th>48V</th><th>Stand</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Kick</td><td>Dynamic</td><td>—</td><td>Short</td></tr>
+      <tr><td>2</td><td>Snare</td><td>Dynamic</td><td>—</td><td>Clip</td></tr>
+      <tr><td>3</td><td>Overhead</td><td>Condenser</td><td>48V</td><td>Tall</td></tr>
+      <tr><td>4</td><td>Bass</td><td>DI</td><td>48V</td><td>—</td></tr>
+      <tr><td>5</td><td>Guitar</td><td>Dynamic</td><td>—</td><td>Short</td></tr>
+      <tr><td>6</td><td>Keys L</td><td>DI</td><td>48V</td><td>—</td></tr>
+      <tr><td>7</td><td>Keys R</td><td>DI</td><td>48V</td><td>—</td></tr>
+      <tr><td>8</td><td>Lead vocal</td><td>Dynamic</td><td>—</td><td>Tall</td></tr>
+      <tr><td>9</td><td>Backing vocal</td><td>Dynamic</td><td>—</td><td>Tall</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ctabox">
+    <h3>Generate your input list automatically</h3>
+    <p>With RoboRider you enter your line-up and instantly get a clean, numbered input list — together with your stage plot in one professional PDF. Free to try.</p>
+    <a class="btn" href="rider-builder.html">Start your rider →</a>
+  </div>
+
+  <h2>In what order?</h2>
+  <p>A logical, predictable order makes life easy for the engineer. The most common layout runs from the back of the stage to the front: drums first (kick, snare, toms, overheads), then bass, then guitars and keys, and vocals last. Keep related sources together so the engineer can think instrument by instrument.</p>
+
+  <h2>Tips for a good input list</h2>
+  <ul>
+    <li>Number cleanly and don't leave gaps.</li>
+    <li>Be consistent with names (pick "Keys L/R" or "Keys 1/2", not both).</li>
+    <li>List only what you actually plug in — an over-long list wastes everyone's time.</li>
+    <li>Update it per tour; line-up and backline change more often than you'd think.</li>
+    <li>Make sure it stays readable in black and white, since not everyone prints in colour.</li>
+  </ul>
+
+  <p>Read next: <a href="stage-plot-maken.html">How to make a stage plot, step by step →</a></p>
+</article>
+
+<footer><div class="w">RoboRider · <a href="index.html">Home</a> · <a href="rider-builder.html">Build your rider</a></div></footer>
+<script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
+</body>
+</html>
