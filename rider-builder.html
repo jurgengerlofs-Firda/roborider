@@ -220,6 +220,7 @@
   <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
   <button class="btn" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
   <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
+  <button class="btn" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
@@ -278,6 +279,38 @@
   </div>
 </div>
 
+<!-- Account / cloud modal -->
+<div class="modal-bg" id="acctModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-head"><h3 id="acctTitle">Account</h3><span class="spacer"></span><button class="btn ghost" onclick="closeAcctModal()">✕</button></div>
+    <div style="padding:24px">
+      <div id="acctLogin">
+        <p id="acctIntro" style="font-size:13px;color:var(--soft);margin:0 0 16px;line-height:1.5"></p>
+        <label class="fld" id="acctEmailLbl"></label>
+        <div style="display:flex;gap:8px">
+          <input type="email" id="acctEmail" style="flex:1" placeholder="you@example.com">
+          <button class="btn primary" id="acctSendBtn" onclick="sendMagicLink()" style="flex:0 0 auto"></button>
+        </div>
+      </div>
+      <div id="acctIn" style="display:none">
+        <p id="acctWho" style="font-size:13px;color:var(--soft);margin:0 0 16px;line-height:1.5"></p>
+        <label class="fld" id="acctSaveLbl"></label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="acctRiderName" style="flex:1" placeholder="">
+          <button class="btn primary" id="acctSaveBtn" onclick="cloudSaveCurrent()" style="flex:0 0 auto"></button>
+        </div>
+        <div id="acctList" style="margin-top:16px"></div>
+        <div style="margin-top:18px;border-top:1px solid var(--hair);padding-top:14px">
+          <button class="btn ghost" id="acctLogoutBtn" onclick="signOut()"></button>
+        </div>
+      </div>
+      <p id="acctMsg" class="hint" style="margin-top:10px"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase client (accounts + cloud storage). Harmless if keys aren't set yet. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ===================== i18n ===================== */
 const I18N = {
@@ -473,10 +506,139 @@ async function proActivate(){
   try{
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
-    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}PRO=true;updateProUI();renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
     else{$("proMsg").textContent=L("pro_bad");}
   }catch(err){$("proMsg").textContent=L("pro_err");}
   $("proActBtn").disabled=false;
+}
+
+/* ===================== Accounts + cloud (Supabase) ===================== */
+/* Paste your Supabase Project URL + anon key here (see roborider-supabase-setup.md).
+   Until you do, the Account button stays hidden and the app behaves exactly as before. */
+const SUPABASE_URL = "REPLACE_WITH_YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "REPLACE_WITH_YOUR_ANON_KEY";
+let sb=null, user=null, currentRiderId=null;
+try{
+  if(window.supabase && SUPABASE_URL.indexOf("REPLACE")<0){
+    sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+}catch(e){}
+
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone." });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden." });
+
+async function initAuth(){
+  if(!sb){ updateAccountUI(); return; }
+  try{
+    const {data}=await sb.auth.getSession();
+    user=data&&data.session?data.session.user:null;
+    sb.auth.onAuthStateChange((_e,s)=>{ user=s?s.user:null; onAuthChange(); });
+  }catch(e){}
+  onAuthChange();
+}
+async function onAuthChange(){
+  updateAccountUI();
+  if(user){ await loadProfilePro(); await refreshRiderList(); }
+  else { currentRiderId=null; }
+}
+function updateAccountUI(){
+  const b=$("btnAccount"); if(!b) return;
+  if(!sb){ b.style.display="none"; return; }
+  b.style.display="";
+  b.textContent = user ? ("✓ "+L("acct_btn_in")) : L("acct_btn_out");
+}
+function openAcctModal(){
+  if(!sb) return;
+  $("acctTitle").textContent=L("acct_title");
+  $("acctIntro").textContent=L("acct_intro");
+  $("acctEmailLbl").textContent=L("acct_email");
+  $("acctSendBtn").textContent=L("acct_send");
+  $("acctSaveLbl").textContent=L("acct_save_lbl");
+  $("acctSaveBtn").textContent=L("acct_save_btn");
+  $("acctLogoutBtn").textContent=L("acct_logout");
+  $("acctMsg").textContent="";
+  const inq=!!user;
+  $("acctLogin").style.display=inq?"none":"block";
+  $("acctIn").style.display=inq?"block":"none";
+  if(inq){
+    $("acctWho").textContent=L("acct_who").replace("{email}", user.email||"");
+    if(!$("acctRiderName").value) $("acctRiderName").value=(S.band&&S.band.name)||"";
+    refreshRiderList();
+  }
+  $("acctModal").classList.add("open");
+}
+function closeAcctModal(){ $("acctModal").classList.remove("open"); }
+async function sendMagicLink(){
+  const email=($("acctEmail").value||"").trim();
+  if(!email){ $("acctMsg").textContent=L("acct_need_email"); return; }
+  $("acctMsg").textContent="⏳"; $("acctSendBtn").disabled=true;
+  try{
+    const redir=location.href.split("#")[0];
+    const {error}=await sb.auth.signInWithOtp({email, options:{emailRedirectTo:redir}});
+    $("acctMsg").textContent=error?L("acct_err"):L("acct_sent");
+  }catch(e){ $("acctMsg").textContent=L("acct_err"); }
+  $("acctSendBtn").disabled=false;
+}
+async function signOut(){
+  try{ await sb.auth.signOut(); }catch(e){}
+  user=null; currentRiderId=null;
+  try{ if(!localStorage.getItem("rr_pro")){ PRO=false; updateProUI(); renderPreview(); } }catch(_){}
+  updateAccountUI(); closeAcctModal();
+}
+async function loadProfilePro(){
+  if(!sb||!user) return;
+  try{
+    const {data}=await sb.from("profiles").select("is_pro").eq("id",user.id).maybeSingle();
+    if(data&&data.is_pro){ PRO=true; updateProUI(); renderPreview(); }
+  }catch(e){}
+}
+async function refreshRiderList(){
+  if(!sb||!user) return;
+  const box=$("acctList"); if(!box) return;
+  try{
+    const {data}=await sb.from("riders").select("id,title,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false});
+    if(!data||!data.length){ box.innerHTML='<p class="hint" style="margin:0">'+esc(L("acct_empty"))+'</p>'; return; }
+    box.innerHTML=data.map(function(r){
+      const d=new Date(r.updated_at); const ds=isNaN(d.getTime())?"":d.toLocaleDateString();
+      return '<div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:13px">'
+        +'<span style="flex:1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.title||"—")+'</span>'
+        +'<span style="color:var(--muted);font-size:11px;flex:0 0 auto">'+ds+'</span>'
+        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudLoad(\''+r.id+'\')">'+esc(L("acct_load"))+'</button>'
+        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudRename(\''+r.id+'\')">'+esc(L("acct_rename"))+'</button>'
+        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudDelete(\''+r.id+'\')">'+esc(L("acct_delete"))+'</button>'
+        +'</div>';
+    }).join("");
+  }catch(e){ box.innerHTML=""; }
+}
+async function cloudSaveCurrent(){
+  if(!sb||!user) return;
+  const title=(($("acctRiderName").value||"").trim())||((S.band&&S.band.name)||L("acct_untitled"));
+  $("acctMsg").textContent="⏳";
+  try{
+    if(currentRiderId){
+      await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
+    }else{
+      const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
+      if(data) currentRiderId=data.id;
+    }
+    $("acctMsg").textContent=L("acct_saved");
+    refreshRiderList();
+  }catch(e){ $("acctMsg").textContent=L("acct_err"); }
+}
+async function cloudLoad(id){
+  if(!sb||!user) return;
+  try{
+    const {data}=await sb.from("riders").select("data,title").eq("id",id).single();
+    if(data&&data.data){ S=Object.assign(blank(),data.data); currentRiderId=id; selPlot=null; applyChrome(); renderForm(); renderPreview(); closeAcctModal(); }
+  }catch(e){ $("acctMsg").textContent=L("acct_err"); }
+}
+async function cloudRename(id){
+  const nm=prompt(L("acct_rename_q")); if(nm==null) return;
+  try{ await sb.from("riders").update({title:(nm.trim()||L("acct_untitled"))}).eq("id",id); refreshRiderList(); }catch(e){}
+}
+async function cloudDelete(id){
+  if(!confirm(L("acct_delete_q"))) return;
+  try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) currentRiderId=null; refreshRiderList(); }catch(e){}
 }
 
 /* ===================== Helpers ===================== */
@@ -508,6 +670,7 @@ function applyChrome(){
   if($("saveStatus"))$("saveStatus").textContent="✓ "+L("saved");
   initOnboard();
   updateProUI();
+  updateAccountUI();
   $("plotTitle").textContent=L("plot_title");
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
@@ -1346,6 +1509,7 @@ applyChrome();
 renderForm();
 renderPreview();
 if(/demo/i.test(location.search+location.hash)) loadExample();
+initAuth();
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
