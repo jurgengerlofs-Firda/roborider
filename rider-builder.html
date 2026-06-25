@@ -701,6 +701,26 @@ async function cloudSaveQuick(){
     flashCloud();
   }catch(e){}
 }
+let _cloudTimer=null;
+function scheduleCloudSave(){
+  if(!sb||!user||sharedMode) return;
+  if(isBlankState()) return;          // nothing worth saving yet
+  clearTimeout(_cloudTimer);
+  _cloudTimer=setTimeout(cloudAutoSave, 2500);   // save 2.5s after the last change
+}
+async function cloudAutoSave(){
+  if(!sb||!user||sharedMode||isBlankState()) return;
+  const title=((S.band&&S.band.name)||L("acct_untitled"));
+  try{
+    if(currentRiderId){
+      await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
+    }else{
+      const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
+      if(data) currentRiderId=data.id;
+    }
+    flashCloud();
+  }catch(e){}
+}
 async function cloudShare(id){
   if(!sb||!user) return;
   try{
@@ -1052,6 +1072,7 @@ function renderPreview(){
   if(hp) h+=pageBlock(L("sec_hospitality"),hp);
   $("preview").innerHTML=h;
   saveLocal();
+  if(typeof scheduleCloudSave==="function") scheduleCloudSave();
 }
 function pageBlock(title,inner){return `<div class="page"><h2 class="sec-h">${esc(title)}</h2>${inner}</div>`;}
 function coverContacts(){
