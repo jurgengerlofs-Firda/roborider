@@ -166,6 +166,9 @@
   <div class="lang">
     <button onclick="setLang('en')" id="lg-en" class="on">EN</button>
     <button onclick="setLang('nl')" id="lg-nl">NL</button>
+    <button onclick="setLang('de')" id="lg-de">DE</button>
+    <button onclick="setLang('fr')" id="lg-fr">FR</button>
+    <button onclick="setLang('es')" id="lg-es">ES</button>
   </div>
 </div></nav>
 
@@ -312,6 +315,12 @@
   <p class="note" style="text-align:center" data-i="price_note"></p>
 </div></section>
 
+<section><div class="wrap">
+  <h2 class="sec" data-i="guides_h"></h2>
+  <p class="lead" data-i="guides_lead"></p>
+  <div class="grid" id="guidesGrid"></div>
+</div></section>
+
 <section class="faq"><div class="wrap">
   <h2 class="sec" data-i="faq_h"></h2>
   <div class="faq-list">
@@ -381,6 +390,7 @@ const T={
   p2_tag:"Most popular", p2_h:"Pro", p2_1:"Unlimited riders", p2_2:"No watermark + your branding", p2_3:"Translate your own text", p2_4:"Stage plot editor", p2_cta:"Subscribe",
   p3_h:"Band", p3_1:"Multiple riders & tours", p3_2:"Shareable venue links", p3_3:"Version history", p3_cta:"Subscribe",
   price_note:"Free during the preview — paid plans launching soon.",
+  guides_h:"Guides &amp; resources", guides_lead:"Practical guides on building riders, stage plots and input lists.",
   fb_h:"Help shape it",
   fb_p:"This is an early version. What's missing? What would make you switch from your current rider? Two lines of feedback genuinely help.",
   fb_cta:"Send feedback",
@@ -434,6 +444,7 @@ const T={
   p2_tag:"Populairst", p2_h:"Pro", p2_1:"Onbeperkt riders", p2_2:"Geen watermerk + eigen huisstijl", p2_3:"Vertaal je eigen tekst", p2_4:"Stageplot-editor", p2_cta:"Abonneren",
   p3_h:"Band", p3_1:"Meerdere riders & tours", p3_2:"Deelbare zaal-links", p3_3:"Versiehistorie", p3_cta:"Abonneren",
   price_note:"Gratis tijdens de preview — betaalde pakketten komen eraan.",
+  guides_h:"Gidsen &amp; uitleg", guides_lead:"Praktische gidsen over riders, stageplots en inputlijsten maken.",
   fb_h:"Denk mee",
   fb_p:"Dit is een vroege versie. Wat mist er? Wat zou je laten overstappen van je huidige rider? Twee regels feedback helpen echt.",
   fb_cta:"Stuur feedback",
@@ -446,9 +457,175 @@ const T={
   faq_q3:"Waar gaan mijn gegevens heen?", faq_a3:"Standaard blijft alles op je eigen apparaat. Maak je een account en sla je een rider op, dan wordt alleen die rider veilig in je eigen, persoonlijke account bewaard — niemand anders kan erbij. Bezoekersstatistieken zijn anoniem en zonder cookies.",
   faq_q4:"Wat krijg ik — een Word-bestand?", faq_a4:"Een strakke, printklare PDF via “Opslaan als PDF” in je browser. Ziet er professioneel uit in kleur én in zwart-wit.",
   faq_q5:"Welke talen?", faq_a5:"De hele rider schakelt met één klik tussen Engels, Nederlands, Duits, Frans en Spaans."
+ },
+ de:{
+  nav_try:"Tool öffnen",
+  hero_badge:"Für tourende Musiker & Bands",
+  hero_h:"Dein Technical &amp; Hospitality Rider, <em>in Minuten fertig</em>",
+  hero_sub:"Schluss mit alten Word-Dateien. Erstelle einen sauberen, professionellen Rider — mit Drag-and-drop-Stageplan und Inputliste — und exportiere ein elegantes PDF. In jeder Sprache.",
+  hero_cta1:"Meinen Rider erstellen — gratis",
+  hero_cta2:"So funktioniert's",
+  hero_sample:"Beispiel-Rider ansehen",
+  show_h:"Das verschickst du",
+  show_lead:"Ein sauberer, einheitlicher Rider — Deckblatt, Stageplan, Inputliste und Hospitality — als elegantes PDF exportiert.",
+  show_cta:"Im Builder öffnen",
+  hero_note:"Starte gratis im Browser — ohne Konto. Erstelle ein kostenloses Konto, um deine Rider zu speichern und auf jedem Gerät zu öffnen.",
+  feat_h:"Alles, was ein Rider braucht — nicht mehr",
+  feat_lead:"Entwickelt von einem tourenden Musiker, der keine Lust mehr hatte, am Vorabend einer Show PDFs zu bearbeiten.",
+  f1_h:"KI füllt automatisch aus",
+  f1_p:"Füge deinen alten Rider ein oder beschreibe dein Setup — alle Abschnitte, die Inputliste und ein erster Stageplan werden ausgefüllt.",
+  f2_h:"Drag-and-drop-Stageplan",
+  f2_p:"Platziere Drums, Keys, Monitore, Risers, DI und Strom in der Draufsicht. Ziehen, skalieren, drehen. Kommt in dein PDF.",
+  f3_h:"Hospitality richtig gemacht",
+  f3_p:"Garderobe, Catering, Diätwünsche, Getränke und Buy-out — der Teil, den die meisten Tools ignorieren, mit smarten Vorlagen.",
+  f4_h:"Jede Sprache",
+  f4_p:"Ein Klick schaltet den ganzen Rider zwischen Englisch, Niederländisch, Deutsch, Französisch und Spanisch um — für Auslandsgigs.",
+  f5_h:"Elegantes PDF",
+  f5_p:"Sauberes A4-Layout mit deinem Logo und deiner Akzentfarbe. Sieht aus wie von einer Produktionsfirma.",
+  f6_h:"Smarte Vorlagen",
+  f6_p:"Füge eine komplette Drum-Inputliste, Standard-PA/FOH/Monitor-Text oder einen Garderoben-Block mit einem Klick hinzu.",
+  how_h:"In drei Schritten von null bis verschickt",
+  how_lead:"Gemacht dafür, wie Touren wirklich laufen.",
+  s1_h:"Beschreiben oder einfügen",
+  s1_p:"Tippe dein Setup oder füge deinen bestehenden Rider ein. Die KI strukturiert ihn für dich.",
+  s2_h:"Anpassen & zeichnen",
+  s2_p:"Passe die Details an, zeichne deinen Stageplan, wähle Sprache und Farben.",
+  s3_h:"Exportieren & senden",
+  s3_p:"Lade ein sauberes PDF herunter und schicke es an die Venue. Für die nächste Show wiederverwenden.",
+  price_h:"Einfache Preise",
+  price_lead:"Gratis starten. Zahlen, wenn du genug tourst, um es zu brauchen.",
+  p1_h:"Gratis", p1_1:"1 Rider", p1_2:"KI-Auto-Ausfüllen (Basis)", p1_3:"PDF mit Wasserzeichen", p1_4:"Kostenloses Konto zum Speichern deiner Rider", p1_cta:"Gratis starten",
+  p2_tag:"Am beliebtesten", p2_h:"Pro", p2_1:"Unbegrenzte Rider", p2_2:"Kein Wasserzeichen + dein Branding", p2_3:"Eigenen Text übersetzen", p2_4:"Stageplan-Editor", p2_cta:"Abonnieren",
+  p3_h:"Band", p3_1:"Mehrere Rider & Touren", p3_2:"Teilbare Venue-Links", p3_3:"Versionsverlauf", p3_cta:"Abonnieren",
+  price_note:"Während der Preview gratis — bezahlte Pakete kommen bald.",
+  guides_h:"Ratgeber &amp; Ressourcen", guides_lead:"Praktische Anleitungen zu Ridern, Stageplänen und Inputlisten.",
+  fb_h:"Hilf mit",
+  fb_p:"Das ist eine frühe Version. Was fehlt? Was würde dich umsteigen lassen? Zwei Zeilen Feedback helfen wirklich.",
+  fb_cta:"Feedback senden",
+  foot:"Von einem tourenden Musiker · eine frühe Preview", foot_contact:"Kontakt", foot_open:"Tool öffnen →",
+  founder_q:"Ich habe RoboRider gebaut, weil ich es satt hatte, am Vorabend einer Show meinen Rider in Word neu zu bauen. Also habe ich das Tool gemacht, das ich mir gewünscht habe.",
+  founder_by:"Jurgen — Musiker &amp; Gründer",
+  faq_h:"Häufige Fragen",
+  faq_q1:"Ist es wirklich gratis?", faq_a1:"Ja — du kannst einen kompletten Rider gratis erstellen und exportieren. Pro entfernt nur das kleine Wasserzeichen und bietet Extras; während der Preview ist alles gratis.",
+  faq_q2:"Brauche ich ein Konto?", faq_a2:"Nein — du kannst sofort im Browser loslegen, ohne Konto. Wenn du deine Rider speichern und auf jedem Gerät öffnen möchtest, erstelle einfach ein kostenloses Konto.",
+  faq_q3:"Wo landen meine Daten?", faq_a3:"Standardmäßig bleibt alles auf deinem Gerät. Wenn du ein Konto erstellst und einen Rider speicherst, wird nur dieser sicher in deinem eigenen, privaten Konto gespeichert — niemand sonst sieht ihn. Besucherstatistiken sind anonym und ohne Cookies.",
+  faq_q4:"Was bekomme ich — eine Word-Datei?", faq_a4:"Ein sauberes, druckfertiges PDF über „Als PDF speichern“ im Browser. Sieht professionell aus, in Farbe und in Schwarz-Weiß.",
+  faq_q5:"Welche Sprachen?", faq_a5:"Der ganze Rider wechselt mit einem Klick zwischen Englisch, Niederländisch, Deutsch, Französisch und Spanisch."
+ },
+ fr:{
+  nav_try:"Ouvrir l'outil",
+  hero_badge:"Pour musiciens & groupes en tournée",
+  hero_h:"Votre rider technique &amp; hospitality, <em>prêt en minutes</em>",
+  hero_sub:"Fini de bricoler dans de vieux fichiers Word. Créez un rider clair et professionnel — avec un plan de scène en glisser-déposer et une liste d'entrées — et exportez un PDF soigné. Dans toutes les langues.",
+  hero_cta1:"Créer mon rider — gratuit",
+  hero_cta2:"Voir comment ça marche",
+  hero_sample:"Voir un exemple de rider",
+  show_h:"Voici ce que vous enverrez",
+  show_lead:"Un rider clair et cohérent — couverture, plan de scène, liste d'entrées et hospitality — exporté en PDF soigné.",
+  show_cta:"Ouvrir ceci dans l'outil",
+  hero_note:"Commencez gratuitement dans votre navigateur — sans compte. Créez un compte gratuit pour enregistrer vos riders et les ouvrir sur tous vos appareils.",
+  feat_h:"Tout ce qu'un rider doit avoir, rien de superflu",
+  feat_lead:"Conçu par un musicien en tournée fatigué d'éditer des PDF la veille d'un concert.",
+  f1_h:"Remplissage auto par IA",
+  f1_p:"Collez votre ancien rider ou décrivez votre setup — toutes les sections, la liste d'entrées et un premier plan de scène se remplissent.",
+  f2_h:"Plan de scène en glisser-déposer",
+  f2_p:"Placez batterie, claviers, retours, praticables, DI et alimentation en vue de dessus. Glissez, redimensionnez, pivotez. Tout passe dans votre PDF.",
+  f3_h:"Hospitality bien fait",
+  f3_p:"Loge, catering, régimes alimentaires, boissons et buy-out — la partie que la plupart des outils ignorent, avec des préréglages intelligents.",
+  f4_h:"Toutes les langues",
+  f4_p:"Un clic bascule tout le rider entre anglais, néerlandais, allemand, français et espagnol pour les dates à l'étranger.",
+  f5_h:"Export PDF soigné",
+  f5_p:"Mise en page A4 nette avec votre logo et votre couleur d'accent. On dirait que ça vient d'une société de production.",
+  f6_h:"Préréglages intelligents",
+  f6_p:"Ajoutez une liste d'entrées batterie complète, un texte PA/FOH/retours standard ou un bloc loge en un clic.",
+  how_h:"De zéro à envoyé en trois étapes",
+  how_lead:"Pensé pour la réalité des tournées.",
+  s1_h:"Décrivez ou collez",
+  s1_p:"Tapez votre setup ou collez votre rider existant. L'IA le structure pour vous.",
+  s2_h:"Ajustez & dessinez",
+  s2_p:"Affinez les détails, dessinez votre plan de scène, choisissez votre langue et vos couleurs.",
+  s3_h:"Exportez & envoyez",
+  s3_p:"Téléchargez un PDF propre et envoyez-le à la salle. Réutilisez-le pour le prochain concert.",
+  price_h:"Tarifs simples",
+  price_lead:"Commencez gratuitement. Payez quand vous tournez assez pour en avoir besoin.",
+  p1_h:"Gratuit", p1_1:"1 rider", p1_2:"Remplissage auto IA (basique)", p1_3:"PDF avec filigrane", p1_4:"Compte gratuit pour enregistrer vos riders", p1_cta:"Commencer gratuitement",
+  p2_tag:"Le plus populaire", p2_h:"Pro", p2_1:"Riders illimités", p2_2:"Sans filigrane + votre identité visuelle", p2_3:"Traduisez votre propre texte", p2_4:"Éditeur de plan de scène", p2_cta:"S'abonner",
+  p3_h:"Groupe", p3_1:"Plusieurs riders & tournées", p3_2:"Liens partageables pour les salles", p3_3:"Historique des versions", p3_cta:"S'abonner",
+  price_note:"Gratuit pendant la préversion — offres payantes bientôt.",
+  guides_h:"Guides &amp; ressources", guides_lead:"Des guides pratiques pour créer riders, plans de scène et listes d'entrées.",
+  fb_h:"Aidez à l'améliorer",
+  fb_p:"C'est une version préliminaire. Qu'est-ce qui manque ? Qu'est-ce qui vous ferait changer ? Deux lignes de retour aident vraiment.",
+  fb_cta:"Envoyer un retour",
+  foot:"Créé par un musicien en tournée · une préversion", foot_contact:"Contact", foot_open:"Ouvrir l'outil →",
+  founder_q:"J'ai créé RoboRider parce que j'en avais assez de refaire mon rider dans Word la veille d'un concert. Alors j'ai fait l'outil que j'aurais voulu avoir.",
+  founder_by:"Jurgen — musicien &amp; fondateur",
+  faq_h:"Questions fréquentes",
+  faq_q1:"C'est vraiment gratuit ?", faq_a1:"Oui — vous pouvez créer et exporter un rider complet gratuitement. Pro retire juste le petit filigrane et ajoute des extras ; pendant la préversion, tout est gratuit.",
+  faq_q2:"Ai-je besoin d'un compte ?", faq_a2:"Non — vous pouvez commencer tout de suite dans votre navigateur, sans compte. Si vous voulez enregistrer vos riders et les ouvrir sur tous vos appareils, créez simplement un compte gratuit.",
+  faq_q3:"Où vont mes données ?", faq_a3:"Par défaut, tout reste sur votre appareil. Si vous créez un compte et enregistrez un rider, seul ce rider est stocké en sécurité dans votre compte privé — personne d'autre ne peut le voir. Les statistiques de visite sont anonymes et sans cookies.",
+  faq_q4:"Qu'est-ce que j'obtiens — un fichier Word ?", faq_a4:"Un PDF propre et prêt à imprimer via « Enregistrer en PDF » de votre navigateur. Professionnel en couleur comme en noir et blanc.",
+  faq_q5:"Quelles langues ?", faq_a5:"Tout le rider bascule entre anglais, néerlandais, allemand, français et espagnol en un clic."
+ },
+ es:{
+  nav_try:"Abrir la herramienta",
+  hero_badge:"Para músicos y bandas de gira",
+  hero_h:"Tu rider técnico y de hospitality, <em>listo en minutos</em>",
+  hero_sub:"Deja de pelear con viejos archivos de Word. Crea un rider limpio y profesional — con plano de escenario de arrastrar y soltar y lista de entradas — y exporta un PDF pulido. En cualquier idioma.",
+  hero_cta1:"Crear mi rider — gratis",
+  hero_cta2:"Ver cómo funciona",
+  hero_sample:"Ver un rider de ejemplo",
+  show_h:"Esto es lo que enviarás",
+  show_lead:"Un rider limpio y coherente — portada, plano de escenario, lista de entradas y hospitality — exportado como PDF pulido.",
+  show_cta:"Abrir esto en la herramienta",
+  hero_note:"Empieza gratis en tu navegador — sin cuenta. Crea una cuenta gratuita para guardar tus riders y abrirlos en cualquier dispositivo.",
+  feat_h:"Todo lo que un rider necesita, nada de más",
+  feat_lead:"Creado por un músico de gira cansado de editar PDF la noche antes de un concierto.",
+  f1_h:"Autocompletado con IA",
+  f1_p:"Pega tu rider antiguo o describe tu setup — se rellenan todas las secciones, la lista de entradas y un primer plano de escenario.",
+  f2_h:"Plano de escenario de arrastrar y soltar",
+  f2_p:"Coloca batería, teclados, monitores, tarimas, DI y corriente en vista cenital. Arrastra, redimensiona, gira. Aparece en tu PDF.",
+  f3_h:"Hospitality bien hecho",
+  f3_p:"Camerino, catering, necesidades dietéticas, bebidas y buy-out — la parte que la mayoría de herramientas ignora, con ajustes inteligentes.",
+  f4_h:"Cualquier idioma",
+  f4_p:"Un clic cambia todo el rider entre inglés, neerlandés, alemán, francés y español para bolos en el extranjero.",
+  f5_h:"Exportación a PDF pulida",
+  f5_p:"Diseño A4 limpio con tu logo y color de acento. Parece de una productora.",
+  f6_h:"Ajustes inteligentes",
+  f6_p:"Añade una lista de entradas de batería completa, texto estándar de PA/FOH/monitores o un bloque de camerino en un clic.",
+  how_h:"De cero a enviado en tres pasos",
+  how_lead:"Hecho para cómo funcionan las giras de verdad.",
+  s1_h:"Describe o pega",
+  s1_p:"Escribe tu setup o pega tu rider existente. La IA lo estructura por ti.",
+  s2_h:"Ajusta y dibuja",
+  s2_p:"Ajusta los detalles, dibuja tu plano de escenario, elige idioma y colores.",
+  s3_h:"Exporta y envía",
+  s3_p:"Descarga un PDF limpio y envíalo a la sala. Reutilízalo para el próximo concierto.",
+  price_h:"Precios sencillos",
+  price_lead:"Empieza gratis. Paga cuando gires lo suficiente para necesitarlo.",
+  p1_h:"Gratis", p1_1:"1 rider", p1_2:"Autocompletado IA (básico)", p1_3:"PDF con marca de agua", p1_4:"Cuenta gratuita para guardar tus riders", p1_cta:"Empezar gratis",
+  p2_tag:"Más popular", p2_h:"Pro", p2_1:"Riders ilimitados", p2_2:"Sin marca de agua + tu marca", p2_3:"Traduce tu propio texto", p2_4:"Editor de plano de escenario", p2_cta:"Suscribirse",
+  p3_h:"Banda", p3_1:"Varios riders y giras", p3_2:"Enlaces para salas compartibles", p3_3:"Historial de versiones", p3_cta:"Suscribirse",
+  price_note:"Gratis durante la preview — los planes de pago llegan pronto.",
+  guides_h:"Guías y recursos", guides_lead:"Guías prácticas para crear riders, planos de escenario y listas de entradas.",
+  fb_h:"Ayuda a mejorarlo",
+  fb_p:"Esta es una versión inicial. ¿Qué falta? ¿Qué te haría cambiar? Dos líneas de feedback ayudan de verdad.",
+  fb_cta:"Enviar feedback",
+  foot:"Hecho por un músico de gira · una preview inicial", foot_contact:"Contacto", foot_open:"Abrir la herramienta →",
+  founder_q:"Creé RoboRider porque estaba harto de rehacer mi rider en Word la noche antes de un concierto. Así que hice la herramienta que deseaba que existiera.",
+  founder_by:"Jurgen — músico y fundador",
+  faq_h:"Preguntas frecuentes",
+  faq_q1:"¿Es realmente gratis?", faq_a1:"Sí — puedes crear y exportar un rider completo gratis. Pro solo quita la pequeña marca de agua y añade extras; durante la preview todo es gratis.",
+  faq_q2:"¿Necesito una cuenta?", faq_a2:"No — puedes empezar enseguida en tu navegador, sin cuenta. Si quieres guardar tus riders y abrirlos en cualquier dispositivo, crea una cuenta gratuita.",
+  faq_q3:"¿A dónde van mis datos?", faq_a3:"Por defecto todo queda en tu dispositivo. Si creas una cuenta y guardas un rider, solo ese rider se almacena de forma segura en tu cuenta privada — nadie más puede verlo. Las estadísticas de visitas son anónimas y sin cookies.",
+  faq_q4:"¿Qué obtengo — un archivo de Word?", faq_a4:"Un PDF limpio y listo para imprimir mediante «Guardar como PDF» de tu navegador. Se ve profesional en color y en blanco y negro.",
+  faq_q5:"¿Qué idiomas?", faq_a5:"Todo el rider cambia entre inglés, neerlandés, alemán, francés y español con un clic."
  }
 };
 let curLang="en";
+const GUIDES={
+  nl:[["rider-maken.html","Technische rider maken"],["stage-plot-maken.html","Stage plot maken"],["inputlijst-maken.html","Inputlijst maken"]],
+  en:[["rider-maken-en.html","Make a technical rider"],["stage-plot-maken-en.html","Make a stage plot"],["inputlijst-maken-en.html","Make an input list"]]
+};
 const RS_CAPS={en:["Cover","Stage plot","Input list","Hospitality"],nl:["Cover","Stageplot","Inputlijst","Hospitality"]};
 let rsI=0;const rsN=4;let rsTimer=null;
 function rsRender(){const t=document.getElementById("rsTrack");if(!t)return;t.style.transform="translateX("+(-rsI*100)+"%)";document.querySelectorAll("#rsDots button").forEach((d,i)=>d.classList.toggle("on",i===rsI));const caps=RS_CAPS[curLang]||RS_CAPS.en;const c=document.getElementById("rsCap");if(c)c.textContent="0"+(rsI+1)+" / 0"+rsN+" · "+caps[rsI];}
@@ -462,6 +639,8 @@ function setLang(l){
   document.documentElement.lang=l;curLang=l;rsRender();
   const d=T[l];
   document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(d[k]!==undefined)el.innerHTML=d[k];});
+  const g=(GUIDES[l]||GUIDES.en); const gg=document.getElementById("guidesGrid");
+  if(gg)gg.innerHTML=g.map(x=>'<a class="card" href="'+x[0]+'" style="text-decoration:none;display:block"><h3>'+x[1]+' →</h3></a>').join("");
   const subj=encodeURIComponent("RoboRider feedback");
   document.getElementById("fbMail").href="mailto:"+EMAIL+"?subject="+subj;
   document.getElementById("footMail").href="mailto:"+EMAIL;
