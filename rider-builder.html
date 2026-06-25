@@ -267,6 +267,7 @@
     <div style="padding:24px">
       <p id="proStatusLine" style="font-size:13px;color:var(--soft);margin:0 0 18px;line-height:1.5"></p>
       <button class="btn primary" style="width:100%" id="proSubBtn" onclick="proSubscribe()"></button>
+      <button class="btn ghost" style="width:100%;margin-top:8px;display:none" id="proLoginBtn" onclick="closeProModal();openAcctModal();"></button>
       <div style="text-align:center;font-family:var(--display);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:18px 0">— <span id="proOr"></span> —</div>
       <label class="fld" id="proKeyLbl"></label>
       <div style="display:flex;gap:8px">
@@ -487,7 +488,11 @@ function updateProUI(){
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
 function openProModal(){
   $("proTitle").textContent="RoboRider Pro";
-  $("proStatusLine").textContent=PRO?L("pro_status_on"):L("pro_status_free");
+  const needLogin = !!sb && !user && !PRO;
+  let status = PRO?L("pro_status_on"):L("pro_status_free");
+  if(needLogin) status += " " + L("pro_login_hint");
+  $("proStatusLine").textContent=status;
+  if($("proLoginBtn")){ $("proLoginBtn").textContent=L("pro_login_btn"); $("proLoginBtn").style.display=needLogin?"block":"none"; }
   $("proSubBtn").textContent=L("pro_sub_btn");
   $("proOr").textContent=L("pro_or");
   $("proKeyLbl").textContent=L("pro_key_lbl");
@@ -502,6 +507,7 @@ function closeProModal(){$("proModal").classList.remove("open");}
 function proSubscribe(){ if(CHECKOUT_URL.indexOf("REPLACE")>=0){$("proMsg").textContent=L("pro_soon");}else{window.open(CHECKOUT_URL,"_blank");} }
 async function proActivate(){
   const key=($("proKeyInput").value||"").trim(); if(!key){$("proMsg").textContent=L("pro_enter");return;}
+  if(sb && !user){ $("proMsg").textContent=L("pro_need_login"); setTimeout(function(){closeProModal();openAcctModal();},1000); return; }
   $("proMsg").textContent="⏳"; $("proActBtn").disabled=true;
   try{
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
@@ -524,8 +530,8 @@ try{
   }
 }catch(e){}
 
-Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone." });
-Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden." });
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account." });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account." });
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -538,8 +544,18 @@ async function initAuth(){
 }
 async function onAuthChange(){
   updateAccountUI();
-  if(user){ await loadProfilePro(); await refreshRiderList(); }
+  if(user){ await loadProfilePro(); const list=await refreshRiderList(); maybeAutoOpenLast(list); }
   else { currentRiderId=null; }
+}
+function isBlankState(){
+  try{ const b=blank(); b.lang=S.lang; const cur=Object.assign({},S); cur.lang=S.lang; return JSON.stringify(b)===JSON.stringify(cur); }
+  catch(e){ return false; }
+}
+function maybeAutoOpenLast(list){
+  if(currentRiderId) return;          // already working on a saved rider
+  if(!list||!list.length) return;     // nothing saved yet
+  if(!isBlankState()) return;         // don't overwrite work in progress
+  cloudLoad(list[0].id);              // open most recently updated rider
 }
 function updateAccountUI(){
   const b=$("btnAccount"); if(!b) return;
@@ -593,11 +609,11 @@ async function loadProfilePro(){
   }catch(e){}
 }
 async function refreshRiderList(){
-  if(!sb||!user) return;
-  const box=$("acctList"); if(!box) return;
+  if(!sb||!user) return null;
+  const box=$("acctList"); if(!box) return null;
   try{
     const {data}=await sb.from("riders").select("id,title,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false});
-    if(!data||!data.length){ box.innerHTML='<p class="hint" style="margin:0">'+esc(L("acct_empty"))+'</p>'; return; }
+    if(!data||!data.length){ box.innerHTML='<p class="hint" style="margin:0">'+esc(L("acct_empty"))+'</p>'; return data; }
     box.innerHTML=data.map(function(r){
       const d=new Date(r.updated_at); const ds=isNaN(d.getTime())?"":d.toLocaleDateString();
       return '<div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:13px">'
@@ -608,7 +624,8 @@ async function refreshRiderList(){
         +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudDelete(\''+r.id+'\')">'+esc(L("acct_delete"))+'</button>'
         +'</div>';
     }).join("");
-  }catch(e){ box.innerHTML=""; }
+    return data;
+  }catch(e){ box.innerHTML=""; return null; }
 }
 async function cloudSaveCurrent(){
   if(!sb||!user) return;
