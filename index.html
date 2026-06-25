@@ -54,7 +54,11 @@
   .hero h1{font-size:72px;line-height:1.02;letter-spacing:.5px;margin:0 0 26px;font-weight:300}
   .hero h1 em{font-style:italic;color:var(--clay)}
   .hero p.sub{font-size:18px;font-weight:300;color:var(--soft);max-width:600px;margin:0 auto 38px;line-height:1.7}
-  .hero-mark{width:200px;max-width:62%;margin:0 auto 30px;display:block}
+  .hero-mark{width:200px;max-width:62%;margin:0 auto 30px;display:block;animation:rr-float 5.5s ease-in-out infinite}
+  .hero-mark .eye{transform-box:fill-box;transform-origin:center;animation:rr-blink 6s ease-in-out infinite}
+  @keyframes rr-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes rr-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
+  @media (prefers-reduced-motion:reduce){.hero-mark,.hero-mark .eye{animation:none}}
   .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
@@ -190,8 +194,8 @@
       <line x1="30" y1="5.7" x2="32.6" y2="6.5" stroke="#ffffff" stroke-width="0.6" opacity="0.7" stroke-linecap="round"/>
       <rect x="11" y="18" width="42" height="30" fill="none" stroke="#1b1a17" stroke-width="2.8" stroke-linejoin="round"/>
       <rect x="11" y="45.6" width="42" height="2.4" fill="#1b1a17"/>
-      <rect x="17" y="24" width="11" height="9" fill="#1b1a17"/>
-      <rect x="36" y="24" width="11" height="9" fill="#1b1a17"/>
+      <rect class="eye" x="17" y="24" width="11" height="9" fill="#1b1a17"/>
+      <rect class="eye" x="36" y="24" width="11" height="9" fill="#1b1a17"/>
       <ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/>
     </g>
   </svg>
