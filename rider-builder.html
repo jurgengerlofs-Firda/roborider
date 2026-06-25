@@ -54,6 +54,18 @@
   .btn.ghost:hover{border-color:var(--ink)}
   .layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(380px,1.05fr);gap:0;height:calc(100vh - 69px)}
   .mobile-tabs{display:none}
+  #secNav,#stepNav{display:none}
+  @media(max-width:820px){
+    body.stepmode #secNav{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:43px;z-index:20;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--hair);margin:0 0 16px}
+    body.stepmode #secNav .secchip{flex:0 0 auto;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 12px;font-family:var(--display);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--soft);white-space:nowrap;cursor:pointer}
+    body.stepmode #secNav .secchip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+    body.stepmode #formMount details.sec{display:none}
+    body.stepmode #formMount details.sec.step-active{display:block}
+    body.stepmode #formMount details.sec.step-active>summary{pointer-events:none}
+    body.stepmode #formMount details.sec.step-active>summary .chev{display:none}
+    body.stepmode #stepNav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+    body.stepmode #stepNav .btn{flex:1;padding:13px 10px}
+  }
   @media(max-width:860px){
     .topbar{position:static;padding:12px 16px;gap:8px 10px;row-gap:8px}
     .logo{font-size:16px;letter-spacing:3px}
@@ -258,7 +270,9 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
   <div class="editor" id="editor">
     <div id="onboard" class="onboard" style="display:none"></div>
     <div class="ai-box" id="wizard"></div>
+    <div id="secNav"></div>
     <div id="formMount"></div>
+    <div id="stepNav"></div>
   </div>
   <div class="preview-wrap">
     <div id="preview" class="doc"></div>
@@ -564,8 +578,8 @@ try{
 }catch(e){}
 function genToken(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 
-Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account." });
-Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account." });
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account.", step_prev:"Back", step_next:"Next", step_preview:"Preview" });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account.", step_prev:"Terug", step_next:"Volgende", step_preview:"Voorbeeld" });
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -821,9 +835,48 @@ function setView(v){
   const te=$("tabEdit"),tp=$("tabPreview");
   if(te)te.classList.toggle("on",v==="edit");
   if(tp)tp.classList.toggle("on",v==="preview");
-  if(v==="preview")renderPreview();
+  if(v==="preview")renderPreview(); else applySteps();
   window.scrollTo(0,0);
 }
+
+/* ===================== Mobile section stepper ===================== */
+let curStep=0, _stepRT;
+function isStepMode(){ try{return window.matchMedia("(max-width:820px)").matches;}catch(e){return false;} }
+function applySteps(){
+  const mount=$("formMount"); if(!mount) return;
+  const secs=Array.prototype.slice.call(mount.querySelectorAll("details.sec"));
+  const nav=$("secNav"), bottom=$("stepNav");
+  if(!secs.length || !isStepMode() || document.body.classList.contains("shared")){
+    document.body.classList.remove("stepmode");
+    secs.forEach(s=>s.classList.remove("step-active"));
+    if(nav)nav.innerHTML=""; if(bottom)bottom.innerHTML="";
+    return;
+  }
+  document.body.classList.add("stepmode");
+  if(curStep>secs.length-1)curStep=secs.length-1;
+  if(curStep<0)curStep=0;
+  if(nav){
+    nav.innerHTML=secs.map(function(s,i){
+      const sm=s.querySelector("summary");
+      const t=sm?sm.textContent.replace(/^\s*\d+\s*/,"").replace("›","").trim():("Sectie "+(i+1));
+      return '<button class="secchip'+(i===curStep?' on':'')+'" onclick="goStep('+i+')">'+(i+1)+'. '+esc(t)+'</button>';
+    }).join("");
+  }
+  secs.forEach(function(s,i){ const a=i===curStep; s.classList.toggle("step-active",a); if(a)s.open=true; });
+  if(bottom){
+    let html = curStep>0
+      ? '<button class="btn ghost" onclick="goStep('+(curStep-1)+')">‹ '+esc(L("step_prev"))+'</button>'
+      : '<span style="flex:1"></span>';
+    html += curStep<secs.length-1
+      ? '<button class="btn primary" onclick="goStep('+(curStep+1)+')">'+esc(L("step_next"))+' ›</button>'
+      : '<button class="btn primary" onclick="setView(\'preview\')">'+esc(L("step_preview"))+' ›</button>';
+    bottom.innerHTML=html;
+  }
+  const on=nav?nav.querySelector(".secchip.on"):null;
+  if(on&&on.scrollIntoView){ try{on.scrollIntoView({inline:"center",block:"nearest"});}catch(e){} }
+}
+function goStep(i){ curStep=i; applySteps(); try{window.scrollTo(0,0);}catch(e){} }
+window.addEventListener("resize",function(){ clearTimeout(_stepRT); _stepRT=setTimeout(applySteps,150); });
 
 /* ===================== Form ===================== */
 function field(label,val,path,opts={}){
@@ -925,6 +978,7 @@ function renderForm(){
   renderRepeats();
   bindInputs();
   if($("editor"))$("editor").scrollTop=scrollY;
+  applySteps();
 }
 
 function renderRepeats(){
