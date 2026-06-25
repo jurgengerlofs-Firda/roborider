@@ -218,13 +218,23 @@
   <button class="btn ghost" id="btnNew" onclick="newDoc()"></button>
   <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
   <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
-  <button class="btn" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
+  <button class="btn" id="btnAI" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
   <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
+  <button class="btn" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
   <button class="btn" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
 </div>
+<div id="sharedBar" style="display:none;background:var(--ink);color:var(--bg);padding:11px 16px;font-family:var(--display);font-size:12px;letter-spacing:.4px;text-align:center">
+  <span id="sharedBarTxt"></span> · <a href="index.html" id="sharedBarCta" style="color:var(--bg);text-decoration:underline"></a>
+</div>
+<style>
+body.shared #btnNew,body.shared #btnExample,body.shared #btnTranslate,body.shared #btnAI,body.shared #btnPro,body.shared #btnAccount,body.shared #btnCloudSave,body.shared #btnOpen,body.shared #btnSave,body.shared #saveStatus,body.shared .mobile-tabs,body.shared #wizard,body.shared #onboard{display:none !important;}
+body.shared .editor{display:none !important;}
+body.shared .layout{display:block !important;}
+body.shared .preview-wrap{max-width:900px;margin:0 auto;}
+</style>
 
 <div class="mobile-tabs">
   <button id="tabEdit" class="on" onclick="setView('edit')"></button>
@@ -295,6 +305,14 @@
       </div>
       <div id="acctIn" style="display:none">
         <p id="acctWho" style="font-size:13px;color:var(--soft);margin:0 0 16px;line-height:1.5"></p>
+        <label class="fld" id="acctLangLbl"></label>
+        <select id="acctLang" onchange="setAcctLang(this.value)" style="width:100%;margin-bottom:16px">
+          <option value="en">English</option>
+          <option value="nl">Nederlands</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
         <label class="fld" id="acctSaveLbl"></label>
         <div style="display:flex;gap:8px">
           <input type="text" id="acctRiderName" style="flex:1" placeholder="">
@@ -524,14 +542,16 @@ async function proActivate(){
 const SUPABASE_URL = "https://pjrwxylxgjipgxyimmdj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_nE4gTwS14iIIiOeZRZhxAA_ASBNu2gd";
 let sb=null, user=null, currentRiderId=null;
+let sharedMode = /[?&]share=/.test(location.search);  // viewing a shared rider (read-only)
 try{
   if(window.supabase && SUPABASE_URL.indexOf("REPLACE")<0){
     sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 }catch(e){}
+function genToken(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 
-Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account." });
-Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account." });
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account." });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account." });
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -552,16 +572,19 @@ function isBlankState(){
   catch(e){ return false; }
 }
 function maybeAutoOpenLast(list){
+  if(sharedMode) return;              // viewing a shared rider — don't override
   if(currentRiderId) return;          // already working on a saved rider
   if(!list||!list.length) return;     // nothing saved yet
   if(!isBlankState()) return;         // don't overwrite work in progress
   cloudLoad(list[0].id);              // open most recently updated rider
 }
 function updateAccountUI(){
-  const b=$("btnAccount"); if(!b) return;
-  if(!sb){ b.style.display="none"; return; }
+  const b=$("btnAccount"); const cs=$("btnCloudSave");
+  if(!b) return;
+  if(!sb || sharedMode){ b.style.display="none"; if(cs)cs.style.display="none"; return; }
   b.style.display="";
   b.textContent = user ? ("✓ "+L("acct_btn_in")) : L("acct_btn_out");
+  if(cs){ cs.style.display = user ? "" : "none"; cs.textContent = "☁ "+L("acct_cloud_save"); }
 }
 function openAcctModal(){
   if(!sb) return;
@@ -569,6 +592,7 @@ function openAcctModal(){
   $("acctIntro").textContent=L("acct_intro");
   $("acctEmailLbl").textContent=L("acct_email");
   $("acctSendBtn").textContent=L("acct_send");
+  $("acctLangLbl").textContent=L("acct_lang");
   $("acctSaveLbl").textContent=L("acct_save_lbl");
   $("acctSaveBtn").textContent=L("acct_save_btn");
   $("acctLogoutBtn").textContent=L("acct_logout");
@@ -578,6 +602,7 @@ function openAcctModal(){
   $("acctIn").style.display=inq?"block":"none";
   if(inq){
     $("acctWho").textContent=L("acct_who").replace("{email}", user.email||"");
+    if($("acctLang")) $("acctLang").value=S.lang;
     if(!$("acctRiderName").value) $("acctRiderName").value=(S.band&&S.band.name)||"";
     refreshRiderList();
   }
@@ -604,10 +629,14 @@ async function signOut(){
 async function loadProfilePro(){
   if(!sb||!user) return;
   try{
-    const {data}=await sb.from("profiles").select("is_pro").eq("id",user.id).maybeSingle();
-    if(data&&data.is_pro){ PRO=true; updateProUI(); renderPreview(); }
+    const {data}=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
+    if(data){
+      if(data.is_pro){ PRO=true; updateProUI(); renderPreview(); }
+      if(data.lang && data.lang!==S.lang){ setLang(data.lang); }  // open in the user's preferred language
+    }
   }catch(e){}
 }
+function setAcctLang(v){ setLang(v); }  // setLang persists to the profile when logged in
 async function refreshRiderList(){
   if(!sb||!user) return null;
   const box=$("acctList"); if(!box) return null;
@@ -621,6 +650,7 @@ async function refreshRiderList(){
         +'<span style="color:var(--muted);font-size:11px;flex:0 0 auto">'+ds+'</span>'
         +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudLoad(\''+r.id+'\')">'+esc(L("acct_load"))+'</button>'
         +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudRename(\''+r.id+'\')">'+esc(L("acct_rename"))+'</button>'
+        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudShare(\''+r.id+'\')">'+esc(L("acct_share"))+'</button>'
         +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudDelete(\''+r.id+'\')">'+esc(L("acct_delete"))+'</button>'
         +'</div>';
     }).join("");
@@ -656,6 +686,48 @@ async function cloudRename(id){
 async function cloudDelete(id){
   if(!confirm(L("acct_delete_q"))) return;
   try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) currentRiderId=null; refreshRiderList(); }catch(e){}
+}
+function flashCloud(){const e=$("saveStatus");if(!e)return;e.textContent="☁ "+L("acct_saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},1800);}
+async function cloudSaveQuick(){
+  if(!sb||!user){ openAcctModal(); return; }
+  const title=((S.band&&S.band.name)||L("acct_untitled"));
+  try{
+    if(currentRiderId){
+      await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
+    }else{
+      const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
+      if(data) currentRiderId=data.id;
+    }
+    flashCloud();
+  }catch(e){}
+}
+async function cloudShare(id){
+  if(!sb||!user) return;
+  try{
+    let {data}=await sb.from("riders").select("share_id").eq("id",id).single();
+    let token=data&&data.share_id;
+    if(!token){ token=genToken(); await sb.from("riders").update({share_id:token}).eq("id",id); }
+    const url=location.origin+location.pathname+"?share="+token;
+    try{ await navigator.clipboard.writeText(url); $("acctMsg").textContent=L("acct_share_copied"); }
+    catch(_){ prompt(L("acct_share_prompt"), url); }
+  }catch(e){ $("acctMsg").textContent=L("acct_err"); }
+}
+async function tryOpenShared(){
+  if(!sb) return false;
+  const m=location.search.match(/[?&]share=([^&]+)/); if(!m) return false;
+  const token=decodeURIComponent(m[1]);
+  try{
+    const {data}=await sb.rpc("get_shared_rider",{token:token});
+    const row=Array.isArray(data)?data[0]:data;
+    if(row&&row.data){
+      S=Object.assign(blank(),row.data); selPlot=null;
+      document.body.classList.add("shared");
+      const bar=$("sharedBar"); if(bar){ $("sharedBarTxt").textContent=L("shared_banner"); $("sharedBarCta").textContent=L("shared_cta"); bar.style.display="block"; }
+      applyChrome(); renderForm(); renderPreview();
+      return true;
+    }
+  }catch(e){}
+  return false;
 }
 
 /* ===================== Helpers ===================== */
@@ -696,7 +768,7 @@ function applyChrome(){
   buildPalette();
   document.documentElement.lang=S.lang;
 }
-function setLang(v){S.lang=v; applyChrome(); renderForm(); renderPreview();}
+function setLang(v){S.lang=v; applyChrome(); renderForm(); renderPreview(); if(typeof sb!=="undefined"&&sb&&user){try{sb.from("profiles").update({lang:v}).eq("id",user.id);}catch(e){}}}
 function setView(v){
   const l=$("layout");if(!l)return;
   l.classList.toggle("show-edit",v==="edit");
@@ -1527,6 +1599,7 @@ renderForm();
 renderPreview();
 if(/demo/i.test(location.search+location.hash)) loadExample();
 initAuth();
+if(sharedMode) tryOpenShared();
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
