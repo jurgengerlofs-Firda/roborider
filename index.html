@@ -59,6 +59,13 @@
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
   .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
+  .hero-shot{max-width:980px;margin:56px auto 0;padding:0 4px}
+  .bframe{border:1px solid var(--hair);border-radius:11px;overflow:hidden;background:#fff;box-shadow:0 34px 70px -34px rgba(27,26,23,.38)}
+  .bbar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#eceae3;border-bottom:1px solid var(--hair)}
+  .bbar>span{width:11px;height:11px;border-radius:50%;background:#cfcabf}
+  .burl{margin-left:14px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--hair);border-radius:6px;padding:5px 14px;flex:1;max-width:360px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hero-shot img{display:block;width:100%;height:auto}
+  @media(max-width:640px){.burl{display:none}.hero-shot{margin-top:40px}}
   /* sections */
   section{padding:96px 0}
   h2.sec{font-size:40px;letter-spacing:.5px;text-align:center;margin:0 0 14px;font-weight:300}
@@ -196,6 +203,12 @@
     <a class="btn outline" href="rider-builder.html?demo=1" data-i="hero_sample">See a sample rider</a>
   </div>
   <div class="note" data-i="hero_note"></div>
+  <div class="hero-shot">
+    <div class="bframe">
+      <div class="bbar"><span></span><span></span><span></span><div class="burl">roborider.nl/rider-builder.html</div></div>
+      <img src="builder-shot.png" alt="RoboRider builder: answer a few questions and get a stage plot and input list" loading="lazy" onerror="this.closest('.hero-shot').style.display='none'">
+    </div>
+  </div>
 </div></header>
 
 <section class="showcase"><div class="wrap">

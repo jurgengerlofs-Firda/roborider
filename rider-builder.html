@@ -1609,7 +1609,7 @@ function loadExample(){
   S.backline=_pick(["We bring our own backline.","House backline requested — list on advance.","Mostly our own; drum shells from house."]);
   S.inputs=[];
   const add=(input,micdi,p48,pos,notes)=>S.inputs.push({ch:"",input:input,micdi:micdi||"",p48:p48||"",stand:"",pos:pos||"",notes:notes||""});
-  if(members.includes("drums")){add("Kick","Mic","","Drums");add("Snare","SM57","","Drums");add("Hihat","Mic","X","Drums");add("OH L","Mic","X","Drums");add("OH R","Mic","X","Drums");}
+  if(members.includes("drums")){add("Kick","Mic","","Drums");add("Snare","Mic","","Drums");add("Hihat","Mic","X","Drums");add("OH L","Mic","X","Drums");add("OH R","Mic","X","Drums");}
   if(members.includes("bass")) add("Bass DI","DI","","Bass");
   if(members.includes("guitar")||members.includes("lead-guitar")) add("Guitar","XLR","","Guitar");
   if(members.includes("guitar2")) add("Guitar 2","XLR","","Guitar");
