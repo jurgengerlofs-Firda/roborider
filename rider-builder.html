@@ -83,9 +83,14 @@
     .layout.show-preview .preview-wrap{display:block}
     .editor{padding:22px 18px 70px;border-right:none}
     .preview-wrap{padding:14px}
-    .page{padding:32px 24px}
-    .doc-cover{padding:36px 24px}
-    .doc-band{font-size:46px;letter-spacing:2px}
+    .preview-wrap{padding:12px}
+    .page{padding:26px 18px;max-width:100%;overflow:hidden}
+    .doc-cover{padding:32px 20px}
+    .doc-band{font-size:38px;letter-spacing:1px;word-break:break-word;line-height:1.05}
+    .doc,.page{overflow-wrap:anywhere}
+    table.grid{table-layout:fixed;font-size:10px}
+    table.grid th,table.grid td{padding:5px 4px;word-break:break-word;overflow-wrap:anywhere}
+    .contact-grid{grid-template-columns:1fr 1fr;gap:14px 16px}
     .row{flex-wrap:wrap}
     .modal-head{padding:12px 14px;gap:8px}
     .stage-scroll{padding:12px}
@@ -370,7 +375,7 @@ const I18N = {
     tagline:"Rider Builder · demo", lang_label:"Language",
     btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
-    pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Subscribe — €7 / month", pro_or:"or", pro_key_lbl:"Already subscribed? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
+    pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Unlock Pro — €29 once", pro_or:"or", pro_key_lbl:"Already bought Pro? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
@@ -418,7 +423,7 @@ const I18N = {
     tagline:"Rider Builder · demo", lang_label:"Taal",
     btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
-    pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Abonneren — €7 / maand", pro_or:"of", pro_key_lbl:"Al geabonneerd? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
+    pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Pro ontgrendelen — eenmalig €29", pro_or:"of", pro_key_lbl:"Pro al gekocht? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
@@ -529,7 +534,7 @@ let S = blank();
 
 /* ===================== Pro / subscription (Lemon Squeezy) ===================== */
 /* After you create your Lemon Squeezy product, paste its checkout link below. */
-const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/c443be65-e05f-4ee8-a9fd-e4d61fa8b9df";
+const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/2b8a1b31-eb3b-4c33-a8b2-2dc7608d89fa";
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
   const b=$("btnPro");
