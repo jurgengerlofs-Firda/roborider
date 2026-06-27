@@ -246,12 +246,25 @@
   .plot-tools button{width:46px;height:46px;border:1px solid var(--hair);background:#fff;font-size:18px;color:var(--ink);border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
   .plot-tools button:active{background:var(--paper2)}
   .plot-tools .pt-del{border-color:#c98b8b;color:#a85a5a}
+  .pal-toggle{display:none}
+  .rotate-tip{display:none}
   @media(max-width:820px){
     .modal{width:100vw;height:100dvh;max-width:none;max-height:none}
     .stage-scroll{flex:1;padding:12px}
-    .palette{gap:6px;padding:10px 14px}
-    .palette button{padding:9px 11px}
+    .palette{display:none;gap:6px;padding:10px 14px;max-height:42vh;overflow:auto;border-bottom:1px solid var(--hair)}
+    #plotModal.pal-open .palette{display:flex}
+    .palette button{padding:11px 12px;font-size:11px}
+    .pal-toggle{display:block;width:calc(100% - 32px);margin:12px 16px 0;padding:13px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);
+      font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+    #plotModal.pal-open .pal-toggle{background:var(--bg);color:var(--ink)}
+    .plot-bar .plot-hint{display:none}
+    .plot-list{display:none}
+    .rotate-tip{display:block;text-align:center;font-size:11px;color:var(--muted);padding:7px 12px 2px}
+    .plot-tools{position:fixed;left:0;right:0;bottom:0;z-index:120;border-top:1px solid var(--hair);box-shadow:0 -10px 26px -18px rgba(0,0,0,.55)}
     .pl-ctl,.pl-resize{display:none!important}
+  }
+  @media(max-width:820px) and (orientation:landscape){
+    .rotate-tip{display:none}
   }
   @media print{
     .topbar,.editor,.ai-box,.mobile-tabs{display:none!important}
@@ -332,6 +345,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
       <button class="btn ghost" id="plotClear" onclick="clearPlot()"></button>
       <button class="btn primary" id="plotDone" onclick="closePlotModal()"></button>
     </div>
+    <button type="button" class="pal-toggle" id="plotAddBtn" onclick="togglePalette()">+ <span id="plotAddLbl">Add element</span></button>
     <div class="palette" id="plotPalette"></div>
     <div class="plot-bar">
       <div class="plot-hint" id="plotHint"></div>
@@ -341,6 +355,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
         <button type="button" onclick="plotZoomBy(0.25)" aria-label="Zoom in">+</button>
       </div>
     </div>
+    <div class="rotate-tip" id="rotateTip"></div>
     <div class="stage-scroll" id="stageScroll">
       <div class="stagecanvas" id="stagecanvas" onclick="if(event.target===this){selPlot=null;highlightSel();}">
         <div class="stage-front" id="stageFront"></div>
@@ -476,6 +491,7 @@ const I18N = {
     plot_audience:"AUDIENCE / FRONT OF STAGE", plot_has:"Drawn stage plot active ✓",
     plot_hint:"Click an element to add it, then drag to position. Drag the corner handle to resize, ↻ to rotate, × to delete.",
     plot_or_upload:"…or upload a stage plot image instead",
+    plot_add:"Add element", plot_rotate:"↻ Turn your phone sideways for more room",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bass", pt_guitar:"Guitar", pt_vocal:"Vocal/Lead", pt_riser:"Riser",
     pt_monitor:"Monitor", pt_amp:"Amp", pt_di:"DI box", pt_power:"Power 230V", pt_mic:"Mic", pt_perc:"Perc", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Stool", pt_mstand:"Music stand", pt_laptop:"Laptop", pt_text:"Text label"
   },
@@ -522,6 +538,7 @@ const I18N = {
     plot_audience:"PUBLIEK / VOORKANT PODIUM", plot_has:"Getekende stageplot actief ✓",
     plot_hint:"Klik een element om het toe te voegen, sleep om te plaatsen. Sleep de hoek om te schalen, ↻ om te draaien, × om te verwijderen.",
     plot_or_upload:"…of upload in plaats daarvan een stageplot-afbeelding",
+    plot_add:"Element toevoegen", plot_rotate:"↻ Draai je telefoon voor meer ruimte",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bas", pt_guitar:"Gitaar", pt_vocal:"Zang/Lead", pt_riser:"Riser",
     pt_monitor:"Monitor", pt_amp:"Versterker", pt_di:"DI-box", pt_power:"Stroom 230V", pt_mic:"Microfoon", pt_perc:"Percussie", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Kruk", pt_mstand:"Muziekstandaard", pt_laptop:"Laptop", pt_text:"Tekstlabel"
   },
@@ -897,6 +914,8 @@ function applyChrome(){
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
   $("plotHint").textContent=L("plot_hint");
+  if($("plotAddLbl"))$("plotAddLbl").textContent=L("plot_add");
+  if($("rotateTip"))$("rotateTip").textContent=L("plot_rotate");
   $("stageFront").textContent=L("plot_audience");
   buildPalette();
   document.documentElement.lang=S.lang;
@@ -955,7 +974,17 @@ function applySteps(){
   const on=nav?nav.querySelector(".secchip.on"):null;
   if(on&&on.scrollIntoView){ try{on.scrollIntoView({inline:"center",block:"nearest"});}catch(e){} }
 }
-function goStep(i){ curStep=i; applySteps(); try{window.scrollTo(0,0);}catch(e){} }
+function goStep(i){ curStep=i; applySteps();
+  try{
+    if(isStepMode()){
+      const tabs=document.querySelector(".mobile-tabs"), nav=$("secNav");
+      const off=(tabs?tabs.offsetHeight:0)+(nav?nav.offsetHeight:0)+10;
+      const fm=document.querySelector("#formMount details.sec.step-active")||$("formMount");
+      const y=window.pageYOffset+fm.getBoundingClientRect().top-off;
+      window.scrollTo(0,Math.max(0,y));
+    } else { window.scrollTo(0,0); }
+  }catch(e){ try{window.scrollTo(0,0);}catch(_){}}
+}
 window.addEventListener("resize",function(){ clearTimeout(_stepRT); _stepRT=setTimeout(applySteps,150); });
 
 /* ===================== Form ===================== */
@@ -1280,8 +1309,10 @@ function addPlotItem(type){
   const d=PLOT_TYPES[type];
   S.plot.items.push({id:uid(),type,label:d.lbl,x:50,y:42,w:d.w,h:d.h,rot:0});
   selPlot=S.plot.items[S.plot.items.length-1].id;
+  const m=$("plotModal");if(m)m.classList.remove("pal-open");
   renderPlotEditor();renderPreview();
 }
+function togglePalette(){const m=$("plotModal");if(m)m.classList.toggle("pal-open");}
 function buildPalette(){
   const p=$("plotPalette");if(!p)return;
   p.innerHTML=Object.keys(PLOT_TYPES).map(tp=>`<button onclick="addPlotItem('${tp}')">+ ${L('pt_'+tp)}</button>`).join("");
