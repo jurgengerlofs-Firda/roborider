@@ -722,23 +722,23 @@ rsStart();
 </div>
 <style>
 #rrInstallPill{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;
-  display:flex;align-items:center;gap:12px;max-width:min(92vw,460px);
+  display:flex;align-items:center;gap:14px;max-width:min(92vw,440px);
   background:#fff;border:1px solid #1b1a17;box-shadow:0 18px 40px -20px rgba(27,26,23,.45);
-  padding:11px 12px 11px 16px;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;color:#1b1a17;line-height:1.4}
-#rrInstallPill span{flex:1}
+  padding:12px 12px 12px 18px;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;color:#1b1a17;line-height:1.45}
+#rrPillText{flex:1}
 #rrPillBtn{font-family:'Jost','Inter',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
-  background:#1b1a17;color:#f3f1ec;border:0;padding:10px 14px;white-space:nowrap;cursor:pointer}
-#rrPillX{background:none;border:0;font-size:20px;line-height:1;color:#6b665d;cursor:pointer;padding:0 4px}
+  background:#1b1a17;color:#f3f1ec;border:0;padding:11px 16px;white-space:nowrap;cursor:pointer}
+#rrPillX{background:none;border:0;font-size:20px;line-height:1;color:#6b665d;cursor:pointer;padding:0 4px;flex:0 0 auto}
 @media(max-width:520px){#rrInstallPill{left:12px;right:12px;transform:none;max-width:none}}
 </style>
 <script>
 (function(){
   var T={
-    en:{btn:"Install app",ios:'Install RoboRider: tap Share, then “Add to Home Screen”.'},
-    nl:{btn:"App installeren",ios:'Installeer RoboRider: tik op Delen en dan ‘Zet op beginscherm’.'},
-    de:{btn:"App installieren",ios:'RoboRider installieren: auf Teilen tippen, dann „Zum Home-Bildschirm“.'},
-    fr:{btn:"Installer l’app",ios:'Installer RoboRider : appuyez sur Partager, puis « Sur l’écran d’accueil ».'},
-    es:{btn:"Instalar app",ios:'Instala RoboRider: toca Compartir y luego « Añadir a inicio ».'}
+    en:{title:"Install RoboRider as an app",btn:"Install",ios:'Install as an app: tap Share, then “Add to Home Screen”.'},
+    nl:{title:"Installeer RoboRider als app",btn:"Installeer",ios:'Installeer als app: tik op Delen en dan ‘Zet op beginscherm’.'},
+    de:{title:"RoboRider als App installieren",btn:"Installieren",ios:'Als App installieren: auf Teilen tippen, dann „Zum Home-Bildschirm“.'},
+    fr:{title:"Installer RoboRider comme appli",btn:"Installer",ios:'Installer comme appli : appuyez sur Partager, puis « Sur l’écran d’accueil ».'},
+    es:{title:"Instala RoboRider como app",btn:"Instalar",ios:'Instala como app: toca Compartir y luego « Añadir a inicio ».'}
   };
   function lang(){
     try{var k=localStorage.getItem('rr_lang')||localStorage.getItem('lang')||localStorage.getItem('roborider_lang');if(k&&T[k])return k;}catch(e){}
@@ -746,9 +746,11 @@ rsStart();
     var n=(navigator.language||'en').slice(0,2);return T[n]?n:'en';
   }
   var t=T[lang()];
-  var standalone=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  var standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   var dismissed=false;try{dismissed=localStorage.getItem('rr_pwa_hint')==='off';}catch(e){}
-  if(standalone||dismissed)return;
+  // Only offer install on touch devices (phones/tablets); skip desktop.
+  var isTouch=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1);
+  if(standalone||dismissed||!isTouch)return;
   var pill=document.getElementById('rrInstallPill'),
       txt=document.getElementById('rrPillText'),
       btn=document.getElementById('rrPillBtn'),
@@ -759,7 +761,7 @@ rsStart();
   var deferred=null;
   window.addEventListener('beforeinstallprompt',function(e){
     e.preventDefault();deferred=e;
-    txt.textContent='';btn.textContent=t.btn;btn.style.display='';pill.hidden=false;
+    txt.textContent=t.title;btn.textContent=t.btn;btn.style.display='';pill.hidden=false;
   });
   btn.addEventListener('click',function(){
     if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(){close();});deferred=null;
