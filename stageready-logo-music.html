@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StageReady — Music marks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1b1a17;--bg:#f3f1ec;--card:#fff;--hair:#ded9ce;--muted:#a39d92;--clay:#9a7257;
+    --disp:'Jost',sans-serif;--sans:'Inter',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 30px 90px}
+  .head{border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline}
+  .head h1{font-family:var(--disp);font-weight:300;font-size:28px;letter-spacing:1px;margin:0}
+  .lbl{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+  .intro{color:#56544d;font-size:14px;max-width:64ch;margin:0 0 40px;line-height:1.7}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--hair);border-left:1px solid var(--hair)}
+  @media(max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .cell{border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:32px 22px;text-align:center}
+  .cell svg{width:66px;height:66px;color:var(--ink)}
+  .cell .no{font-family:var(--disp);font-size:9px;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:20px}
+  .cell .nm{font-family:var(--disp);font-weight:400;font-size:13px;letter-spacing:1px;margin:20px 0 4px}
+  .cell .ds{font-size:11.5px;color:#7a7468;line-height:1.5}
+  h2.sec{font-family:var(--disp);font-weight:300;font-size:20px;letter-spacing:.5px;margin:50px 0 18px;border-top:1px solid var(--hair);padding-top:24px}
+  .locks{display:flex;flex-direction:column;border:1px solid var(--hair)}
+  .lock{display:flex;align-items:center;gap:20px;padding:26px 30px;border-bottom:1px solid var(--hair)}
+  .lock:last-child{border-bottom:none}
+  .lock svg{width:50px;height:50px;color:var(--ink);flex:0 0 50px}
+  .lock .word{font-family:var(--disp);font-weight:300;font-size:34px;letter-spacing:6px}
+  .lock .tag{margin-left:auto;font-family:var(--disp);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .note{font-size:13px;color:#56544d;line-height:1.7;max-width:62ch;margin-top:18px}
+  .ec{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+  .ec2{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+  .ef{fill:currentColor}
+  .clay{fill:var(--clay)} .clayst{stroke:var(--clay)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><h1>StageReady — music marks</h1><span class="lbl">Round 2</span></div>
+  <p class="intro">Your favourites (stage plan, spotlight, riser) each fused with a clear musical cue — a note, a soundwave, a microphone, piano keys. Same language: Jost light, ink + clay, squared.</p>
+
+  <div class="grid">
+
+    <div class="cell"><span class="no">09</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="14" y="16" width="36" height="30"/><rect class="ef" x="14" y="43.5" width="36" height="2.5"/>
+        <rect class="ef" x="20" y="31" width="4" height="11"/><rect class="ef" x="27" y="25" width="4" height="17"/><rect class="clay" x="34" y="28" width="4" height="14"/><rect class="ef" x="41" y="35" width="4" height="7"/></svg>
+      <div class="nm">Stage · levels</div><div class="ds">Top-down stage with soundcheck bars inside.</div>
+    </div>
+
+    <div class="cell"><span class="no">10</span>
+      <svg viewBox="0 0 64 64"><path class="ec" d="M32 11 L46 41 L18 41 Z"/>
+        <ellipse class="clay" cx="28.5" cy="49.5" rx="4.6" ry="3.6"/><rect class="ef" x="31.5" y="35" width="2.4" height="13.5"/><path class="ef" d="M33.9 35 q6 1.5 4.5 8 q0.4-4.5-4.5-5.4 Z"/></svg>
+      <div class="nm">Spotlight · note</div><div class="ds">A beam, with the note caught in the light.</div>
+    </div>
+
+    <div class="cell"><span class="no">11</span>
+      <svg viewBox="0 0 64 64"><rect class="ef" x="13" y="42" width="38" height="8"/><rect class="ef" x="19" y="32" width="26" height="8"/><rect class="ef" x="25" y="22" width="14" height="8"/>
+        <ellipse class="clay" cx="28" cy="18" rx="4" ry="3.1"/><rect class="ef" x="30.6" y="6" width="2.2" height="12"/><path class="ef" d="M32.8 6 q5 1.2 3.6 6.6 q0.4-3.6-3.6-4.4 Z"/></svg>
+      <div class="nm">Riser · note</div><div class="ds">Stage built; a note standing centre stage.</div>
+    </div>
+
+    <div class="cell"><span class="no">12</span>
+      <svg viewBox="0 0 64 64"><path class="ec2" d="M32 9 L43 30 L21 30 Z"/>
+        <circle class="ec" cx="32" cy="39" r="7.5"/><line class="ec2" x1="26.5" y1="36.5" x2="37.5" y2="36.5"/><line class="ec2" x1="26.5" y1="40.5" x2="37.5" y2="40.5"/><circle class="clay" cx="32" cy="39" r="2.4"/><line class="ec" x1="32" y1="46.5" x2="32" y2="53"/><line class="ec" x1="25" y1="53.5" x2="39" y2="53.5"/></svg>
+      <div class="nm">Spotlight · mic</div><div class="ds">Beam landing on the microphone. Unmistakably live.</div>
+    </div>
+
+    <div class="cell"><span class="no">13</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="14" y="14" width="36" height="36"/>
+        <line class="ec2" x1="20" y1="40" x2="20" y2="49"/><line class="ec2" x1="26" y1="40" x2="26" y2="49"/><line class="ec2" x1="32" y1="40" x2="32" y2="49"/><line class="ec2" x1="38" y1="40" x2="38" y2="49"/><line class="ec2" x1="44" y1="40" x2="44" y2="49"/>
+        <rect class="clay" x="22.6" y="40" width="3.2" height="6"/><rect class="clay" x="34.6" y="40" width="3.2" height="6"/></svg>
+      <div class="nm">Stage · keys</div><div class="ds">Stage whose front edge is a keyboard.</div>
+    </div>
+
+    <div class="cell"><span class="no">14</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="25" y="11" width="14" height="25" rx="7"/>
+        <line class="ec2 clayst" x1="29" y1="18" x2="35" y2="18"/><line class="ec2 clayst" x1="29" y1="23" x2="35" y2="23"/><line class="ec2 clayst" x1="29" y1="28" x2="35" y2="28"/>
+        <line class="ec" x1="32" y1="36" x2="32" y2="45"/><path class="ec" d="M22 44 a10 10 0 0 0 20 0"/><line class="ec" x1="26" y1="53" x2="38" y2="53"/></svg>
+      <div class="nm">Microphone</div><div class="ds">The clearest music signal — clean and iconic.</div>
+    </div>
+
+  </div>
+
+  <h2 class="sec">In the wordmark</h2>
+  <div class="locks">
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><path class="ec2" d="M32 9 L43 30 L21 30 Z"/><circle class="ec" cx="32" cy="39" r="7.5"/><line class="ec2" x1="26.5" y1="36.5" x2="37.5" y2="36.5"/><line class="ec2" x1="26.5" y1="40.5" x2="37.5" y2="40.5"/><circle class="clay" cx="32" cy="39" r="2.4"/><line class="ec" x1="32" y1="46.5" x2="32" y2="53"/><line class="ec" x1="25" y1="53.5" x2="39" y2="53.5"/></svg>
+      <span class="word">stageready</span><span class="tag">12 · Spotlight · mic</span>
+    </div>
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><rect class="ec" x="14" y="16" width="36" height="30"/><rect class="ef" x="14" y="43.5" width="36" height="2.5"/><rect class="ef" x="20" y="31" width="4" height="11"/><rect class="ef" x="27" y="25" width="4" height="17"/><rect class="clay" x="34" y="28" width="4" height="14"/><rect class="ef" x="41" y="35" width="4" height="7"/></svg>
+      <span class="word">stageready</span><span class="tag">09 · Stage · levels</span>
+    </div>
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><path class="ec" d="M32 11 L46 41 L18 41 Z"/><ellipse class="clay" cx="28.5" cy="49.5" rx="4.6" ry="3.6"/><rect class="ef" x="31.5" y="35" width="2.4" height="13.5"/><path class="ef" d="M33.9 35 q6 1.5 4.5 8 q0.4-4.5-4.5-5.4 Z"/></svg>
+      <span class="word">stageready</span><span class="tag">10 · Spotlight · note</span>
+    </div>
+  </div>
+
+  <p class="note">My pick for “clearly music + premium”: <strong>12 Spotlight · mic</strong> — a light beam landing on a microphone reads as live music instantly and still looks refined. Runners-up: <strong>09 Stage · levels</strong> (most product-specific) and <strong>10 Spotlight · note</strong> (elegant). Tell me the number and I'll finalise the SVG set + favicon and wire it into the app and landing page.</p>
+</div>
+</body>
+</html>

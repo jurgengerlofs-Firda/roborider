@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StageReady — Logo options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1b1a17;--bg:#f3f1ec;--card:#fff;--hair:#ded9ce;--muted:#a39d92;--clay:#9a7257;
+    --disp:'Jost',sans-serif;--sans:'Inter',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 30px 90px}
+  .head{border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline}
+  .head h1{font-family:var(--disp);font-weight:300;font-size:30px;letter-spacing:1px;margin:0}
+  .lbl{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+  .intro{color:#56544d;font-size:14px;max-width:64ch;margin:0 0 40px;line-height:1.7}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--hair);border-left:1px solid var(--hair)}
+  @media(max-width:840px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .cell{border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:30px 22px;text-align:center}
+  .cell svg{width:64px;height:64px;color:var(--ink)}
+  .cell .no{font-family:var(--disp);font-size:9px;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:18px}
+  .cell .nm{font-family:var(--disp);font-weight:400;font-size:13px;letter-spacing:1px;margin:18px 0 4px}
+  .cell .ds{font-size:11.5px;color:#7a7468;line-height:1.5}
+  h2.sec{font-family:var(--disp);font-weight:300;font-size:20px;letter-spacing:.5px;margin:50px 0 18px;border-top:1px solid var(--hair);padding-top:24px}
+  .locks{display:flex;flex-direction:column;gap:0;border:1px solid var(--hair)}
+  .lock{display:flex;align-items:center;gap:20px;padding:26px 30px;border-bottom:1px solid var(--hair)}
+  .lock:last-child{border-bottom:none}
+  .lock svg{width:48px;height:48px;color:var(--ink);flex:0 0 48px}
+  .lock .word{font-family:var(--disp);font-weight:300;font-size:34px;letter-spacing:6px}
+  .lock .tag{margin-left:auto;font-family:var(--disp);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .note{font-size:13px;color:#56544d;line-height:1.7;max-width:62ch;margin-top:18px}
+  .ec{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+  .ef{fill:currentColor}
+  .clay{fill:var(--clay)} .clayst{stroke:var(--clay)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><h1>StageReady — logo options</h1><span class="lbl">8 concepts</span></div>
+  <p class="intro">All in the same language: Jost light, ink (#1B1A17) with a single clay accent (#9A7257), squared and minimal. Concept 01 is the current mark. Tell me which direction you like and I'll build the full lockup, favicon and wire it into the app.</p>
+
+  <div class="grid">
+
+    <div class="cell"><span class="no">01</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="16" y="14" width="32" height="34"/><rect class="ef" x="16" y="44.5" width="32" height="3.5"/><circle class="clay" cx="32" cy="38" r="3.6"/></svg>
+      <div class="nm">Stage plan</div><div class="ds">Top-down stage, star on downstage-centre. (current)</div>
+    </div>
+
+    <div class="cell"><span class="no">02</span>
+      <svg viewBox="0 0 64 64"><path class="ec" d="M32 12 L48 46 L16 46 Z"/><circle class="clay" cx="32" cy="50" r="3.4"/></svg>
+      <div class="nm">Spotlight</div><div class="ds">A beam of light pooling on the performer.</div>
+    </div>
+
+    <div class="cell"><span class="no">03</span>
+      <svg viewBox="0 0 64 64"><polygon class="ef" points="32,12 36.7,25.5 51,25.8 39.6,34.5 43.8,48.2 32,40 20.2,48.2 24.4,34.5 13,25.8 27.3,25.5"/></svg>
+      <div class="nm">Star</div><div class="ds">The performer's mark — bold, iconic, scales tiny.</div>
+    </div>
+
+    <div class="cell"><span class="no">04</span>
+      <svg viewBox="0 0 64 64"><rect class="ef" x="14" y="40" width="36" height="8"/><rect class="ef" x="20" y="30" width="24" height="8"/><rect class="ef" x="26" y="20" width="12" height="8"/><circle class="clay" cx="32" cy="14" r="3"/></svg>
+      <div class="nm">Riser</div><div class="ds">Stepped platform — the stage built, ready.</div>
+    </div>
+
+    <div class="cell"><span class="no">05</span>
+      <svg viewBox="0 0 64 64"><polygon class="ec" points="20,44 44,44 38,22 26,22"/><circle class="clay" cx="32" cy="33" r="3.2"/></svg>
+      <div class="nm">Wedge</div><div class="ds">Floor monitor — an insider's symbol.</div>
+    </div>
+
+    <div class="cell"><span class="no">06</span>
+      <svg viewBox="0 0 64 64"><rect class="ef" x="14" y="30" width="6" height="20"/><rect class="ef" x="24" y="20" width="6" height="30"/><rect class="clay" x="34" y="26" width="6" height="24"/><rect class="ef" x="44" y="14" width="6" height="36"/></svg>
+      <div class="nm">Levels</div><div class="ds">Soundcheck bars — sound dialled in.</div>
+    </div>
+
+    <div class="cell"><span class="no">07</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="14" y="14" width="36" height="36"/><path class="ec clayst" d="M22 33 L29 40 L43 23"/></svg>
+      <div class="nm">Checked</div><div class="ds">A tick in the stage — literally “ready”.</div>
+    </div>
+
+    <div class="cell"><span class="no">08</span>
+      <svg viewBox="0 0 64 64"><circle class="ec" cx="32" cy="32" r="19"/><circle class="ef" cx="32" cy="32" r="9"/><circle class="clay" cx="32" cy="32" r="3.4"/></svg>
+      <div class="nm">Pool</div><div class="ds">Concentric light pool — calm, abstract, premium.</div>
+    </div>
+
+  </div>
+
+  <h2 class="sec">A few in the wordmark lockup</h2>
+  <div class="locks">
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><path class="ec" d="M32 12 L48 46 L16 46 Z"/><circle class="clay" cx="32" cy="50" r="3.4"/></svg>
+      <span class="word">stageready</span><span class="tag">02 · Spotlight</span>
+    </div>
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><polygon class="ef" points="32,12 36.7,25.5 51,25.8 39.6,34.5 43.8,48.2 32,40 20.2,48.2 24.4,34.5 13,25.8 27.3,25.5"/></svg>
+      <span class="word">stageready</span><span class="tag">03 · Star</span>
+    </div>
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><rect class="ef" x="14" y="40" width="36" height="8"/><rect class="ef" x="20" y="30" width="24" height="8"/><rect class="ef" x="26" y="20" width="12" height="8"/><circle class="clay" cx="32" cy="14" r="3"/></svg>
+      <span class="word">stageready</span><span class="tag">04 · Riser</span>
+    </div>
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><rect class="ec" x="14" y="14" width="36" height="36"/><path class="ec clayst" d="M22 33 L29 40 L43 23"/></svg>
+      <span class="word">stageready</span><span class="tag">07 · Checked</span>
+    </div>
+  </div>
+
+  <p class="note">My picks: <strong>03 Star</strong> (most iconic and recognisable at any size), <strong>02 Spotlight</strong> (elegant, premium, clearly “stage”), and the current <strong>01 Stage plan</strong> (most product-specific). Say the number and I'll produce the final SVG set + favicon and drop it into the app and landing page.</p>
+</div>
+</body>
+</html>

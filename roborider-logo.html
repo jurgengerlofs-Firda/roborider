@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboRider — logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1b1a17;--bg:#f3f1ec;--card:#fff;--hair:#ded9ce;--muted:#a39d92;--clay:#9a7257;
+    --disp:'Jost',sans-serif;--sans:'Inter',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 30px 90px}
+  .head{border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline}
+  .head h1{font-family:var(--disp);font-weight:300;font-size:28px;letter-spacing:1px;margin:0}
+  .lbl{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+  .intro{color:#56544d;font-size:14px;max-width:64ch;margin:0 0 40px;line-height:1.7}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--hair);border-left:1px solid var(--hair)}
+  @media(max-width:780px){.grid{grid-template-columns:1fr}}
+  .cell{border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:36px 22px;text-align:center}
+  .cell svg{width:74px;height:74px;color:var(--ink)}
+  .cell .no{font-family:var(--disp);font-size:9px;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:22px}
+  .cell .nm{font-family:var(--disp);font-weight:400;font-size:13px;letter-spacing:1px;margin:22px 0 4px}
+  .cell .ds{font-size:11.5px;color:#7a7468;line-height:1.5}
+  h2.sec{font-family:var(--disp);font-weight:300;font-size:20px;letter-spacing:.5px;margin:50px 0 18px;border-top:1px solid var(--hair);padding-top:24px}
+  .locks{display:flex;flex-direction:column;border:1px solid var(--hair)}
+  .lock{display:flex;align-items:center;gap:20px;padding:26px 30px;border-bottom:1px solid var(--hair)}
+  .lock:last-child{border-bottom:none}
+  .lock.dark{background:var(--ink)}
+  .lock svg{width:52px;height:52px;color:var(--ink);flex:0 0 52px}
+  .lock.dark svg{color:var(--bg)}
+  .lock .word{font-family:var(--disp);font-weight:300;font-size:34px;letter-spacing:6px}
+  .lock.dark .word{color:var(--bg)}
+  .lock .tag{margin-left:auto;font-family:var(--disp);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .sizes{display:flex;align-items:flex-end;gap:24px;background:var(--card);border:1px solid var(--hair);padding:30px;margin-top:14px}
+  .sizes .s{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .sizes .s span{font-family:var(--disp);font-size:9px;letter-spacing:1px;color:var(--muted)}
+  .fav{background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;border-radius:20%}
+  .note{font-size:13px;color:#56544d;line-height:1.7;max-width:62ch;margin-top:18px}
+  .ec{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
+  .ef{fill:currentColor}
+  .clay{fill:var(--clay)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><h1>RoboRider — logo</h1><span class="lbl">robot face × stage</span></div>
+  <p class="intro">The same stage-plan mark, nudged so the little robot reads on purpose: riser “eyes”, a clay “mouth”, the front edge as a “chin”. The antenna doubles as a mic stand. Still Jost light, ink + clay, squared.</p>
+
+  <div class="grid">
+
+    <div class="cell"><span class="no">B1</span>
+      <svg viewBox="0 0 64 64"><rect class="ec" x="11" y="16" width="42" height="32"/><rect class="ef" x="11" y="45.6" width="42" height="2.4"/><rect class="ef" x="17" y="23" width="11" height="9"/><rect class="ef" x="36" y="23" width="11" height="9"/><circle class="clay" cx="32" cy="40" r="3"/></svg>
+      <div class="nm">Face (as-is)</div><div class="ds">Current landscape mark — the face just emerges.</div>
+    </div>
+
+    <div class="cell"><span class="no">B2</span>
+      <svg viewBox="0 0 64 64"><line class="ec" x1="32" y1="16" x2="32" y2="9"/><circle class="clay" cx="32" cy="7" r="2.6"/><rect class="ec" x="11" y="18" width="42" height="30"/><rect class="ef" x="11" y="45.6" width="42" height="2.4"/><rect class="ef" x="17" y="24" width="11" height="9"/><rect class="ef" x="36" y="24" width="11" height="9"/><rect class="clay" x="27" y="39.5" width="10" height="2.6"/></svg>
+      <div class="nm">Antenna + mouth</div><div class="ds">Antenna (= mic stand) and a clay mouth line. Most “robot”.</div>
+    </div>
+
+    <div class="cell"><span class="no">B3</span>
+      <svg viewBox="0 0 64 64"><line class="ec" x1="32" y1="15" x2="32" y2="9"/><circle class="clay" cx="32" cy="7" r="2.4"/><rect class="ec" x="13" y="17" width="38" height="31" rx="4"/><rect class="ef" x="13" y="45.6" width="38" height="2.4"/><circle class="ef" cx="24" cy="29" r="4"/><circle class="ef" cx="40" cy="29" r="4"/><rect class="clay" x="27" y="39.5" width="10" height="2.6"/></svg>
+      <div class="nm">Friendly</div><div class="ds">Rounded head, round eyes — warmer, more character.</div>
+    </div>
+
+  </div>
+
+  <h2 class="sec">In the wordmark</h2>
+  <div class="locks">
+    <div class="lock">
+      <svg viewBox="0 0 64 64"><line class="ec" x1="32" y1="16" x2="32" y2="9"/><circle class="clay" cx="32" cy="7" r="2.6"/><rect class="ec" x="11" y="18" width="42" height="30"/><rect class="ef" x="11" y="45.6" width="42" height="2.4"/><rect class="ef" x="17" y="24" width="11" height="9"/><rect class="ef" x="36" y="24" width="11" height="9"/><rect class="clay" x="27" y="39.5" width="10" height="2.6"/></svg>
+      <span class="word">roborider</span><span class="tag">B2 · Antenna</span>
+    </div>
+    <div class="lock dark">
+      <svg viewBox="0 0 64 64"><rect class="ec" x="11" y="16" width="42" height="32"/><rect class="ef" x="11" y="45.6" width="42" height="2.4"/><rect class="ef" x="17" y="23" width="11" height="9"/><rect class="ef" x="36" y="23" width="11" height="9"/><circle class="clay" cx="32" cy="40" r="3"/></svg>
+      <span class="word">roborider</span><span class="tag">B1 · Face</span>
+    </div>
+  </div>
+
+  <h2 class="sec">Small-size test — B2</h2>
+  <div class="sizes">
+    <div class="s"><div class="fav" style="width:64px;height:64px"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><line class="ec" x1="32" y1="16" x2="32" y2="9"/><circle class="clay" cx="32" cy="7" r="2.6"/><rect class="ec" x="11" y="18" width="42" height="30"/><rect class="ef" x="11" y="45.6" width="42" height="2.4"/><rect class="ef" x="17" y="24" width="11" height="9"/><rect class="ef" x="36" y="24" width="11" height="9"/><rect class="clay" x="27" y="39.5" width="10" height="2.6"/></svg></div><span>64</span></div>
+    <div class="s"><div class="fav" style="width:32px;height:32px"><svg viewBox="0 0 64 64" style="width:21px;height:21px"><rect class="ec" x="11" y="18" width="42" height="30"/><rect class="ef" x="17" y="24" width="11" height="9"/><rect class="ef" x="36" y="24" width="11" height="9"/><rect class="clay" x="27" y="39.5" width="10" height="3"/></svg></div><span>32</span></div>
+    <div class="s"><div class="fav" style="width:16px;height:16px;border-radius:3px"><svg viewBox="0 0 64 64" style="width:12px;height:12px"><rect class="ec" x="11" y="18" width="42" height="30"/><rect class="ef" x="17" y="24" width="11" height="9"/><rect class="ef" x="36" y="24" width="11" height="9"/></svg></div><span>16</span></div>
+  </div>
+
+  <p class="note">My pick: <strong>B2 Antenna + mouth</strong> — clearly a friendly robot, the antenna reads as a mic stand, and it keeps the stage (front edge) + riser DNA. B1 is the most subtle (stage first, robot second). Say the word and I'll finalise the SVG set + favicon, rename everything to RoboRider, and wire it in.</p>
+</div>
+</body>
+</html>

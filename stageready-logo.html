@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StageReady — Logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1b1a17;--bg:#f3f1ec;--card:#fff;--hair:#ded9ce;--muted:#a39d92;--clay:#9a7257;
+    --disp:'Jost',sans-serif;--sans:'Inter',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 30px 90px}
+  .head{border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:46px;display:flex;justify-content:space-between;align-items:baseline}
+  .head h1{font-family:var(--disp);font-weight:300;font-size:30px;letter-spacing:1px;margin:0}
+  .lbl{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+  @media(max-width:760px){.row{grid-template-columns:1fr}}
+  .tile{background:var(--card);border:1px solid var(--hair);padding:46px 36px;display:flex;align-items:center;justify-content:center;min-height:150px}
+  .tile.dark{background:var(--ink)}
+  .tile.span{grid-column:1 / -1}
+  .cap{font-family:var(--disp);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  /* shared mark + wordmark via currentColor */
+  .lock{display:flex;align-items:center;gap:20px}
+  .mark{width:54px;height:54px;flex:0 0 54px}
+  .mark rect.s{fill:none;stroke:currentColor;stroke-width:2.6}
+  .mark rect.f{fill:currentColor}
+  .mark circle{fill:var(--clay)}
+  .word{font-family:var(--disp);font-weight:300;font-size:40px;letter-spacing:7px;line-height:1}
+  .word.sm{font-size:26px;letter-spacing:5px}
+  .stack{display:flex;flex-direction:column;align-items:center;gap:16px}
+  .mono{font-family:var(--disp);font-weight:300;letter-spacing:4px;font-size:30px}
+  .ink{color:var(--ink)} .paper{color:var(--bg)}
+  .favs{display:flex;gap:18px;align-items:flex-end}
+  .fav{background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--bg)}
+  .fav .mark circle{fill:var(--clay)}
+  .sws{display:flex;gap:0;border:1px solid var(--hair);margin-top:8px}
+  .sw{flex:1;padding:18px 14px;font-family:var(--disp);font-size:10px;letter-spacing:1px}
+  .note{font-size:13px;color:#56544d;line-height:1.7;max-width:60ch}
+  h2.sec{font-family:var(--disp);font-weight:300;font-size:20px;letter-spacing:.5px;margin:46px 0 14px;border-top:1px solid var(--hair);padding-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><h1>StageReady</h1><span class="lbl">Identity · v1</span></div>
+
+  <!-- helper svg symbol -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <g id="m">
+      <rect class="s" x="3" y="3" width="48" height="48"/>
+      <rect class="f" x="3" y="47.5" width="48" height="3.2"/>
+      <circle cx="27" cy="39" r="4"/>
+    </g>
+  </defs></svg>
+
+  <p class="cap">Primary lockup</p>
+  <div class="row">
+    <div class="tile"><div class="lock ink"><svg class="mark" viewBox="0 0 54 54"><use href="#m"/></svg><span class="word">stageready</span></div></div>
+    <div class="tile dark"><div class="lock paper"><svg class="mark" viewBox="0 0 54 54"><use href="#m"/></svg><span class="word">stageready</span></div></div>
+  </div>
+
+  <p class="cap">Stacked · centred</p>
+  <div class="row">
+    <div class="tile"><div class="stack ink"><svg class="mark" viewBox="0 0 54 54" style="width:64px;height:64px"><use href="#m"/></svg><span class="word sm">stageready</span></div></div>
+    <div class="tile dark"><div class="stack paper"><svg class="mark" viewBox="0 0 54 54" style="width:64px;height:64px"><use href="#m"/></svg><span class="word sm">stageready</span></div></div>
+  </div>
+
+  <p class="cap">Mark &amp; monogram</p>
+  <div class="row">
+    <div class="tile"><div class="ink" style="display:flex;gap:40px;align-items:center"><svg class="mark" viewBox="0 0 54 54" style="width:72px;height:72px"><use href="#m"/></svg><span class="mono">SR</span></div></div>
+    <div class="tile dark"><div class="paper" style="display:flex;gap:40px;align-items:center"><svg class="mark" viewBox="0 0 54 54" style="width:72px;height:72px"><use href="#m"/></svg><span class="mono">SR</span></div></div>
+  </div>
+
+  <p class="cap">App icon / favicon</p>
+  <div class="tile span" style="justify-content:flex-start;gap:18px">
+    <div class="favs">
+      <div class="fav" style="width:80px;height:80px;border-radius:18px"><svg class="mark" viewBox="0 0 54 54" style="width:46px;height:46px"><use href="#m"/></svg></div>
+      <div class="fav" style="width:48px;height:48px;border-radius:10px"><svg class="mark" viewBox="0 0 54 54" style="width:28px;height:28px"><use href="#m"/></svg></div>
+      <div class="fav" style="width:32px;height:32px;border-radius:7px"><svg class="mark" viewBox="0 0 54 54" style="width:19px;height:19px"><use href="#m"/></svg></div>
+      <div class="fav" style="width:16px;height:16px;border-radius:3px"><svg class="mark" viewBox="0 0 54 54" style="width:11px;height:11px"><use href="#m"/></svg></div>
+    </div>
+  </div>
+
+  <h2 class="sec">Palette</h2>
+  <div class="sws">
+    <div class="sw" style="background:#1b1a17;color:#f3f1ec">Ink · #1B1A17</div>
+    <div class="sw" style="background:#9a7257;color:#fff">Clay · #9A7257</div>
+    <div class="sw" style="background:#f3f1ec;color:#1b1a17">Bone · #F3F1EC</div>
+    <div class="sw" style="background:#fff;color:#1b1a17">Paper · #FFFFFF</div>
+  </div>
+
+  <h2 class="sec">Notes</h2>
+  <p class="note">The mark is a top-down stage; the clay dot is downstage-centre — the performer's mark (the ★ used on riders). Typeface is Jost, light weight, generous tracking, lowercase. Keep clear space around the lockup equal to the height of the square. Minimum wordmark width ≈ 120px; below that, use the mark alone. For print or offline use, outline the text in a vector editor so it doesn't depend on the web font.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podiumklaar — Builder concept (boutique)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3f1ec; --paper2:#eceae3; --card:#ffffff; --ink:#1b1a17; --soft:#56544d;
+    --muted:#a39d92; --line:#e6e2d9; --hair:#ded9ce; --stone:#cdc4b4; --clay:#9a7257;
+    --disp:'Jost',-apple-system,sans-serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);font-weight:400;background:var(--paper);color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:.1px}
+  .lbl{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:400}
+  .concept-tag{position:fixed;bottom:16px;right:16px;background:transparent;color:var(--muted);border:1px solid var(--hair);font-family:var(--disp);font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:8px 14px;border-radius:0;z-index:50}
+
+  /* ---------- Top bar ---------- */
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:26px 46px;border-bottom:1px solid var(--hair)}
+  .mark{font-family:var(--disp);font-weight:300;font-size:21px;letter-spacing:6px;text-transform:lowercase;margin:0}
+  .nav{display:flex;gap:34px}
+  .nav a{font-family:var(--disp);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .nav a.on{color:var(--ink)}
+  .tools{display:flex;align-items:center;gap:26px}
+  .tlink{background:none;border:none;cursor:pointer;font-family:var(--disp);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--soft);padding:0}
+  .tlink.export{border:1px solid var(--ink);padding:11px 22px;color:var(--ink)}
+  .tlink.export:hover{background:var(--ink);color:var(--paper)}
+
+  /* ---------- Layout ---------- */
+  .layout{display:grid;grid-template-columns:1fr 1fr}
+  .editor{padding:64px 60px 90px}
+  .stage{background:var(--paper2);padding:64px 60px 90px;min-height:100%}
+
+  /* ---------- AI ---------- */
+  .ai{margin-bottom:70px}
+  .ai .lbl{color:var(--clay)}
+  .ai h3{font-family:var(--disp);font-weight:300;font-size:34px;line-height:1.18;letter-spacing:.3px;margin:16px 0 14px}
+  .ai p{color:var(--soft);font-size:13px;line-height:1.7;max-width:46ch;margin:0 0 24px;font-weight:300}
+  .ai .field{display:flex;gap:0;border-bottom:1px solid var(--ink);padding-bottom:10px;align-items:center}
+  .ai input{flex:1;border:none;background:transparent;font-family:var(--sans);font-size:14px;font-weight:300;color:var(--ink);padding:4px 0}
+  .ai input::placeholder{color:var(--muted)}
+  .ai .go{font-family:var(--disp);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;background:none;border:none;cursor:pointer;color:var(--ink)}
+
+  /* ---------- Sections ---------- */
+  .sec{padding:0 0 56px}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:26px}
+  .sec-head .idx{font-family:var(--disp);font-weight:300;font-size:12px;letter-spacing:2px;color:var(--muted);width:24px}
+  .sec-head h2{font-family:var(--disp);font-weight:300;font-size:25px;letter-spacing:.5px;margin:0;flex:1}
+  .sec-head .meta{font-family:var(--disp);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .field-row{padding-left:42px}
+  .fl{display:block;margin:22px 0 8px}
+  .ein{width:100%;border:none;border-bottom:1px solid var(--hair);background:transparent;padding:8px 0;font-family:var(--sans);font-weight:300;font-size:15px;color:var(--ink)}
+  .ein:focus{outline:none;border-bottom-color:var(--ink)}
+  .ein::placeholder{color:#c2bcae}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .chip{font-family:var(--disp);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--hair);padding:9px 16px;background:transparent;cursor:pointer;color:var(--muted);border-radius:0}
+  .chip.on{border-color:var(--ink);color:var(--ink)}
+  .divline{height:1px;background:var(--hair);margin:0 0 56px}
+  .rest{padding-left:42px;display:flex;flex-direction:column;gap:0}
+  .rest .row{display:flex;align-items:baseline;gap:18px;padding:20px 0;border-top:1px solid var(--hair);cursor:pointer}
+  .rest .row .idx{font-family:var(--disp);font-weight:300;font-size:12px;color:var(--muted);width:24px}
+  .rest .row h2{font-family:var(--disp);font-weight:300;font-size:21px;letter-spacing:.5px;margin:0;flex:1;color:var(--soft)}
+  .rest .row .plus{font-family:var(--disp);font-size:14px;color:var(--muted)}
+
+  /* ---------- Stage / lookbook ---------- */
+  .stage .lbl.head{display:flex;justify-content:space-between;margin-bottom:26px}
+  .sheet{background:var(--card);padding:72px 60px}
+  .sheet .top{display:flex;justify-content:space-between;align-items:flex-start}
+  .sheet .band{font-family:var(--disp);font-weight:300;font-size:64px;letter-spacing:4px;line-height:1;margin:40px 0 0;text-transform:uppercase}
+  .sheet .deck{font-family:var(--disp);font-weight:300;font-size:15px;letter-spacing:1px;color:var(--soft);margin:18px 0 0}
+  .plotart{margin:46px 0;aspect-ratio:16/9;background:var(--paper);position:relative;border:1px solid var(--line)}
+  .plotart .pp{position:absolute;border:1px solid var(--ink);background:var(--card)}
+  .plotart .pp span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:8.5px;letter-spacing:2px;text-transform:uppercase}
+  .plotart .front{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--disp);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:6px}
+  .rsec{margin-top:42px}
+  .rsec .rl{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:9px;margin-bottom:16px}
+  .rsec .rl .t{font-family:var(--disp);font-size:10px;letter-spacing:3px;text-transform:uppercase}
+  .rsec .rl .n{font-family:var(--disp);font-size:10px;letter-spacing:2px;color:var(--muted)}
+  .rrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;font-weight:300}
+  .rrow .k{color:var(--muted);font-family:var(--disp);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+  .rlist{font-size:13px;font-weight:300;line-height:2;color:var(--soft)}
+
+  @media(max-width:880px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="concept-tag">Concept · boutique</div>
+
+<div class="bar">
+  <h1 class="mark">podiumklaar</h1>
+  <div class="nav"><a class="on" href="#">Build</a><a href="#">Library</a><a href="#">Share</a><a href="#">Account</a></div>
+  <div class="tools">
+    <button class="tlink">EN</button>
+    <button class="tlink">Save</button>
+    <button class="tlink export">Export</button>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- EDITOR -->
+  <div class="editor">
+
+    <div class="ai">
+      <span class="lbl">✦ &nbsp;Assisted</span>
+      <h3>Describe the band.<br>We compose the rider.</h3>
+      <p>Paste an old rider or a single line about the setup. Every section, the input list and a first stage plot — quietly drafted.</p>
+      <div class="field">
+        <input placeholder="four-piece, drummer keto, buy-out €25, party of eight…">
+        <button class="go">Compose →</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">01</span><h2>General</h2><span class="meta">Party · 8</span></div>
+      <div class="field-row">
+        <span class="lbl fl">Band / artist</span>
+        <input class="ein" value="NONA">
+        <div class="two">
+          <div><span class="lbl fl">Tour manager</span><input class="ein" value="Serhan Efe"></div>
+          <div><span class="lbl fl">Valid until</span><input class="ein" value="31 March 2026"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">02</span><h2>Hospitality</h2><span class="meta">Dressing · catering</span></div>
+      <div class="field-row">
+        <span class="lbl fl">Dietary</span>
+        <div class="chips"><span class="chip on">1× vegetarian</span><span class="chip on">no shrimp</span><span class="chip">vegan</span><span class="chip">gluten-free</span><span class="chip">halal</span></div>
+        <span class="lbl fl">Drinks</span>
+        <div class="chips"><span class="chip on">Beer ×24</span><span class="chip on">Coffee &amp; tea</span><span class="chip">soft drinks</span><span class="chip">wine</span></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">06</span><h2>Input list</h2><span class="meta">16 channels</span></div>
+      <div class="field-row">
+        <span class="lbl fl">Add a bundle</span>
+        <div class="chips"><span class="chip on">Drum kit</span><span class="chip on">Bass</span><span class="chip on">Keys</span><span class="chip">E-guitar</span><span class="chip">Lead vox</span></div>
+      </div>
+    </div>
+
+    <div class="divline"></div>
+    <div class="rest">
+      <div class="row"><span class="idx">03</span><h2>Technical</h2><span class="plus">+</span></div>
+      <div class="row"><span class="idx">04</span><h2>Lighting</h2><span class="plus">+</span></div>
+      <div class="row"><span class="idx">05</span><h2>Backline</h2><span class="plus">+</span></div>
+      <div class="row"><span class="idx">07</span><h2>Stage plot</h2><span class="plus">+</span></div>
+    </div>
+  </div>
+
+  <!-- STAGE / LOOKBOOK -->
+  <div class="stage">
+    <div class="lbl head"><span>Preview</span><span>A4 · 01 / 04</span></div>
+    <div class="sheet">
+      <div class="top"><span class="lbl">Technical &amp; Hospitality</span><span class="lbl">2026 — Clubtour</span></div>
+      <div class="band">NONA</div>
+      <div class="deck">A clean, professional show day — with your local crew.</div>
+
+      <div class="plotart">
+        <div class="pp" style="left:18%;top:14%;width:24%;height:34%"><span>Keys</span></div>
+        <div class="pp" style="left:56%;top:14%;width:26%;height:38%"><span>Drums</span></div>
+        <div class="pp" style="left:10%;top:62%;width:15%;height:16%"><span>Bass</span></div>
+        <div class="pp" style="left:44%;top:64%;width:13%;height:14%"><span>Lead</span></div>
+        <div class="pp" style="left:74%;top:62%;width:15%;height:16%"><span>Guitar</span></div>
+        <div class="front">Audience</div>
+      </div>
+
+      <div class="rsec">
+        <div class="rl"><span class="t">Contact</span><span class="n">01</span></div>
+        <div class="rrow"><span class="k">Tour manager</span><span>Serhan Efe</span></div>
+        <div class="rrow"><span class="k">Email</span><span>hello@serhanefe.nl</span></div>
+        <div class="rrow"><span class="k">Travelling party</span><span>Band 4 · Crew 4</span></div>
+      </div>
+
+      <div class="rsec">
+        <div class="rl"><span class="t">Hospitality</span><span class="n">02</span></div>
+        <div class="rlist">
+          2 lockable dressing rooms, ±20°C &nbsp;·&nbsp; 7 + 3 black towels<br>
+          Warm meal for ±8 &nbsp;·&nbsp; 1× vegetarian &nbsp;·&nbsp; no shrimp<br>
+          Beer ×24 &nbsp;·&nbsp; coffee &amp; tea unlimited &nbsp;·&nbsp; buy-out €25 p.p.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

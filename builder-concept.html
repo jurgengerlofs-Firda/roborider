@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podiumklaar — Builder concept (editorial)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16130f; --paper:#f6f2e9; --paper2:#efe9dc; --line:#dcd5c5; --line-ink:#16130f;
+    --muted:#7a7468; --accent:#e8452a; --accent-d:#c2381f;
+    --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+  .concept-tag{position:fixed;bottom:14px;right:14px;background:var(--ink);color:var(--paper);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border-radius:2px;z-index:50;font-weight:600}
+
+  /* ---------- Masthead ---------- */
+  .masthead{border-bottom:3px solid var(--line-ink);background:var(--paper)}
+  .mast-top{display:flex;align-items:flex-end;justify-content:space-between;padding:16px 26px 10px;gap:20px}
+  .wordmark{font-family:var(--serif);font-weight:600;font-size:38px;letter-spacing:-1.5px;line-height:.9;margin:0}
+  .wordmark .dot{color:var(--accent)}
+  .mast-meta{text-align:right;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);line-height:1.8}
+  .mast-rule{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line-ink);padding:7px 26px;font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase}
+  .mast-rule .nav{display:flex;gap:22px;color:var(--muted)}
+  .mast-rule .nav b{color:var(--ink);font-weight:600;border-bottom:2px solid var(--accent);padding-bottom:2px}
+  .mast-actions{display:flex;gap:8px;align-items:center}
+  .lang-pick{font-family:var(--mono);font-size:11px;letter-spacing:1px;border:1px solid var(--line-ink);padding:4px 8px;background:transparent}
+  .btn{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.3px;border:1.5px solid var(--line-ink);background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;border-radius:0;text-transform:uppercase;letter-spacing:1px}
+  .btn.solid{background:var(--ink);color:var(--paper)}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---------- Layout ---------- */
+  .layout{display:grid;grid-template-columns:1.05fr 1fr;min-height:calc(100vh - 112px)}
+  .editor{padding:30px 26px 60px;border-right:2px solid var(--line-ink)}
+  .stage{background:var(--paper2);padding:34px 26px 60px;overflow:auto}
+
+  /* ---------- AI strip ---------- */
+  .ai{border:2px solid var(--line-ink);padding:18px 20px;margin-bottom:34px;background:var(--ink);color:var(--paper)}
+  .ai .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .ai h3{font-family:var(--serif);font-weight:500;font-size:23px;margin:0 0 6px;letter-spacing:-.3px}
+  .ai p{margin:0 0 14px;color:#cfc7b6;font-size:12.5px;max-width:48ch}
+  .ai .field{display:flex;gap:10px}
+  .ai input{flex:1;background:#211d17;border:1px solid #3a352b;color:var(--paper);padding:11px 13px;font-family:var(--sans);font-size:13px}
+  .ai input::placeholder{color:#8a8273}
+
+  /* ---------- Editorial sections ---------- */
+  .sec{border-top:1px solid var(--line-ink);padding:22px 0 8px;display:grid;grid-template-columns:64px 1fr;gap:8px}
+  .sec .num{font-family:var(--serif);font-weight:600;font-size:40px;line-height:.8;color:var(--ink)}
+  .sec.muted .num{color:var(--line);}
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between}
+  .sec-h h2{font-family:var(--serif);font-weight:600;font-size:24px;margin:0 0 2px;letter-spacing:-.4px}
+  .sec-h .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .lede{color:var(--muted);font-size:12.5px;margin:0 0 16px;max-width:52ch}
+  .fl{display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 5px}
+  .ein{width:100%;border:none;border-bottom:1.5px solid var(--line-ink);background:transparent;padding:7px 2px;font-family:var(--sans);font-size:15px;color:var(--ink)}
+  .ein::placeholder{color:#b3ab9a}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--line-ink);padding:6px 11px;background:transparent;cursor:pointer}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .collapsed{display:grid;grid-template-columns:64px 1fr;gap:8px;border-top:1px solid var(--line-ink);padding:16px 0;align-items:center;color:var(--muted)}
+  .collapsed .num{font-family:var(--serif);font-size:30px;color:var(--line)}
+  .collapsed h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0;color:var(--ink)}
+  .collapsed .meta{margin-left:auto;font-family:var(--mono);font-size:18px}
+
+  /* ---------- Stage / rider spread ---------- */
+  .stage-kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;justify-content:space-between}
+  .sheet{background:#fff;border:1px solid var(--line);box-shadow:14px 14px 0 rgba(22,19,15,.08);padding:46px 44px}
+  .sheet .band{font-family:var(--serif);font-weight:600;font-size:74px;line-height:.86;letter-spacing:-3px;margin:0}
+  .sheet .subtitle{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:14px 0 0;border-top:2px solid var(--ink);padding-top:10px;display:flex;justify-content:space-between}
+  .rsec{margin-top:30px}
+  .rsec h3{font-family:var(--serif);font-weight:600;font-size:13px;letter-spacing:2px;text-transform:uppercase;display:inline-block;border-bottom:3px solid var(--accent);padding-bottom:3px;margin:0 0 12px}
+  .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--ink)}
+  .rgrid .cell{padding:10px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .rgrid .cell:nth-child(even){border-right:none}
+  .rgrid .k{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .rgrid .v{font-size:13px;margin-top:3px}
+  .rlist{columns:2;font-size:12.5px;color:#33302a}
+  .rlist div{margin-bottom:4px;break-inside:avoid}
+  .rlist .b{color:var(--accent);font-weight:700}
+  table.inp{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10.5px;margin-top:4px}
+  table.inp th{background:var(--ink);color:var(--paper);text-align:left;padding:5px 7px;font-weight:500;letter-spacing:1px;text-transform:uppercase}
+  table.inp td{border-bottom:1px solid var(--line);padding:4px 7px}
+
+  @media(max-width:880px){.layout{grid-template-columns:1fr}.editor{border-right:none;border-bottom:2px solid var(--line-ink)}}
+</style>
+</head>
+<body>
+
+<div class="concept-tag">Concept · editorial</div>
+
+<div class="masthead">
+  <div class="mast-top">
+    <h1 class="wordmark">Podiumklaar<span class="dot">.</span></h1>
+    <div class="mast-meta">The Rider Builder<br>N°1 — Tech &amp; Hospitality<br>Est. 2026 · Worldwide</div>
+  </div>
+  <div class="mast-rule">
+    <div class="nav"><b>Build</b><span>Library</span><span>Share</span><span>Account</span></div>
+    <div class="mast-actions">
+      <span class="lang-pick">EN ▾</span>
+      <button class="btn">Save</button>
+      <button class="btn accent">Export PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- EDITOR -->
+  <div class="editor">
+
+    <div class="ai">
+      <div class="kicker">✦ AI Assist</div>
+      <h3>Paste your old rider — we'll set the type.</h3>
+      <p>Drop in last year's Word file or describe the band. Every section, the input list and a first stage plot, drafted in seconds.</p>
+      <div class="field">
+        <input placeholder="“4-piece, drummer keto, buy-out €25, travel party 8…”">
+        <button class="btn accent">Auto-fill</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="num">01</div>
+      <div>
+        <div class="sec-h"><h2>General &amp; contact</h2><span class="meta">Σ 8 party</span></div>
+        <p class="lede">The cover, the people, the count. Everything the venue needs before doors.</p>
+        <span class="fl">Band / artist</span>
+        <input class="ein" value="NONA">
+        <div class="two">
+          <div><span class="fl">Tour manager</span><input class="ein" value="Serhan Efe"></div>
+          <div><span class="fl">Valid until</span><input class="ein" value="31 March 2026"></div>
+        </div>
+        <span class="fl">Intro</span>
+        <input class="ein" value="Thanks for reading our rider. We look forward to a smooth show day…">
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="num">02</div>
+      <div>
+        <div class="sec-h"><h2>Hospitality</h2><span class="meta">Dressing · catering</span></div>
+        <p class="lede">The part most tools forget. Dietary needs, drinks and buy-out — one tap each.</p>
+        <span class="fl">Dietary requirements</span>
+        <div class="chips"><span class="chip on">1× vegetarian</span><span class="chip">1× no shrimp</span><span class="chip">+ vegan</span><span class="chip">+ gluten-free</span><span class="chip">+ halal</span></div>
+        <span class="fl">Drinks &amp; refreshments</span>
+        <div class="chips"><span class="chip on">Beer ×24</span><span class="chip on">Coffee &amp; tea</span><span class="chip">+ soft drinks</span><span class="chip">+ wine</span><span class="chip">+ energy</span></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="num">06</div>
+      <div>
+        <div class="sec-h"><h2>Input list</h2><span class="meta">16 channels</span></div>
+        <p class="lede">Pick a bundle, the channels write themselves.</p>
+        <div class="chips"><span class="chip on">Drum kit</span><span class="chip on">Bass</span><span class="chip on">Keys (st)</span><span class="chip">+ E-guitar</span><span class="chip">+ Lead vox</span><span class="chip">+ Talkback</span></div>
+      </div>
+    </div>
+
+    <div class="collapsed"><div class="num">03</div><h2>Technical</h2><span class="meta">+</span></div>
+    <div class="collapsed"><div class="num">04</div><h2>Lighting</h2><span class="meta">+</span></div>
+    <div class="collapsed"><div class="num">05</div><h2>Backline</h2><span class="meta">+</span></div>
+    <div class="collapsed"><div class="num">07</div><h2>Stage plot</h2><span class="meta">+</span></div>
+  </div>
+
+  <!-- STAGE / PREVIEW -->
+  <div class="stage">
+    <div class="stage-kicker"><span>Live preview</span><span>A4 · PAGE 1 / 4</span></div>
+    <div class="sheet">
+      <h1 class="band">NONA</h1>
+      <div class="subtitle"><span>Technical &amp; Hospitality Rider</span><span>2026 · Clubtour</span></div>
+
+      <div class="rsec">
+        <h3>Contact</h3>
+        <div class="rgrid">
+          <div class="cell"><div class="k">Tour manager &amp; LD</div><div class="v">Serhan Efe</div></div>
+          <div class="cell"><div class="k">Email</div><div class="v">hello@serhanefe.nl</div></div>
+          <div class="cell"><div class="k">Phone</div><div class="v">+31 6 46 85 38 46</div></div>
+          <div class="cell"><div class="k">Travelling party</div><div class="v">Band 4 · Crew 4</div></div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <h3>Hospitality</h3>
+        <div class="rlist">
+          <div><span class="b">→</span> 2 lockable dressing rooms, ±20°C</div>
+          <div><span class="b">→</span> 7 small + 3 large black towels</div>
+          <div><span class="b">→</span> Warm meal, ±8 people, no fast food</div>
+          <div><span class="b">→</span> 1× vegetarian · 1× no shrimp</div>
+          <div><span class="b">→</span> Beer ×24, coffee &amp; tea unlimited</div>
+          <div><span class="b">→</span> Buy-out €25 p.p.</div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <h3>Input list</h3>
+        <table class="inp">
+          <tr><th>CH</th><th>Input</th><th>Mic/DI</th><th>48V</th><th>Pos</th></tr>
+          <tr><td>1</td><td>Kick In</td><td>Beta 91</td><td></td><td>Drums</td></tr>
+          <tr><td>3</td><td>Snare Top</td><td>SM57</td><td></td><td>Drums</td></tr>
+          <tr><td>8</td><td>OH L</td><td>414</td><td>X</td><td>Drums</td></tr>
+          <tr><td>13</td><td>Keys 1 L</td><td>DI</td><td>X</td><td>Keys</td></tr>
+          <tr><td>15</td><td>Lead Vocal</td><td>XLR</td><td></td><td>Center</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
