@@ -574,7 +574,7 @@ async function proActivate(){
    Until you do, the Account button stays hidden and the app behaves exactly as before. */
 const SUPABASE_URL = "https://pjrwxylxgjipgxyimmdj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_nE4gTwS14iIIiOeZRZhxAA_ASBNu2gd";
-let sb=null, user=null, currentRiderId=null;
+let sb=null, user=null, currentRiderId=null, riderCount=0;
 let sharedMode = /[?&]share=/.test(location.search);  // viewing a shared rider (read-only)
 try{
   if(window.supabase && SUPABASE_URL.indexOf("REPLACE")<0){
@@ -583,8 +583,8 @@ try{
 }catch(e){}
 function genToken(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 
-Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account.", step_prev:"Back", step_next:"Next", step_preview:"Preview", step_count:"Step {n} / {t}" });
-Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account.", step_prev:"Terug", step_next:"Volgende", step_preview:"Voorbeeld", step_count:"Stap {n} / {t}" });
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account.", step_prev:"Back", step_next:"Next", step_preview:"Preview", step_count:"Step {n} / {t}", free_limit:"The free plan includes 1 saved rider. Upgrade to Pro for unlimited riders (and no watermark)." });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account.", step_prev:"Terug", step_next:"Volgende", step_preview:"Voorbeeld", step_count:"Stap {n} / {t}", free_limit:"Het gratis plan bevat 1 opgeslagen rider. Upgrade naar Pro voor onbeperkt riders (en geen watermerk)." });
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -675,6 +675,7 @@ async function refreshRiderList(){
   const box=$("acctList"); if(!box) return null;
   try{
     const {data}=await sb.from("riders").select("id,title,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false});
+    riderCount=(data&&data.length)||0;
     if(!data||!data.length){ box.innerHTML='<p class="hint" style="margin:0">'+esc(L("acct_empty"))+'</p>'; return data; }
     box.innerHTML=data.map(function(r){
       const d=new Date(r.updated_at); const ds=isNaN(d.getTime())?"":d.toLocaleDateString();
@@ -699,8 +700,9 @@ async function cloudSaveCurrent(){
     if(currentRiderId){
       await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
     }else{
+      if(!PRO && riderCount>=1){ $("acctMsg").textContent=L("free_limit"); return; }
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data) currentRiderId=data.id;
+      if(data){ currentRiderId=data.id; riderCount++; }
     }
     $("acctMsg").textContent=L("acct_saved");
     refreshRiderList();
@@ -724,13 +726,14 @@ async function cloudDelete(id){
 function flashCloud(){const e=$("saveStatus");if(!e)return;e.textContent="☁ "+L("acct_saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},1800);}
 async function cloudSaveQuick(){
   if(!sb||!user){ openAcctModal(); return; }
+  if(!currentRiderId && !PRO && riderCount>=1){ openProModal(); $("proMsg").textContent=L("free_limit"); return; }
   const title=((S.band&&S.band.name)||L("acct_untitled"));
   try{
     if(currentRiderId){
       await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
     }else{
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data) currentRiderId=data.id;
+      if(data){ currentRiderId=data.id; riderCount++; }
     }
     flashCloud();
   }catch(e){}
@@ -744,13 +747,14 @@ function scheduleCloudSave(){
 }
 async function cloudAutoSave(){
   if(!sb||!user||sharedMode||isBlankState()) return;
+  if(!currentRiderId && !PRO && riderCount>=1) return;   // free: 1 saved rider — manual save shows the upgrade prompt
   const title=((S.band&&S.band.name)||L("acct_untitled"));
   try{
     if(currentRiderId){
       await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
     }else{
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data) currentRiderId=data.id;
+      if(data){ currentRiderId=data.id; riderCount++; }
     }
     flashCloud();
   }catch(e){}
@@ -1486,7 +1490,7 @@ function exportJSON(){
 function newDoc(){
   if(!confirm(L("confirm_new")))return;
   const lang=S.lang;
-  S=blank();S.lang=lang;selPlot=null;
+  S=blank();S.lang=lang;selPlot=null;currentRiderId=null;
   try{localStorage.removeItem("roborider");}catch(e){}
   if($("aiInput"))$("aiInput").value="";if($("aiResult"))$("aiResult").textContent="";
   applyChrome();renderForm();renderPreview();
@@ -1494,7 +1498,7 @@ function newDoc(){
 function importJSON(){
   const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";
   inp.onchange=e=>{const f=e.target.files[0];const r=new FileReader();
-    r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));applyChrome();renderForm();renderPreview();}catch(err){alert("Could not read file.");}};
+    r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));currentRiderId=null;applyChrome();renderForm();renderPreview();}catch(err){alert("Could not read file.");}};
     r.readAsText(f);};
   inp.click();
 }
@@ -1629,7 +1633,7 @@ function _person(){return _pick(EX.first)+" "+_pick(EX.last);}
 function _email(name){return name.toLowerCase().replace(/[^a-z]+/g,".").replace(/^\.+|\.+$/g,"")+"@"+_pick(EX.domains);}
 function _phone(){return "+31 6 "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99);}
 function loadExample(){
-  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null;
+  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; currentRiderId=null;
   const formation=_pick(["solo","duo","trio","four","five","dj"]);
   const band=_pick(EX.bands);
   S.band={name:band, subtitle:_pick(EX.subtitle)+(_chance(.6)?(" "+_int(2026,2027)):""), validUntil:"", accent:_pick(["#1b1a17","#33405a","#3a4a3f","#5a3a3a","#46405a"]), logo:""};
