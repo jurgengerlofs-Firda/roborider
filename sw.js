@@ -1,5 +1,5 @@
 /* RoboRider service worker — bump CACHE version on every deploy to push updates */
-const CACHE = 'roborider-v3';
+const CACHE = 'roborider-v4';
 
 /* App shell precached so the tool opens instantly and works offline */
 const SHELL = [
@@ -11,6 +11,10 @@ const SHELL = [
   'stage-plot-maken-en.html',
   'inputlijst-maken.html',
   'inputlijst-maken-en.html',
+  'hospitality-rider.html',
+  'hospitality-rider-en.html',
+  'rider-sturen.html',
+  'rider-sturen-en.html',
   'privacy.html',
   'terms.html',
   'manifest.webmanifest',
