@@ -22,6 +22,12 @@
 <link rel="icon" type="image/svg+xml" href="roborider-favicon.svg">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b1a17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RoboRider">
 <link rel="canonical" href="https://roborider.nl/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RoboRider","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://roborider.nl/","description":"RoboRider builds a clean, professional technical & hospitality rider with a drag-and-drop stage plot, input list and polished PDF export. Free, in any language.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 <style>
@@ -708,5 +714,6 @@ rsStart();
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). Sign up free at goatcounter.com and register the code "roborider". -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>

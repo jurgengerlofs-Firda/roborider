@@ -1,0 +1,27 @@
+{
+  "name": "RoboRider — Rider Builder",
+  "short_name": "RoboRider",
+  "description": "Build a clean technical & hospitality rider with a drag-and-drop stage plot, input list and PDF export.",
+  "start_url": "rider-builder.html?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f1ec",
+  "theme_color": "#1b1a17",
+  "lang": "en",
+  "categories": ["music", "productivity", "utilities"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Build your rider",
+      "short_name": "Builder",
+      "url": "rider-builder.html?source=pwa",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
