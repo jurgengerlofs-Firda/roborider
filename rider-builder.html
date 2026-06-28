@@ -132,7 +132,7 @@
   details.sec[open]>summary{padding-bottom:6px}
   details.sec[open]>summary .num{color:var(--clay)}
   .sec-body{padding:0 0 34px 40px}
-  label.fld{display:block;margin:18px 0 7px;font-family:var(--display);font-size:10px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+  label.fld{display:block;margin:20px 0 7px;font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
   input[type=text],input[type=date],input[type=number],textarea,select{
     width:100%;border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:8px 2px;font-family:inherit;font-weight:300;font-size:15px;background:transparent;color:var(--ink)}
   input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:none;border-bottom-color:var(--ink)}
@@ -213,6 +213,11 @@
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
   .pl-shape.sh-circle{border-radius:50%}
   .pl-shape.sh-riser{border-style:dashed}
+  .pl-risercap{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:2px;z-index:8;
+    font-family:var(--display);font-size:1.7cqh;line-height:1;white-space:nowrap;background:#efe9dc;
+    border:1px solid var(--ink);padding:2px 5px;color:var(--ink);pointer-events:none;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pl-risercap.below{bottom:auto;top:100%;margin-bottom:0;margin-top:2px}
   .pl-shape.sh-text{border:none;background:transparent!important}
   .pl-el.sel .pl-shape{box-shadow:0 0 0 2px var(--clay)}
   .pl-ctl{position:absolute;top:-9px;width:19px;height:19px;border-radius:50%;border:none;color:#fff;font-size:12px;line-height:19px;
@@ -1374,8 +1379,9 @@ function buildPlotEl(it){
   const shape=document.createElement("div");
   shape.className="pl-shape sh-"+d.sh;
   shape.setAttribute("style",shapeStyle(d,it));
-  shape.innerHTML=plotLabelHTML(it);
+  shape.innerHTML=(it.type==='riser')?"":plotLabelHTML(it);
   el.appendChild(shape);
+  if(it.type==='riser'&&it.label){const cap=document.createElement("div");cap.className="pl-risercap"+((it.y-(it.h||0)/2)<6?" below":"");cap.textContent=it.label;el.appendChild(cap);}
   const del=document.createElement("button");del.className="pl-ctl pl-del";del.textContent="×";
   del.onclick=ev=>{ev.stopPropagation();S.plot.items=S.plot.items.filter(x=>x.id!==it.id);selPlot=null;renderPlotEditor();renderPreview();};
   const rot=document.createElement("button");rot.className="pl-ctl pl-rot";rot.textContent="↻";
@@ -1479,7 +1485,8 @@ function plotPreviewHTML(){
   const els=S.plot.items.map(it=>{
     const d=PLOT_TYPES[it.type]||PLOT_TYPES.text;
     return `<div class="pl-el" style="left:${it.x}%;top:${it.y}%;width:${it.w}%;height:${it.h}%;z-index:${zOf(it.type)};transform:translate(-50%,-50%) rotate(${it.rot||0}deg)">`+
-      `<div class="pl-shape sh-${d.sh}" style="${shapeStyle(d,it)}">${plotLabelHTML(it)}</div></div>`;
+      `<div class="pl-shape sh-${d.sh}" style="${shapeStyle(d,it)}">${it.type==='riser'?"":plotLabelHTML(it)}</div>`+
+      `${it.type==='riser'&&it.label?`<div class="pl-risercap${(it.y-(it.h||0)/2)<6?' below':''}">${esc(it.label)}</div>`:""}</div>`;
   }).join("");
   return `<div class="plot-preview">${els}<div class="stage-front">${L("plot_audience")}</div></div>`;
 }
