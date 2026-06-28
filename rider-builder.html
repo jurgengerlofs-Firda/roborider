@@ -492,6 +492,12 @@ const I18N = {
     plot_hint:"Click an element to add it, then drag to position. Drag the corner handle to resize, ↻ to rotate, × to delete.",
     plot_or_upload:"…or upload a stage plot image instead",
     plot_add:"Add element", plot_rotate:"↻ Turn your phone sideways for more room",
+    plot_riser_dims:"Riser dimensions (w×d×h), e.g. 2×1×0.4 m:",
+    hint_guests:"One name or role per line.", hint_micdi:"Tip: tap the mic/DI field for common suggestions.",
+    wl_mic_lbl:"Wireless mic", wl_iem_lbl:"In-ears (IEM)", wl_band_lbl:"Frequency band",
+    wl_mic:"Wireless mic", wl_iem:"IEM", wl_band:"Band", wl_free:"licence-free",
+    f_lightphoto:"Reference photo (previous show)", hint_lightphoto:"Optional — helps the venue match the look.",
+    f_console_own:"Lighting desk provided by", console_own_bring:"We bring our own", console_own_house:"Provided by the venue",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bass", pt_guitar:"Guitar", pt_vocal:"Vocal/Lead", pt_riser:"Riser",
     pt_monitor:"Monitor", pt_amp:"Amp", pt_di:"DI box", pt_power:"Power 230V", pt_mic:"Mic", pt_perc:"Perc", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Stool", pt_mstand:"Music stand", pt_laptop:"Laptop", pt_text:"Text label"
   },
@@ -539,6 +545,12 @@ const I18N = {
     plot_hint:"Klik een element om het toe te voegen, sleep om te plaatsen. Sleep de hoek om te schalen, ↻ om te draaien, × om te verwijderen.",
     plot_or_upload:"…of upload in plaats daarvan een stageplot-afbeelding",
     plot_add:"Element toevoegen", plot_rotate:"↻ Draai je telefoon voor meer ruimte",
+    plot_riser_dims:"Afmetingen riser (b×d×h), bijv. 2×1×0,4 m:",
+    hint_guests:"Eén naam of rol per regel.", hint_micdi:"Tip: tik op het mic/DI-veld voor veelgebruikte suggesties.",
+    wl_mic_lbl:"Draadloze mic", wl_iem_lbl:"In-ears (IEM)", wl_band_lbl:"Frequentieband",
+    wl_mic:"Draadloze mic", wl_iem:"IEM", wl_band:"Band", wl_free:"vergunningsvrij",
+    f_lightphoto:"Referentiefoto (eerdere show)", hint_lightphoto:"Optioneel — helpt de zaal de look matchen.",
+    f_console_own:"Lichttafel geleverd door", console_own_bring:"Wij nemen mee", console_own_house:"Graag van het huis",
     pt_drums:"Drums", pt_keys:"Keys", pt_bass:"Bas", pt_guitar:"Gitaar", pt_vocal:"Zang/Lead", pt_riser:"Riser",
     pt_monitor:"Monitor", pt_amp:"Versterker", pt_di:"DI-box", pt_power:"Stroom 230V", pt_mic:"Microfoon", pt_perc:"Percussie", pt_sub:"Sub", pt_sidefill:"Sidefill", pt_stool:"Kruk", pt_mstand:"Muziekstandaard", pt_laptop:"Laptop", pt_text:"Tekstlabel"
   },
@@ -601,7 +613,7 @@ const blank = () => ({
   guests:"",
   hosp:{dressing:"",towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
   tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",wireless:""},
-  lights:{fixtures:"",console:"",notes:""},
+  lights:{fixtures:"",console:"",notes:"",photo:"",consoleOwn:""},
   backline:"",
   inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
   plot:{items:[]},
@@ -1027,7 +1039,7 @@ function renderForm(){
     <label class="fld">${L("f_travel")} <span style="color:var(--brand)">(Σ ${travelTotal()})</span></label>
     <div id="rep-travelParty"></div>
     <button class="add" onclick="addRow('travelParty',{label:'',count:''})">${L("plus_role")}</button>
-    ${field(L("f_guests"),S.guests,"guests")}
+    ${field(L("f_guests"),S.guests,"guests",{type:"textarea",hint:L("hint_guests")})}
   `);
   h+=section(2,L("sec_stageplot"),`
     <button class="btn primary" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
@@ -1038,7 +1050,8 @@ function renderForm(){
   `);
   h+=section(3,L("sec_inputlist"),`
     ${inputPresetChips()}
-    <div class="hint">${L("hint_48v")}</div>
+    ${micDatalist()}
+    <div class="hint">${L("hint_48v")} · ${L("hint_micdi")}</div>
     <div id="rep-inputs"></div>
     <button class="add" onclick="addInput()">${L("plus_channel")}</button>
   `);
@@ -1060,12 +1073,24 @@ function renderForm(){
     ${field(L("f_pa"),S.tech.pa,"tech.pa",{type:"textarea"})}
     ${textChip('tech.pa','pa')}
     ${field(L("f_wireless"),S.tech.wireless,"tech.wireless",{type:"textarea"})}
+    ${wirelessChips()}
   `);
   h+=section(6,L("sec_lights"),`
     ${field(L("f_fixtures"),S.lights.fixtures,"lights.fixtures",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('lights.fixtures','lights')}
+    <label class="fld">${L("f_console_own")}</label>
+    <select onchange="setPath('lights.consoleOwn',this.value);renderPreview()" style="width:100%;padding:9px 8px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">
+      <option value=""${S.lights.consoleOwn?"":" selected"}>—</option>
+      <option value="bring"${S.lights.consoleOwn==='bring'?' selected':''}>${L('console_own_bring')}</option>
+      <option value="house"${S.lights.consoleOwn==='house'?' selected':''}>${L('console_own_house')}</option>
+    </select>
     ${field(L("f_lconsole"),S.lights.console,"lights.console")}
+    ${consoleChips()}
     ${field(L("f_notes"),S.lights.notes,"lights.notes",{type:"textarea"})}
+    <label class="fld">${L("f_lightphoto")}</label>
+    <input type="file" accept="image/*" onchange="readImg(event,'lights.photo')">
+    ${S.lights.photo?`<img class="stageplot-img" src="${S.lights.photo}" style="margin-top:8px">`:""}
+    <div class="hint">${L("hint_lightphoto")}</div>
   `);
   h+=section(7,L("sec_hospitality"),`
     ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
@@ -1132,7 +1157,7 @@ function renderRepeats(){
       <div class="row">
         <input type="text" placeholder="${L('th_ch')}" style="flex:0 0 48px" data-rep="inputs.${i}.ch" value="${esc(c.ch)}">
         <input type="text" placeholder="${L('th_input')}" data-rep="inputs.${i}.input" value="${esc(c.input)}">
-        <input type="text" placeholder="${L('th_micdi')}" style="flex:0 0 90px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
+        <input type="text" placeholder="${L('th_micdi')}" list="micList" style="flex:0 0 110px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
         ${rowCtl('inputs',i)}
       </div>
       <div class="row">
@@ -1187,7 +1212,18 @@ function bindInputs(){
 }
 function sync(){renderForm();renderPreview();}
 function readImg(ev,path){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{setPath(path,r.result);renderPreview();};r.readAsDataURL(f);}
+  r.onload=()=>{downscaleDataURL(r.result,1600,0.82,out=>{setPath(path,out);renderForm();renderPreview();});};r.readAsDataURL(f);}
+function downscaleDataURL(src,max,q,cb){try{
+  const img=new Image();
+  img.onload=()=>{let w=img.width,h=img.height;
+    if(w<=max&&h<=max){cb(src);return;}
+    const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);
+    const c=document.createElement("canvas");c.width=w;c.height=h;
+    c.getContext("2d").drawImage(img,0,0,w,h);
+    const png=/^data:image\/png/.test(src);
+    cb(png?c.toDataURL("image/png"):c.toDataURL("image/jpeg",q));};
+  img.onerror=()=>cb(src);img.src=src;
+}catch(e){cb(src);}}
 
 /* ===================== Preview ===================== */
 function renderPreview(){
@@ -1208,7 +1244,7 @@ function renderPreview(){
   if(S.contacts.some(c=>c.name.trim()||c.email.trim())) gen+=`<h3 class="sub-h">${L("sub_contact")}</h3>${contactGrid()}`;
   const tp=S.travelParty.filter(x=>x.label.trim());
   if(tp.length) gen+=`<h3 class="sub-h">${L("sub_travel")}</h3><ul>${tp.map(x=>`<li>${esc(x.label)}${x.count?` — ${esc(x.count)}`:""}</li>`).join("")}</ul>`;
-  if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests)}</p>`;
+  if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests).replace(/\n/g,"<br>")}</p>`;
   /* stage plot */
   let plot="";
   if(S.plot&&S.plot.items.length) plot=plotPreviewHTML();
@@ -1237,8 +1273,13 @@ function renderPreview(){
   /* lights */
   let li="";
   if(t(S.lights.fixtures)) li+=bulletize(S.lights.fixtures);
-  if(t(S.lights.console)) li+=`<p><strong>${L("sub_console")}:</strong> ${esc(S.lights.console)}</p>`;
+  if(t(S.lights.console)||S.lights.consoleOwn){
+    const own=S.lights.consoleOwn==='bring'?L('console_own_bring'):S.lights.consoleOwn==='house'?L('console_own_house'):"";
+    let cval=esc(S.lights.console||""); if(own)cval=(cval?cval+" — ":"")+own;
+    li+=`<p><strong>${L("sub_console")}:</strong> ${cval}</p>`;
+  }
   if(t(S.lights.notes)) li+=`<p>${esc(S.lights.notes)}</p>`;
+  if(S.lights.photo) li+=`<img class="stageplot-img" src="${S.lights.photo}">`;
   /* hospitality */
   let hp="";
   if(t(S.hosp.dressing)) hp+=`<h3 class="sub-h">${L("sub_dressing")}</h3>${bulletize(S.hosp.dressing)}`;
@@ -1346,7 +1387,7 @@ function buildPlotEl(it){
   el.addEventListener("dblclick",e=>{e.stopPropagation();editPlotLabel(it);});
   return el;
 }
-function editPlotLabel(it){const v=prompt("Label:",it.label);if(v!==null){it.label=v;renderPlotEditor();renderPreview();}}
+function editPlotLabel(it){const v=prompt(it.type==='riser'?L("plot_riser_dims"):"Label:",it.label);if(v!==null){it.label=v;renderPlotEditor();renderPreview();}}
 function highlightSel(){document.querySelectorAll("#stagecanvas .pl-el").forEach(n=>{
   const on=n.dataset.id===selPlot;n.classList.toggle("sel",on);
   const it=S.plot.items.find(x=>x.id===n.dataset.id);
@@ -1571,6 +1612,35 @@ function inputPresetChips(){
     Object.keys(INPUT_PRESETS).map(k=>`<button class="chip" onclick="addInputPreset('${k}')">+ ${esc(INPUT_PRESETS[k].lbl[lang]||INPUT_PRESETS[k].lbl.en)}</button>`).join("")+
     `<button class="chip" style="color:var(--muted)" onclick="renumberInputs();renderForm();renderPreview()">${L('qa_renumber')}</button></div>`;
 }
+/* Common microphones / DI for the input list (datalist suggestions) */
+const MICS=["SM58","Beta 58A","e835","Beta 87A","KSM9","SM57","Beta 57A","e906","e609","MD421","Beta 52A","D6","e602","Beta 91A","e901","Beta 98A","e904","e604","SM81","KM184","C414","e914","Active DI","Passive DI","Radial J48","Radial JDI","BSS AR133"];
+function micDatalist(){return `<datalist id="micList">`+MICS.map(m=>`<option value="${esc(m)}"></option>`).join("")+`</datalist>`;}
+
+/* Wireless / IEM systems + EU/NL frequency bands (quick-add to wireless field) */
+const WIRELESS={
+  mic:["Shure QLX-D","Shure ULX-D","Shure SLX-D","Shure Axient Digital","Sennheiser EW-D","Sennheiser EW 500 G4","Sennheiser Digital 6000","Audio-Technica 3000"],
+  iem:["Shure PSM 300","Shure PSM 900","Shure PSM 1000","Sennheiser EW IEM G4","Sennheiser 2000 IEM","Lectrosonics","Wisycom"],
+  band:[{r:"470–608 MHz"},{r:"614–694 MHz"},{r:"823–832 MHz",free:1},{r:"863–865 MHz",free:1}]
+};
+function wlVal(kind,i){const e=WIRELESS[kind][i];return (typeof e==='object')?(e.r+(e.free?" ("+L('wl_free')+")":"")):e;}
+function addWireless(kind,i){
+  const prefix=kind==='mic'?L('wl_mic'):kind==='iem'?L('wl_iem'):L('wl_band');
+  const cur=S.tech.wireless||"";
+  S.tech.wireless=(cur.trim()?cur.replace(/\s+$/,"")+"\n":"")+prefix+": "+wlVal(kind,i);
+  renderForm();renderPreview();
+}
+function wirelessChips(){
+  const grp=(lbl,kind)=>`<div class="chips"><span class="chips-lbl">${lbl}</span>`+
+    WIRELESS[kind].map((e,i)=>`<button class="chip" onclick="addWireless('${kind}',${i})">+ ${esc(wlVal(kind,i))}</button>`).join("")+`</div>`;
+  return grp(L('wl_mic_lbl'),'mic')+grp(L('wl_iem_lbl'),'iem')+grp(L('wl_band_lbl'),'band');
+}
+
+/* Common lighting consoles (quick-add to console field) */
+const CONSOLES=["GrandMA3","GrandMA2","Avolites","Hog 4","ChamSys MagicQ","ETC Eos"];
+function setConsole(i){S.lights.console=CONSOLES[i];renderForm();renderPreview();}
+function consoleChips(){return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+
+  CONSOLES.map((c,i)=>`<button class="chip" onclick="setConsole(${i})">+ ${esc(c)}</button>`).join("")+`</div>`;}
+
 /* Drinks / crew / dietary quick adds (language-aware content) */
 const QUICK={
   drinks:[
