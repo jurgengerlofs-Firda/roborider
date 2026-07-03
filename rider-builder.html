@@ -656,12 +656,13 @@ const blank = () => ({
   contacts:[{role:"Tour manager",name:"",email:"",phone:""}],
   travelParty:[{label:"",count:""}],
   guests:"",
-  hosp:{dressing:"",towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
+  hosp:{dressing:"",rooms:[],towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
   tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",wireless:""},
   lights:{fixtures:"",console:"",notes:"",photo:"",consoleOwn:""},
   backline:"",
   inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
   auxes:[{n:"1",dest:"",type:"",st:"",notes:""}],
+  park:{vehicles:[{type:"",count:"",plate:"",height:""}],notes:""},
   plot:{items:[]},
   stageplot:""
 });
@@ -740,6 +741,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* Parking & logistiek, dressing rooms, catering-calculator */
+Object.assign(I18N.en,{sec_park:"Parking & logistics",f_vehicles:"Vehicles",plus_vehicle:"+ vehicle",th_vehicle:"Vehicle",th_plate:"Licence plate",th_height:"Height (m)",f_parknotes:"Requests to the venue",veh_car:"Car",veh_van:"Van",veh_sprinter:"Sprinter/bandbus",veh_bus:"Nightliner",veh_truck:"Truck + trailer",veh_other:"Other",f_rooms:"Dressing rooms (per group)",plus_room:"+ room",sub_rooms:"Dressing rooms",persons_word:"pers.",ph_room_who:"For whom (band / crew / artist)",ph_room_notes:"Wishes for this room (optional)",calc_people:"People:",calc_day_show:"Evening show",calc_day_full:"Full day / festival",calc_warm:"Hot weather",calc_alc:"Alcohol",calc_btn:"Calculate & fill",hint_calc:"Rules of thumb for drinks, towels and catering — overwrites those fields, adjust freely afterwards.",hosp_t_catering_day:"Lunch + warm, healthy meal for {n} people"});
+Object.assign(I18N.nl,{sec_park:"Parkeren & logistiek",f_vehicles:"Voertuigen",plus_vehicle:"+ voertuig",th_vehicle:"Voertuig",th_plate:"Kenteken",th_height:"Hoogte (m)",f_parknotes:"Verzoeken aan het huis",veh_car:"Auto",veh_van:"Busje",veh_sprinter:"Sprinter/bandbus",veh_bus:"Nightliner",veh_truck:"Vrachtwagen + trailer",veh_other:"Anders",f_rooms:"Kleedkamers (per groep)",plus_room:"+ kleedkamer",sub_rooms:"Kleedkamers",persons_word:"pers.",ph_room_who:"Voor wie (band / crew / artiest)",ph_room_notes:"Wensen voor deze kamer (optioneel)",calc_people:"Personen:",calc_day_show:"Avondshow",calc_day_full:"Hele dag / festival",calc_warm:"Warm weer",calc_alc:"Alcohol",calc_btn:"Bereken & vul in",hint_calc:"Vuistregels voor drankjes, handdoeken en catering — overschrijft die velden, daarna vrij aan te passen.",hosp_t_catering_day:"Lunch + warme, gezonde maaltijd voor {n} personen"});
+Object.assign(I18N.de,{sec_park:"Parken & Logistik",f_vehicles:"Fahrzeuge",plus_vehicle:"+ Fahrzeug",th_vehicle:"Fahrzeug",th_plate:"Kennzeichen",th_height:"Höhe (m)",f_parknotes:"Bitten an das Haus",veh_car:"Auto",veh_van:"Transporter",veh_sprinter:"Sprinter/Bandbus",veh_bus:"Nightliner",veh_truck:"LKW + Anhänger",veh_other:"Sonstiges",f_rooms:"Garderoben (pro Gruppe)",plus_room:"+ Garderobe",sub_rooms:"Garderoben",persons_word:"Pers.",ph_room_who:"Für wen (Band / Crew / Künstler)",ph_room_notes:"Wünsche für diesen Raum (optional)",calc_people:"Personen:",calc_day_show:"Abendshow",calc_day_full:"Ganzer Tag / Festival",calc_warm:"Heißes Wetter",calc_alc:"Alkohol",calc_btn:"Berechnen & ausfüllen",hint_calc:"Faustregeln für Getränke, Handtücher und Catering — überschreibt diese Felder, danach frei anpassbar.",hosp_t_catering_day:"Lunch + warme, gesunde Mahlzeit für {n} Personen"});
+Object.assign(I18N.fr,{sec_park:"Parking & logistique",f_vehicles:"Véhicules",plus_vehicle:"+ véhicule",th_vehicle:"Véhicule",th_plate:"Plaque",th_height:"Hauteur (m)",f_parknotes:"Demandes à la salle",veh_car:"Voiture",veh_van:"Fourgon",veh_sprinter:"Sprinter/van du groupe",veh_bus:"Nightliner",veh_truck:"Camion + remorque",veh_other:"Autre",f_rooms:"Loges (par groupe)",plus_room:"+ loge",sub_rooms:"Loges",persons_word:"pers.",ph_room_who:"Pour qui (groupe / équipe / artiste)",ph_room_notes:"Souhaits pour cette loge (facultatif)",calc_people:"Personnes :",calc_day_show:"Concert du soir",calc_day_full:"Journée complète / festival",calc_warm:"Forte chaleur",calc_alc:"Alcool",calc_btn:"Calculer & remplir",hint_calc:"Règles de base pour boissons, serviettes et catering — écrase ces champs, à ajuster librement ensuite.",hosp_t_catering_day:"Déjeuner + repas chaud et sain pour {n} personnes"});
+Object.assign(I18N.es,{sec_park:"Parking y logística",f_vehicles:"Vehículos",plus_vehicle:"+ vehículo",th_vehicle:"Vehículo",th_plate:"Matrícula",th_height:"Altura (m)",f_parknotes:"Peticiones a la sala",veh_car:"Coche",veh_van:"Furgoneta",veh_sprinter:"Sprinter/furgón de banda",veh_bus:"Nightliner",veh_truck:"Camión + remolque",veh_other:"Otro",f_rooms:"Camerinos (por grupo)",plus_room:"+ camerino",sub_rooms:"Camerinos",persons_word:"pers.",ph_room_who:"Para quién (banda / equipo / artista)",ph_room_notes:"Deseos para este camerino (opcional)",calc_people:"Personas:",calc_day_show:"Show nocturno",calc_day_full:"Día completo / festival",calc_warm:"Calor",calc_alc:"Alcohol",calc_btn:"Calcular y rellenar",hint_calc:"Reglas básicas para bebidas, toallas y catering — sobrescribe esos campos, luego ajústalos libremente.",hosp_t_catering_day:"Almuerzo + comida caliente y sana para {n} personas"});
 /* Feedback / testimonial popup */
 Object.assign(I18N.en,{fb_title:"Enjoying RoboRider?",fb_intro:"You just exported a rider — how did it go? One honest line helps other musicians (and me, solo builder) a lot.",fb_quote_ph:"e.g. \"Finished our rider in 20 minutes — the sound tech was happy.\"",fb_name_ph:"Name & band (shown with your quote)",fb_may:"You may quote me on roborider.nl",fb_send:"Send",fb_thanks:"Thanks a lot — really appreciated!",fb_need:"Write a line first."});
 Object.assign(I18N.nl,{fb_title:"Blij met RoboRider?",fb_intro:"Je hebt net een rider geëxporteerd — hoe beviel het? Eén eerlijke zin helpt andere muzikanten (en mij, solo-bouwer) enorm.",fb_quote_ph:"Bijv. \"Rider in 20 minuten af — de technicus was blij.\"",fb_name_ph:"Naam & band (komt bij je quote te staan)",fb_may:"Je mag me citeren op roborider.nl",fb_send:"Versturen",fb_thanks:"Dankjewel — enorm gewaardeerd!",fb_need:"Schrijf eerst een zin."});
@@ -1100,6 +1107,8 @@ function section(n,title,body){
 function renderForm(){
   captureOpenState();
   if(!Array.isArray(S.auxes)||!S.auxes.length)S.auxes=[{n:"1",dest:"",type:"",st:"",notes:""}];
+  if(!S.park||!Array.isArray(S.park.vehicles))S.park={vehicles:[{type:"",count:"",plate:"",height:""}],notes:""};
+  if(!Array.isArray(S.hosp.rooms))S.hosp.rooms=[];
   renumberInputs();renumberAuxes();
   const scrollY=$("editor")?$("editor").scrollTop:0;
   let h="";
@@ -1184,7 +1193,20 @@ function renderForm(){
     <div class="hint">${L("hint_lightphoto")}</div>
   `);
   h+=section(8,L("sec_hospitality"),`
-    <button class="add" style="margin-top:0" onclick="fillHosp()">${L("hosp_fill").replace("{n}",String(travelTotal()||"…"))}</button>
+    <div class="bulkrow" style="margin-top:0;flex-wrap:wrap">
+      <span class="chips-lbl">${L("calc_people")}</span><input type="number" id="calcN" min="1" max="99" value="${travelTotal()||""}" placeholder="7" style="flex:0 0 56px">
+      <select id="calcDay" style="flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)">
+        <option value="show">${L("calc_day_show")}</option><option value="full">${L("calc_day_full")}</option>
+      </select>
+      <label class="stchk" style="font-size:9px"><input type="checkbox" id="calcWarm">${esc(L("calc_warm"))}</label>
+      <label class="stchk" style="font-size:9px"><input type="checkbox" id="calcAlc" checked>${esc(L("calc_alc"))}</label>
+      <button class="chip" onclick="fillHosp()">${L("calc_btn")}</button>
+    </div>
+    <div class="hint">${L("hint_calc")}</div>
+    <label class="fld">${L("f_rooms")}</label>
+    <div id="rep-rooms"></div>
+    <button class="add" onclick="addRow('hosp.rooms',{who:'',count:'',notes:''})">${L("plus_room")}</button>
+    ${roomChips()}
     ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('hosp.dressing','dressing')}
     ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
@@ -1200,6 +1222,13 @@ function renderForm(){
     ${quickChips('drinks')}
     ${field(L("f_snacks"),S.hosp.snacks,"hosp.snacks",{type:"textarea",hint:L("hint_bullets")})}
     ${snackChips()}
+  `);
+  h+=section(9,L("sec_park"),`
+    <label class="fld">${L("f_vehicles")}</label>
+    <div id="rep-veh"></div>
+    <button class="add" onclick="addRow('park.vehicles',{type:'',count:'',plate:'',height:''})">${L("plus_vehicle")}</button>
+    ${field(L("f_parknotes"),S.park.notes,"park.notes",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('park.notes','park')}
   `);
   $("formMount").innerHTML=h;
   renderRepeats();
@@ -1245,6 +1274,27 @@ function renderRepeats(){
       <input type="text" placeholder="#" style="flex:0 0 70px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">
       ${rowCtl('tech.crew',i)}
     </div></div>`);
+  mountRepeat("rep-rooms",S.hosp.rooms,(c,i)=>`
+    <div class="repeat">
+      <div class="row">
+        <input type="text" placeholder="${L('ph_room_who')}" data-rep="hosp.rooms.${i}.who" value="${esc(c.who)}">
+        <input type="text" placeholder="#" style="flex:0 0 52px" data-rep="hosp.rooms.${i}.count" value="${esc(c.count)}">
+        ${rowCtl('hosp.rooms',i)}
+      </div>
+      <input type="text" placeholder="${L('ph_room_notes')}" data-rep="hosp.rooms.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+    </div>`);
+  mountRepeat("rep-veh",S.park.vehicles,(c,i)=>`
+    <div class="repeat">
+      <div class="row">
+        <select data-rep="park.vehicles.${i}.type" style="flex:1;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${vehTypeOpts(c.type)}</select>
+        <input type="text" placeholder="#" style="flex:0 0 44px" data-rep="park.vehicles.${i}.count" value="${esc(c.count)}">
+        ${rowCtl('park.vehicles',i)}
+      </div>
+      <div class="row">
+        <input type="text" placeholder="${L('th_plate')}" data-rep="park.vehicles.${i}.plate" value="${esc(c.plate)}">
+        <input type="text" placeholder="${L('th_height')}" style="flex:0 0 92px" data-rep="park.vehicles.${i}.height" value="${esc(c.height)}">
+      </div>
+    </div>`);
   mountRepeat("rep-inputs",S.inputs,(c,i)=>`
     <div class="repeat">
       <div class="row">
@@ -1297,8 +1347,10 @@ function rowCtl(p,i,ins){return `<div class="rowctl">`+
 function travelTotal(){return S.travelParty.reduce((s,x)=>s+(parseInt(x.count,10)||0),0);}
 /* Standard text blocks per free-text field (language-aware) */
 const TEXTPRESETS={
-  dressing:{en:"Clean, lockable dressing room for the full party\nHeating/AC, ventilation, running water\nLarge mirror, sofa/chairs, WiFi + password",
-            nl:"Schone, afsluitbare kleedkamer voor het hele gezelschap\nVerwarming/airco, ventilatie, stromend water\nGrote spiegel, bank/stoelen, WiFi + wachtwoord"},
+  dressing:{en:"Clean, lockable dressing room (key to the band)\nHeating/AC, ventilation, running water\nLarge mirror with good light, sofa/chairs for the full party\nClothing rack + hangers, power sockets\nToilet & shower nearby, WiFi + password",
+            nl:"Schone, afsluitbare kleedkamer (sleutel bij de band)\nVerwarming/airco, ventilatie, stromend water\nGrote spiegel met goed licht, bank/stoelen voor het hele gezelschap\nKledingrek + hangers, stopcontacten\nToilet & douche dichtbij, WiFi + wachtwoord"},
+  park:{en:"Load-in via dock/ramp preferred — please advise distance to stage\nAny height restriction? Let us know in advance\nCity-centre permit arranged by the venue if required\nSecure parking for overnight stays",
+        nl:"Laden/lossen bij voorkeur via laadperron — graag afstand tot podium doorgeven\nHoogtebeperking? Graag vooraf melden\nOntheffing binnenstad indien nodig geregeld door het huis\nBeveiligd parkeren bij overnachting"},
   pa:{en:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics / d&b / Adamson or equivalent). We respect a 103 dB LAeq (15 min) limit unless agreed otherwise.",
       nl:"Full-range PA, fase- en tijd-gelijk, gelijkmatige dekking voor de hele zaal (L-Acoustics / d&b / Adamson of gelijkwaardig). Wij respecteren een limiet van 103 dB LAeq (15 min), tenzij anders afgesproken."},
   foh:{en:"FOH at 2/3 of the room, centered, max 30 m from stage. Not under a balcony, protected from weather, on a flat surface (no riser).",
@@ -1406,6 +1458,8 @@ function renderPreview(){
   if(S.lights.photo) li+=`<img class="stageplot-img" src="${S.lights.photo}">`;
   /* hospitality */
   let hp="";
+  const rooms=(S.hosp.rooms||[]).filter(r=>r.who&&r.who.trim());
+  if(rooms.length) hp+=`<h3 class="sub-h">${L("sub_rooms")}</h3><ul>${rooms.map(r=>`<li>${esc(r.who)}${r.count?` — ${esc(r.count)} ${L("persons_word")}`:""}${r.notes?` (${esc(r.notes)})`:""}</li>`).join("")}</ul>`;
   if(t(S.hosp.dressing)) hp+=`<h3 class="sub-h">${L("sub_dressing")}</h3>${bulletize(S.hosp.dressing)}`;
   if(t(S.hosp.towels)) hp+=`<h3 class="sub-h">${L("sub_towels")}</h3><p>${esc(S.hosp.towels)}</p>`;
   if(t(S.hosp.catering)) hp+=`<h3 class="sub-h">${L("sub_catering")}</h3><p>${esc(S.hosp.catering)}</p>`;
@@ -1422,6 +1476,16 @@ function renderPreview(){
   const drinks=S.hosp.drinks.filter(d=>d.item&&d.item.trim());
   if(drinks.length) hp+=`<h3 class="sub-h">${L("sub_drinks")}</h3><div class="drink-cols">${drinks.map(d=>`<div>• ${esc(d.item)}${d.qty?` (${esc(d.qty)})`:""}</div>`).join("")}</div>`;
   if(t(S.hosp.snacks)) hp+=`<h3 class="sub-h">${L("sub_snacks")}</h3>${bulletize(S.hosp.snacks)}`;
+  /* parking & logistics */
+  let pk="";
+  const PK=S.park||{vehicles:[],notes:""};
+  const vehs=(PK.vehicles||[]).filter(v=>(v.type||"").trim()||(v.plate||"").trim());
+  if(vehs.length){
+    pk+=`<table class="grid"><thead><tr><th>#</th><th>${L("th_vehicle")}</th><th>${L("th_plate")}</th><th>${L("th_height")}</th></tr></thead><tbody>`;
+    vehs.forEach(v=>pk+=`<tr><td>${esc(v.count||"1")}</td><td>${v.type?esc(L("veh_"+v.type)):""}</td><td>${esc(v.plate)}</td><td>${esc(v.height)}</td></tr>`);
+    pk+=`</tbody></table>`;
+  }
+  if(t(PK.notes)) pk+=bulletize(PK.notes);
   /* ---- assemble: general → technical (plot, inputs, backline, other, lights) → hospitality ---- */
   if(gen) h+=pageBlock(L("sec_general"),gen);
   if(plot) h+=pageBlock(L("sec_stageplot"),plot);
@@ -1431,6 +1495,7 @@ function renderPreview(){
   if(tc) h+=pageBlock(L("sec_technical"),tc);
   if(li) h+=pageBlock(L("sec_lights"),li);
   if(hp) h+=pageBlock(L("sec_hospitality"),hp);
+  if(pk) h+=pageBlock(L("sec_park"),pk);
   $("preview").innerHTML=h;
   saveLocal();
   if(typeof scheduleCloudSave==="function") scheduleCloudSave();
@@ -1881,19 +1946,47 @@ function addQuick(group,id){
   else if(group==="dietary"){const txt=e[lang]||e.en;if(S.hosp.dietary.length===1&&!S.hosp.dietary[0].trim())S.hosp.dietary=[];S.hosp.dietary.push(txt);}
   renderForm();renderPreview();
 }
-/* Fill hospitality quantities from the travel party size (only fills fields that are still empty) */
+/* Catering calculator — rules of thumb per person, day type and weather. Overwrites drinks/towels/catering (the hint says so). */
 function fillHosp(){
-  const n=travelTotal();
+  const e=$("calcN");
+  const n=Math.max(1,parseInt(e&&e.value,10)||travelTotal()||0);
   if(!n){alert(L("hosp_fill_none"));return;}
-  if(!t(S.hosp.towels)) S.hosp.towels=L("hosp_t_towels").replace("{n}",n);
-  if(!t(S.hosp.catering)) S.hosp.catering=L("hosp_t_catering").replace("{n}",n);
-  if(!S.hosp.drinks.some(d=>d.item&&d.item.trim())){
-    const lang=S.lang;
-    const pick=(id,qty)=>{const e=QUICK.drinks.find(x=>x.id===id);const v=(e[lang]||e.en);return {item:v.item,qty:qty!=null?String(qty):v.qty};};
-    S.hosp.drinks=[pick("waterc",2*n),pick("soft",n),pick("beer",2*n),pick("coffee",null)];
-  }
+  const full=(($("calcDay")||{}).value)==="full";
+  const warm=!!($("calcWarm")&&$("calcWarm").checked);
+  const alc=!($("calcAlc")&&!$("calcAlc").checked);
+  const mul=warm?1.5:1;
+  const C=x=>String(Math.ceil(x));
+  const lang=S.lang;
+  const pick=(id,qty)=>{const q=QUICK.drinks.find(x=>x.id===id);const v=(q[lang]||q.en);return {item:v.item,qty:qty!=null?qty:v.qty};};
+  const dr=[pick("waterc",C((full?4:2)*n*mul)),pick("soft",C((full?2:1)*n))];
+  if(alc)dr.push(pick("beer",C((full?3:2)*n)));else dr.push(pick("beer0",C(n)));
+  dr.push(pick("coffee",null));
+  S.hosp.drinks=dr;
+  S.hosp.towels=L("hosp_t_towels").replace("{n}",n);
+  S.hosp.catering=(full?L("hosp_t_catering_day"):L("hosp_t_catering")).replace("{n}",n);
   renderForm();renderPreview();
 }
+/* Dressing-room chips: one room per group */
+const ROOMS=[
+  {id:"band",en:"Band",nl:"Band",de:"Band",fr:"Groupe",es:"Banda"},
+  {id:"crew",en:"Crew",nl:"Crew",de:"Crew",fr:"Équipe",es:"Equipo"},
+  {id:"artist",en:"Artist",nl:"Artiest",de:"Künstler",fr:"Artiste",es:"Artista"}
+];
+function addRoom(id){
+  const e=ROOMS.find(x=>x.id===id);if(!e)return;
+  const lab=e[S.lang]||e.en;
+  if(S.hosp.rooms.some(r=>(r.who||"").trim()===lab))return;
+  S.hosp.rooms.push({who:lab,count:"",notes:""});
+  renderForm();renderPreview();
+}
+function roomChips(){
+  const lang=S.lang;
+  return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+
+    ROOMS.map(e=>`<button class="chip" onclick="addRoom('${e.id}')">+ ${esc(e[lang]||e.en)}</button>`).join("")+`</div>`;
+}
+/* Vehicle types for the parking section */
+const VEH_TYPES=["car","van","sprinter","bus","truck","other"];
+function vehTypeOpts(sel){return `<option value=""${sel?"":" selected"}>—</option>`+VEH_TYPES.map(t=>`<option value="${t}"${sel===t?" selected":""}>${esc(L("veh_"+t))}</option>`).join("");}
 /* Snack suggestions — the staples on most hospitality riders (fruit, nuts, crisps, bars, platters) */
 const SNACKS=[
   {id:"fruit",en:"Fresh fruit",nl:"Vers fruit",de:"Frisches Obst",fr:"Fruits frais",es:"Fruta fresca"},
@@ -2099,7 +2192,8 @@ function loadExample(){
   ];
   S.travelParty=[{label:"Band",count:"5"},{label:"Crew (TM + FOH)",count:"2"}];
   S.guests="10 guest spots per show — list follows on the day.";
-  S.hosp.dressing="Clean, lockable dressing room for 7 people\nMirror, power sockets, WiFi + password\nParking for 1 van + 1 car";
+  S.hosp.rooms=[{who:"Band",count:"5",notes:""},{who:"Crew",count:"2",notes:"may be shared with band"}];
+  S.hosp.dressing="Clean, lockable dressing rooms (key to the band)\nMirror with good light, sofa/chairs, clothing rack + hangers\nPower sockets, WiFi + password";
   S.hosp.towels="7 clean towels";
   S.hosp.catering="Warm, healthy meal for 7 people — no fast food.";
   S.hosp.dietary=["2× vegetarian","1× gluten-free"];
@@ -2121,6 +2215,10 @@ function loadExample(){
   S.lights.console=""; S.lights.consoleOwn="house";
   S.lights.notes="GrandMA / Avolites / Hog all fine — house operator welcome, we'll talk the show through on the day.";
   S.backline="We bring our own backline; drum shells from the house are welcome (list on advance).";
+  S.park={vehicles:[
+    {type:"sprinter",count:"1",plate:"NL · VH-201-B",height:"2.8"},
+    {type:"car",count:"1",plate:"NL · VH-202-C",height:""}
+  ],notes:"Load-in via dock/ramp preferred — please advise distance to stage\nCity-centre permit arranged by the venue if required\nSecure parking during the show"};
   S.inputs=[
     ["Kick","Beta 52A","","short","Drums"],
     ["Snare top","SM57","","clamp","Drums"],
