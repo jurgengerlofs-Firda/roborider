@@ -146,6 +146,13 @@
   .mini2{border:1px solid var(--hair);background:none;border-radius:0;width:24px;height:34px;font-size:11px;color:var(--muted);padding:0}
   .mini2:hover{border-color:var(--ink);color:var(--ink)}
   .add{margin-top:10px;font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--soft);background:none;border:1px solid var(--hair);border-radius:0;padding:10px;width:100%;font-weight:400}
+  .chno{flex:0 0 30px;height:34px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:11px;color:var(--muted);border:1px solid var(--hair);background:none}
+  .bulkrow{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .bulkrow input{flex:0 0 74px;padding:8px;border:1px solid var(--hair);background:#fff;font:inherit;font-size:13px}
+  .sugg{position:fixed;z-index:9999;background:#fff;border:1px solid var(--hair);box-shadow:0 8px 24px rgba(0,0,0,.12);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none}
+  .sugg-opt{padding:10px 12px;font-size:13px;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--hair)}
+  .sugg-opt:last-child{border-bottom:none}
+  .sugg-opt:hover{background:#f5f2ea}
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
@@ -171,8 +178,10 @@
   .doc-valid{font-family:var(--display);font-size:11px;color:var(--soft);margin-top:14px;letter-spacing:2px;text-transform:uppercase}
   .doc-cover .contact{margin-top:40px;font-size:13px;font-weight:300;color:var(--ink)}
   .doc-cover .contact strong{display:block;font-size:18px;font-family:var(--display);font-weight:300;letter-spacing:.5px;margin-bottom:4px}
-  h2.sec-h{font-family:var(--display);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:none;
-    display:block;padding:0 0 10px;border-bottom:1px solid var(--ink);border-radius:0;margin:0 0 18px;font-weight:400}
+  #preview{counter-reset:secn}
+  h2.sec-h{font-family:var(--display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:none;
+    display:flex;align-items:baseline;gap:11px;padding:0 0 9px;border-bottom:1px solid var(--ink);border-radius:0;margin:0 0 18px;font-weight:500}
+  h2.sec-h::before{counter-increment:secn;content:counter(secn,decimal-leading-zero);color:var(--clay);font-weight:500;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   h3.sub-h{font-family:var(--display);font-size:9.5px;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--soft);margin:22px 0 7px;border:none;padding:0}
   .doc p{margin:0 0 10px;white-space:pre-wrap;font-weight:300;line-height:1.6}
   .doc ul{margin:6px 0 14px;padding-left:0;list-style:none}
@@ -182,6 +191,9 @@
   table.grid th{background:none;color:var(--soft);text-align:left;padding:7px 8px;font-family:var(--display);font-weight:500;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--ink)}
   table.grid td{border:none;border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top;font-weight:300}
   table.grid td:first-child{color:var(--clay)}
+  table.grid tbody tr:nth-child(even) td{background:#faf8f3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cover-accent{width:46px;height:3px;background:var(--clay);margin:0 0 26px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #preview .page:not(.doc-cover)::after{content:var(--docfoot,"");display:block;margin-top:26px;border-top:1px solid var(--hair);padding-top:8px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
   .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 26px;border:none;border-top:1px solid var(--ink);border-radius:0;overflow:visible;margin-bottom:16px;padding-top:14px}
   .contact-grid .c{padding:0;border:none}
   .contact-grid .role{font-family:var(--display);font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--soft);font-weight:500}
@@ -621,6 +633,7 @@ const blank = () => ({
   lights:{fixtures:"",console:"",notes:"",photo:"",consoleOwn:""},
   backline:"",
   inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
+  auxes:[{n:"1",dest:"",type:"",notes:""}],
   plot:{items:[]},
   stageplot:""
 });
@@ -687,6 +700,12 @@ Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_tit
 Object.assign(I18N.de,{"tagline": "Rider Builder · Demo", "lang_label": "Sprache", "btn_new": "Neu", "btn_example": "Beispiel laden", "btn_open": "Öffnen…", "btn_save": "Speichern (.json)", "btn_pdf": "⬇ PDF exportieren", "btn_translate": "Übersetzen", "btn_edit": "Bearbeiten", "btn_preview": "Vorschau", "saved": "Gespeichert", "onboard": "Neu hier? Beginne unten mit dem Schnellstart oder tippe auf „Beispiel laden“, um eines anzusehen.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Auf RoboRider Pro upgraden?\n\nOK = zur Kasse\nAbbrechen = ich habe bereits einen Lizenzschlüssel", "pro_enter": "Füge deinen RoboRider-Pro-Lizenzschlüssel ein:", "pro_ok": "Pro aktiviert — Wasserzeichen entfernt. Danke!", "pro_bad": "Dieser Lizenzschlüssel ist ungültig. Bitte prüfen und erneut versuchen.", "pro_err": "Der Lizenzserver ist nicht erreichbar. Bitte erneut versuchen.", "pro_manage": "RoboRider Pro ist in diesem Browser aktiv. Entfernen?", "pro_soon": "Die Kasse ist noch nicht eingerichtet — füge zuerst deinen Lemon-Squeezy-Link in den Code ein.", "pro_cta": "Auf Pro upgraden", "pro_status_free": "Du nutzt den kostenlosen Plan. Exportierte PDFs tragen ein kleines RoboRider-Wasserzeichen.", "pro_status_on": "RoboRider Pro ist in diesem Browser aktiv — kein Wasserzeichen. Danke für deine Unterstützung!", "pro_sub_btn": "Pro freischalten — einmalig 29 €", "pro_or": "oder", "pro_key_lbl": "Pro schon gekauft? Lizenzschlüssel einfügen", "pro_act": "Aktivieren", "pro_remove": "Pro aus diesem Browser entfernen", "confirm_new": "Einen neuen, leeren Rider starten? Nicht gespeicherte Änderungen gehen verloren. (Nutze vorher „Speichern“.)", "ai_title": "✨ Füge deinen alten Rider ein oder beschreibe dein Setup", "ai_desc": "Demo: Diese Version nutzt intelligente Texterkennung (Namen, Kontakte, Anzahl, Diätwünsche, Beträge, Inputliste). Die vollständige KI-Version mit Sprachmodell wird hier eingebunden.", "ai_ph": "Füge Text aus deinem bestehenden Rider ein oder tippe z. B.: „4-köpfige Band, Drummer Typ-1-Diabetes, Buy-out 25 €, Reisegruppe 8, Kontakt Alex booking@example.com +31 6 12 34 56 78“", "ai_btn": "Automatisch ausfüllen", "ai_empty": "Füge zuerst etwas Text ein.", "ai_recognized": "Erkannt: ", "ai_check": ". Bitte prüfen und ergänzen.", "ai_none": "Nichts automatisch erkannt — bitte manuell ausfüllen.", "wiz_title": "Schnellstart", "wiz_desc": "Beantworte ein paar Fragen — wir erstellen die Inputliste, den Bühnenplan und einen technischen Ausgangspunkt, den du verfeinern kannst.", "wiz_name": "Band / Künstlername", "wiz_members": "Wer steht auf der Bühne?", "wiz_monitoring": "Monitoring", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "In-Ears", "wiz_backline": "Backline", "wiz_back_own": "Wir bringen unsere eigene mit", "wiz_back_house": "Vom Haus", "wiz_build": "Meinen Rider erstellen", "wiz_other_ph": "Anderes Instrument (z. B. Cello, Sax, Harfe)…", "wiz_t_wedges": "Wedge-Monitore gemäß Inputliste; Mixe vom FOH.", "wiz_t_iem": "In-Ear-Monitoring; eigene Packs, gemischt vom FOH.", "wiz_t_back_own": "Wir bringen unsere eigene Backline mit.", "wiz_t_back_house": "Backline vom Haus erbeten — Details im Vorfeld.", "wiz_t_pa": "Full-Range-PA, phasen- und zeitkorrekt, gleichmäßige Abdeckung im ganzen Raum (L-Acoustics, d&b, Adamson o. Ä.).", "wiz_t_foh": "FOH im Saal, zentriert, nicht unter einem Balkon. Jedes ordentliche Digitalpult (24+ Kanäle).", "wiz_t_power": "230V an markierten Positionen.", "wiz_t_soundcheck": "Ca. 45–60 Min. Aufbau und 20–30 Min. Umbau einplanen.", "plus_contact": "+ Kontakt", "plus_role": "+ Rolle", "plus_dietary": "+ Diätwunsch", "plus_item": "+ Position", "plus_crew": "+ Crew", "plus_channel": "+ Kanal", "qa_presets": "Schnell hinzufügen:", "qa_renumber": "↺ Neu nummerieren", "qa_std": "+ Standardtext", "hint_bullets": "Eine Position pro Zeile = saubere Aufzählung", "hint_48v": "48V mit „X“ markieren. Leere Zeilen werden ausgeblendet.", "hint_stageplot": "Lade deinen bestehenden Bühnenplan als Bild hoch. (Drag-and-drop-Editor in der Vollversion.)", "f_bandname": "Band / Künstlername", "f_subtitle": "Untertitel", "f_validuntil": "Gültig bis", "f_logo": "Logo (Bild)", "f_accent": "Akzentfarbe", "f_intro": "Einleitungstext (optional)", "f_contacts": "Kontakte", "f_travel": "Reisegruppe", "f_guests": "Gästeliste", "f_dressing": "Anforderungen Garderobe", "f_towels": "Handtücher", "f_catering": "Catering / Mahlzeit", "f_dietary": "Diätwünsche", "f_buyout": "Buy-out (pro Person)", "f_drinks": "Getränke & Erfrischungen", "f_snacks": "Snacks / Extra", "f_soundcheck": "Soundcheck / Umbau", "f_crew": "Lokale Crew", "f_stage": "Bühne & Risers", "f_power": "Strom", "f_foh": "FOH / Pult", "f_monitors": "Monitore / In-Ears", "f_pa": "PA-Anlage", "f_wireless": "Funk / Frequenzen", "f_fixtures": "Scheinwerfer / Set", "f_lconsole": "Lichtpult", "f_notes": "Anmerkungen", "f_backline": "Backline", "f_stageplot": "Bühnenplan-Bild", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Gültig bis", "bandname_ph": "BANDNAME", "sec_general": "Allgemein", "sec_hospitality": "Hospitality", "sec_technical": "Technischer Rider", "sec_lights": "Licht", "sec_backline": "Backline", "sec_inputlist": "Inputliste", "sec_stageplot": "Bühnenplan", "sub_intro": "Einführung", "sub_contact": "Kontakt", "sub_travel": "Reisegruppe", "sub_guests": "Gästeliste", "sub_dressing": "Garderobe", "sub_towels": "Handtücher", "sub_catering": "Catering", "sub_dietary": "Diätwünsche", "buyout_word": "Buy-out", "per_person": "pro Person", "sub_drinks": "Getränke & Erfrischungen", "sub_snacks": "Snacks", "sub_soundcheck": "Soundcheck & Umbau", "sub_crew": "Lokale Crew", "sub_stage": "Bühne & Risers", "sub_power": "Strom", "sub_foh": "FOH", "sub_monitors": "Monitore", "sub_pa": "PA", "sub_wireless": "Funk", "sub_console": "Lichtpult", "th_ch": "Kan.", "th_input": "Eingang", "th_micdi": "Mik./DI", "th_48v": "48V", "th_stand": "Stativ", "th_position": "Position", "th_notes": "Notizen", "plot_open": "✎ Bühnenplan zeichnen", "plot_title": "Bühnenplan-Editor", "plot_done": "Fertig", "plot_clear": "Leeren", "plot_audience": "PUBLIKUM / BÜHNENVORDERKANTE", "plot_has": "Gezeichneter Bühnenplan aktiv ✓", "plot_hint": "Klicke ein Element an, um es hinzuzufügen, dann ziehen zum Positionieren. Eckpunkt ziehen zum Skalieren, ↻ zum Drehen, × zum Löschen.", "plot_or_upload": "…oder lade stattdessen ein Bühnenplan-Bild hoch", "plot_add": "Element hinzufügen", "plot_rotate": "↻ Drehe dein Telefon für mehr Platz", "plot_riser_dims": "Riser-Maße (B×T×H), z. B. 2×1×0,4 m:", "hint_guests": "Ein Name oder eine Rolle pro Zeile.", "hint_micdi": "Tipp: Tippe auf das Mik./DI-Feld für gängige Vorschläge.", "wl_mic_lbl": "Funkmikrofon", "wl_iem_lbl": "In-Ears (IEM)", "wl_band_lbl": "Frequenzband", "wl_mic": "Funkmikrofon", "wl_iem": "IEM", "wl_band": "Band", "wl_free": "anmeldefrei", "f_lightphoto": "Referenzfoto (frühere Show)", "hint_lightphoto": "Optional — hilft dem Haus, den Look zu treffen.", "f_console_own": "Lichtpult gestellt von", "console_own_bring": "Wir bringen es selbst mit", "console_own_house": "Vom Haus gestellt", "pt_drums": "Schlagzeug", "pt_keys": "Keys", "pt_bass": "Bass", "pt_guitar": "Gitarre", "pt_vocal": "Gesang/Lead", "pt_riser": "Riser", "pt_monitor": "Monitor", "pt_amp": "Amp", "pt_di": "DI-Box", "pt_power": "Strom 230V", "pt_mic": "Mikro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Hocker", "pt_mstand": "Notenständer", "pt_laptop": "Laptop", "pt_text": "Textlabel", "acct_btn_out": "Anmelden", "acct_btn_in": "Konto", "acct_title": "Dein Konto", "acct_intro": "Melde dich nur mit deiner E-Mail an — wir senden dir einen Einmal-Link. Kein Passwort nötig.", "acct_email": "E-Mail-Adresse", "acct_send": "Link senden", "acct_sent": "Sieh in deiner E-Mail nach dem Anmelde-Link.", "acct_need_email": "Gib zuerst deine E-Mail ein.", "acct_err": "Etwas ist schiefgelaufen. Bitte erneut versuchen.", "acct_who": "Angemeldet als {email}.", "acct_lang": "Bevorzugte Sprache", "acct_save_lbl": "Aktuellen Rider in deinem Konto speichern", "acct_save_btn": "Speichern", "acct_saved": "In deinem Konto gespeichert.", "acct_load": "Öffnen", "acct_rename": "Umbenennen", "acct_delete": "Löschen", "acct_empty": "Noch keine gespeicherten Rider.", "acct_logout": "Abmelden", "acct_untitled": "Unbenannter Rider", "acct_rename_q": "Neuer Name für diesen Rider:", "acct_delete_q": "Diesen Rider löschen? Das kann nicht rückgängig gemacht werden.", "acct_cloud_save": "Speichern", "acct_share": "Teilen", "acct_dup": "Duplizieren", "acct_copy_suffix": "(Kopie)", "acct_duplicated": "Dupliziert.", "acct_share_copied": "Teilen-Link in die Zwischenablage kopiert.", "acct_share_prompt": "Kopiere diesen Teilen-Link:", "shared_banner": "Geteilter Rider · schreibgeschützte Ansicht", "shared_cta": "Erstelle deinen eigenen kostenlos auf roborider.nl", "pro_login_hint": "Melde dich zuerst an, damit Pro auf jedem Gerät mit deinem Konto verknüpft bleibt.", "pro_login_btn": "Anmelden, um Pro zu aktivieren", "pro_need_login": "Bitte zuerst anmelden — dann wird deine Pro-Lizenz mit deinem Konto verknüpft.", "step_prev": "Zurück", "step_next": "Weiter", "step_preview": "Vorschau", "step_count": "Schritt {n} / {t}", "free_limit": "Der kostenlose Plan umfasst 1 gespeicherten Rider. Upgrade auf Pro für unbegrenzte Rider (und kein Wasserzeichen)."});
 Object.assign(I18N.fr,{"tagline": "Rider Builder · démo", "lang_label": "Langue", "btn_new": "Nouveau", "btn_example": "Charger un exemple", "btn_open": "Ouvrir…", "btn_save": "Enregistrer (.json)", "btn_pdf": "⬇ Exporter en PDF", "btn_translate": "Traduire", "btn_edit": "Éditer", "btn_preview": "Aperçu", "saved": "Enregistré", "onboard": "Nouveau ici ? Commence par le Démarrage rapide ci-dessous, ou touche « Charger un exemple » pour en explorer un.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Passer à RoboRider Pro ?\n\nOK = aller au paiement\nAnnuler = j'ai déjà une clé de licence", "pro_enter": "Colle ta clé de licence RoboRider Pro :", "pro_ok": "Pro activé — filigrane supprimé. Merci !", "pro_bad": "Cette clé de licence n'est pas valide. Vérifie-la et réessaie.", "pro_err": "Impossible de joindre le serveur de licences. Réessaie.", "pro_manage": "RoboRider Pro est actif sur ce navigateur. Le retirer ?", "pro_soon": "Le paiement n'est pas encore configuré — colle d'abord ton lien Lemon Squeezy dans le code.", "pro_cta": "Passer à Pro", "pro_status_free": "Tu es sur le plan gratuit. Les PDF exportés portent un petit filigrane RoboRider.", "pro_status_on": "RoboRider Pro est actif sur ce navigateur — sans filigrane. Merci de ton soutien !", "pro_sub_btn": "Débloquer Pro — 29 € une fois", "pro_or": "ou", "pro_key_lbl": "Déjà acheté Pro ? Colle ta clé de licence", "pro_act": "Activer", "pro_remove": "Retirer Pro de ce navigateur", "confirm_new": "Démarrer un nouveau rider vide ? Les modifications non enregistrées seront effacées. (Utilise Enregistrer d'abord.)", "ai_title": "✨ Colle ton ancien rider ou décris ta configuration", "ai_desc": "Démo : cette version utilise une reconnaissance de texte intelligente (noms, contacts, nombres, régimes, montants, liste des entrées). La version IA complète avec modèle de langage se branche ici.", "ai_ph": "Colle le texte de ton rider existant, ou tape p. ex. : « groupe de 4, batteur diabète type 1, buy-out 25 €, équipe 8, contact Alex booking@example.com +31 6 12 34 56 78 »", "ai_btn": "Remplissage auto", "ai_empty": "Colle d'abord du texte.", "ai_recognized": "Reconnu : ", "ai_check": ". Vérifie et complète.", "ai_none": "Rien reconnu automatiquement — remplis manuellement.", "wiz_title": "Démarrage rapide", "wiz_desc": "Réponds à quelques questions — on crée la liste des entrées, le plan de scène et un point de départ technique à affiner.", "wiz_name": "Nom du groupe / artiste", "wiz_members": "Qui est sur scène ?", "wiz_monitoring": "Retours", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "Oreillettes", "wiz_backline": "Backline", "wiz_back_own": "On apporte la nôtre", "wiz_back_house": "Fournie par la salle", "wiz_build": "Créer mon rider", "wiz_other_ph": "Autre instrument (p. ex. violoncelle, sax, harpe)…", "wiz_t_wedges": "Wedges selon la liste des entrées ; mixes depuis la façade.", "wiz_t_iem": "Retours intra-auriculaires ; on apporte nos packs, mixés depuis la façade.", "wiz_t_back_own": "On apporte notre propre backline.", "wiz_t_back_house": "Backline demandée à la salle — détails à l'avance.", "wiz_t_pa": "Système façade large bande, calé en phase et en temps, couverture homogène de la salle (L-Acoustics, d&b, Adamson ou équivalent).", "wiz_t_foh": "Façade dans la salle, centrée, pas sous un balcon. Toute bonne console numérique (24+ canaux).", "wiz_t_power": "230V aux positions indiquées.", "wiz_t_soundcheck": "Prévoir ~45–60 min d'installation et 20–30 min de changement de plateau.", "plus_contact": "+ contact", "plus_role": "+ rôle", "plus_dietary": "+ régime", "plus_item": "+ élément", "plus_crew": "+ équipe", "plus_channel": "+ canal", "qa_presets": "Ajout rapide :", "qa_renumber": "↺ Renuméroter", "qa_std": "+ Texte standard", "hint_bullets": "Un élément par ligne = puces nettes", "hint_48v": "Marque le 48V par « X ». Les lignes vides sont masquées.", "hint_stageplot": "Téléverse ton plan de scène existant en image. (Éditeur glisser-déposer dans la version complète.)", "f_bandname": "Nom du groupe / artiste", "f_subtitle": "Sous-titre", "f_validuntil": "Valable jusqu'au", "f_logo": "Logo (image)", "f_accent": "Couleur d'accent", "f_intro": "Texte d'introduction (facultatif)", "f_contacts": "Contacts", "f_travel": "Équipe en tournée", "f_guests": "Liste d'invités", "f_dressing": "Exigences loge", "f_towels": "Serviettes", "f_catering": "Catering / repas", "f_dietary": "Régimes alimentaires", "f_buyout": "Buy-out (par personne)", "f_drinks": "Boissons & rafraîchissements", "f_snacks": "En-cas / extra", "f_soundcheck": "Balance / changement de plateau", "f_crew": "Équipe locale", "f_stage": "Scène & praticables", "f_power": "Alimentation", "f_foh": "Façade / console", "f_monitors": "Retours / oreillettes", "f_pa": "Système son", "f_wireless": "HF / fréquences", "f_fixtures": "Projecteurs / set", "f_lconsole": "Console lumière", "f_notes": "Notes", "f_backline": "Backline", "f_stageplot": "Image du plan de scène", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Valable jusqu'au", "bandname_ph": "NOM DU GROUPE", "sec_general": "Général", "sec_hospitality": "Hospitality", "sec_technical": "Rider technique", "sec_lights": "Lumière", "sec_backline": "Backline", "sec_inputlist": "Liste des entrées", "sec_stageplot": "Plan de scène", "sub_intro": "Introduction", "sub_contact": "Contact", "sub_travel": "Équipe en tournée", "sub_guests": "Liste d'invités", "sub_dressing": "Loge", "sub_towels": "Serviettes", "sub_catering": "Catering", "sub_dietary": "Régimes alimentaires", "buyout_word": "Buy-out", "per_person": "par personne", "sub_drinks": "Boissons & rafraîchissements", "sub_snacks": "En-cas", "sub_soundcheck": "Balance & changement de plateau", "sub_crew": "Équipe locale", "sub_stage": "Scène & praticables", "sub_power": "Alimentation", "sub_foh": "Façade", "sub_monitors": "Retours", "sub_pa": "Son", "sub_wireless": "HF", "sub_console": "Console lumière", "th_ch": "CH", "th_input": "Entrée", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Pied", "th_position": "Position", "th_notes": "Notes", "plot_open": "✎ Dessiner le plan de scène", "plot_title": "Éditeur de plan de scène", "plot_done": "Terminé", "plot_clear": "Effacer", "plot_audience": "PUBLIC / DEVANT DE SCÈNE", "plot_has": "Plan de scène dessiné actif ✓", "plot_hint": "Clique sur un élément pour l'ajouter, puis glisse pour le placer. Glisse la poignée d'angle pour redimensionner, ↻ pour pivoter, × pour supprimer.", "plot_or_upload": "…ou téléverse plutôt une image du plan de scène", "plot_add": "Ajouter un élément", "plot_rotate": "↻ Tourne ton téléphone pour plus de place", "plot_riser_dims": "Dimensions du praticable (l×p×h), p. ex. 2×1×0,4 m :", "hint_guests": "Un nom ou un rôle par ligne.", "hint_micdi": "Astuce : touche le champ micro/DI pour des suggestions courantes.", "wl_mic_lbl": "Micro HF", "wl_iem_lbl": "Oreillettes (IEM)", "wl_band_lbl": "Bande de fréquence", "wl_mic": "Micro HF", "wl_iem": "IEM", "wl_band": "Bande", "wl_free": "sans licence", "f_lightphoto": "Photo de référence (show précédent)", "hint_lightphoto": "Facultatif — aide la salle à reproduire l'ambiance.", "f_console_own": "Console lumière fournie par", "console_own_bring": "On apporte la nôtre", "console_own_house": "Fournie par la salle", "pt_drums": "Batterie", "pt_keys": "Claviers", "pt_bass": "Basse", "pt_guitar": "Guitare", "pt_vocal": "Chant/Lead", "pt_riser": "Praticable", "pt_monitor": "Retour", "pt_amp": "Ampli", "pt_di": "Boîte DI", "pt_power": "Alim. 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Tabouret", "pt_mstand": "Pupitre", "pt_laptop": "Ordi portable", "pt_text": "Étiquette texte", "acct_btn_out": "Se connecter", "acct_btn_in": "Compte", "acct_title": "Ton compte", "acct_intro": "Connecte-toi avec juste ton e-mail — on t'envoie un lien à usage unique. Pas de mot de passe.", "acct_email": "Adresse e-mail", "acct_send": "Envoyer le lien", "acct_sent": "Regarde dans ta boîte mail pour le lien de connexion.", "acct_need_email": "Saisis d'abord ton e-mail.", "acct_err": "Une erreur est survenue. Réessaie.", "acct_who": "Connecté en tant que {email}.", "acct_lang": "Langue préférée", "acct_save_lbl": "Enregistrer le rider actuel dans ton compte", "acct_save_btn": "Enregistrer", "acct_saved": "Enregistré dans ton compte.", "acct_load": "Ouvrir", "acct_rename": "Renommer", "acct_delete": "Supprimer", "acct_empty": "Aucun rider enregistré pour l'instant.", "acct_logout": "Se déconnecter", "acct_untitled": "Rider sans titre", "acct_rename_q": "Nouveau nom pour ce rider :", "acct_delete_q": "Supprimer ce rider ? C'est irréversible.", "acct_cloud_save": "Enregistrer", "acct_share": "Partager", "acct_dup": "Dupliquer", "acct_copy_suffix": "(copie)", "acct_duplicated": "Dupliqué.", "acct_share_copied": "Lien de partage copié dans le presse-papiers.", "acct_share_prompt": "Copie ce lien de partage :", "shared_banner": "Rider partagé · lecture seule", "shared_cta": "Crée le tien gratuitement sur roborider.nl", "pro_login_hint": "Connecte-toi d'abord pour que Pro reste lié à ton compte sur chaque appareil.", "pro_login_btn": "Se connecter pour activer Pro", "pro_need_login": "Connecte-toi d'abord — ta licence Pro sera alors liée à ton compte.", "step_prev": "Retour", "step_next": "Suivant", "step_preview": "Aperçu", "step_count": "Étape {n} / {t}", "free_limit": "Le plan gratuit inclut 1 rider enregistré. Passe à Pro pour des riders illimités (et sans filigrane)."});
 Object.assign(I18N.es,{"tagline": "Rider Builder · demo", "lang_label": "Idioma", "btn_new": "Nuevo", "btn_example": "Cargar ejemplo", "btn_open": "Abrir…", "btn_save": "Guardar (.json)", "btn_pdf": "⬇ Exportar PDF", "btn_translate": "Traducir", "btn_edit": "Editar", "btn_preview": "Vista previa", "saved": "Guardado", "onboard": "¿Nuevo por aquí? Empieza con el Inicio rápido abajo, o toca «Cargar ejemplo» para explorar uno.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "¿Pasar a RoboRider Pro?\n\nOK = ir al pago\nCancelar = ya tengo una clave de licencia", "pro_enter": "Pega tu clave de licencia de RoboRider Pro:", "pro_ok": "Pro activado — marca de agua eliminada. ¡Gracias!", "pro_bad": "Esa clave de licencia no es válida. Compruébala e inténtalo de nuevo.", "pro_err": "No se pudo contactar con el servidor de licencias. Inténtalo de nuevo.", "pro_manage": "RoboRider Pro está activo en este navegador. ¿Quitarlo?", "pro_soon": "El pago aún no está configurado — pega primero tu enlace de Lemon Squeezy en el código.", "pro_cta": "Pasar a Pro", "pro_status_free": "Estás en el plan gratuito. Los PDF exportados llevan una pequeña marca de agua de RoboRider.", "pro_status_on": "RoboRider Pro está activo en este navegador — sin marca de agua. ¡Gracias por tu apoyo!", "pro_sub_btn": "Desbloquear Pro — 29 € una vez", "pro_or": "o", "pro_key_lbl": "¿Ya compraste Pro? Pega tu clave de licencia", "pro_act": "Activar", "pro_remove": "Quitar Pro de este navegador", "confirm_new": "¿Empezar un rider nuevo y vacío? Se borrarán los cambios sin guardar. (Usa Guardar primero.)", "ai_title": "✨ Pega tu rider antiguo o describe tu setup", "ai_desc": "Demo: esta versión usa reconocimiento de texto inteligente (nombres, contactos, cantidades, dietas, importes, lista de entradas). La versión IA completa con modelo de lenguaje se conecta aquí.", "ai_ph": "Pega texto de tu rider actual, o escribe p. ej.: «banda de 4, baterista diabetes tipo 1, buy-out 25 €, equipo 8, contacto Alex booking@example.com +31 6 12 34 56 78»", "ai_btn": "Autocompletar", "ai_empty": "Pega algo de texto primero.", "ai_recognized": "Reconocido: ", "ai_check": ". Revisa y completa.", "ai_none": "No se reconoció nada automáticamente — rellénalo manualmente.", "wiz_title": "Inicio rápido", "wiz_desc": "Responde unas preguntas — creamos la lista de entradas, el plano de escenario y un punto de partida técnico que podrás ajustar.", "wiz_name": "Nombre de banda / artista", "wiz_members": "¿Quién está en el escenario?", "wiz_monitoring": "Monitoreo", "wiz_mon_wedges": "Cuñas", "wiz_mon_iem": "In-ears", "wiz_backline": "Backline", "wiz_back_own": "Llevamos el nuestro", "wiz_back_house": "De la sala", "wiz_build": "Crear mi rider", "wiz_other_ph": "Otro instrumento (p. ej. cello, sax, arpa)…", "wiz_t_wedges": "Monitores de cuña según la lista de entradas; mezclas desde FOH.", "wiz_t_iem": "Monitoreo in-ear; llevamos nuestros packs, mezclados desde FOH.", "wiz_t_back_own": "Llevamos nuestro propio backline.", "wiz_t_back_house": "Backline solicitado a la sala — detalles por adelantado.", "wiz_t_pa": "PA de rango completo, alineada en fase y tiempo, cobertura uniforme de toda la sala (L-Acoustics, d&b, Adamson o equivalente).", "wiz_t_foh": "FOH en la sala, centrado, no bajo un balcón. Cualquier consola digital decente (24+ canales).", "wiz_t_power": "230V en las posiciones marcadas.", "wiz_t_soundcheck": "Prevé ~45–60 min de montaje y 20–30 min de cambio.", "plus_contact": "+ contacto", "plus_role": "+ rol", "plus_dietary": "+ dieta", "plus_item": "+ elemento", "plus_crew": "+ equipo", "plus_channel": "+ canal", "qa_presets": "Añadir rápido:", "qa_renumber": "↺ Renumerar", "qa_std": "+ Texto estándar", "hint_bullets": "Un elemento por línea = viñetas limpias", "hint_48v": "Marca el 48V con «X». Las filas vacías se ocultan.", "hint_stageplot": "Sube tu plano de escenario existente como imagen. (Editor de arrastrar y soltar en la versión completa.)", "f_bandname": "Nombre de banda / artista", "f_subtitle": "Subtítulo", "f_validuntil": "Válido hasta", "f_logo": "Logo (imagen)", "f_accent": "Color de acento", "f_intro": "Texto de introducción (opcional)", "f_contacts": "Contactos", "f_travel": "Equipo de gira", "f_guests": "Lista de invitados", "f_dressing": "Requisitos de camerino", "f_towels": "Toallas", "f_catering": "Catering / comida", "f_dietary": "Requisitos dietéticos", "f_buyout": "Buy-out (por persona)", "f_drinks": "Bebidas y refrigerios", "f_snacks": "Snacks / extra", "f_soundcheck": "Prueba de sonido / cambio", "f_crew": "Equipo local", "f_stage": "Escenario y tarimas", "f_power": "Corriente", "f_foh": "FOH / consola", "f_monitors": "Monitores / in-ears", "f_pa": "Sistema PA", "f_wireless": "Inalámbrico / frecuencias", "f_fixtures": "Focos / set", "f_lconsole": "Mesa de luces", "f_notes": "Notas", "f_backline": "Backline", "f_stageplot": "Imagen del plano", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Válido hasta", "bandname_ph": "NOMBRE DE BANDA", "sec_general": "General", "sec_hospitality": "Hospitality", "sec_technical": "Rider técnico", "sec_lights": "Iluminación", "sec_backline": "Backline", "sec_inputlist": "Lista de entradas", "sec_stageplot": "Plano de escenario", "sub_intro": "Introducción", "sub_contact": "Contacto", "sub_travel": "Equipo de gira", "sub_guests": "Lista de invitados", "sub_dressing": "Camerino", "sub_towels": "Toallas", "sub_catering": "Catering", "sub_dietary": "Requisitos dietéticos", "buyout_word": "Buy-out", "per_person": "por persona", "sub_drinks": "Bebidas y refrigerios", "sub_snacks": "Snacks", "sub_soundcheck": "Prueba de sonido y cambio", "sub_crew": "Equipo local", "sub_stage": "Escenario y tarimas", "sub_power": "Corriente", "sub_foh": "FOH", "sub_monitors": "Monitores", "sub_pa": "PA", "sub_wireless": "Inalámbrico", "sub_console": "Mesa de luces", "th_ch": "CH", "th_input": "Entrada", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Soporte", "th_position": "Posición", "th_notes": "Notas", "plot_open": "✎ Dibujar plano de escenario", "plot_title": "Editor de plano", "plot_done": "Listo", "plot_clear": "Borrar", "plot_audience": "PÚBLICO / FRENTE DEL ESCENARIO", "plot_has": "Plano de escenario dibujado activo ✓", "plot_hint": "Haz clic en un elemento para añadirlo y arrástralo para colocarlo. Arrastra la esquina para redimensionar, ↻ para girar, × para eliminar.", "plot_or_upload": "…o sube una imagen del plano en su lugar", "plot_add": "Añadir elemento", "plot_rotate": "↻ Gira el teléfono para más espacio", "plot_riser_dims": "Dimensiones de la tarima (an×prof×al), p. ej. 2×1×0,4 m:", "hint_guests": "Un nombre o rol por línea.", "hint_micdi": "Consejo: toca el campo micro/DI para ver sugerencias comunes.", "wl_mic_lbl": "Micro inalámbrico", "wl_iem_lbl": "In-ears (IEM)", "wl_band_lbl": "Banda de frecuencia", "wl_mic": "Micro inalámbrico", "wl_iem": "IEM", "wl_band": "Banda", "wl_free": "sin licencia", "f_lightphoto": "Foto de referencia (show anterior)", "hint_lightphoto": "Opcional — ayuda a la sala a igualar el look.", "f_console_own": "Mesa de luces aportada por", "console_own_bring": "La llevamos nosotros", "console_own_house": "Aportada por la sala", "pt_drums": "Batería", "pt_keys": "Teclados", "pt_bass": "Bajo", "pt_guitar": "Guitarra", "pt_vocal": "Voz/Lead", "pt_riser": "Tarima", "pt_monitor": "Monitor", "pt_amp": "Ampli", "pt_di": "Caja DI", "pt_power": "Corriente 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Banqueta", "pt_mstand": "Atril", "pt_laptop": "Portátil", "pt_text": "Etiqueta texto", "acct_btn_out": "Iniciar sesión", "acct_btn_in": "Cuenta", "acct_title": "Tu cuenta", "acct_intro": "Inicia sesión solo con tu correo — te enviamos un enlace de un solo uso. Sin contraseña.", "acct_email": "Correo electrónico", "acct_send": "Enviar enlace", "acct_sent": "Revisa tu correo para el enlace de acceso.", "acct_need_email": "Introduce primero tu correo.", "acct_err": "Algo salió mal. Inténtalo de nuevo.", "acct_who": "Conectado como {email}.", "acct_lang": "Idioma preferido", "acct_save_lbl": "Guardar el rider actual en tu cuenta", "acct_save_btn": "Guardar", "acct_saved": "Guardado en tu cuenta.", "acct_load": "Abrir", "acct_rename": "Renombrar", "acct_delete": "Eliminar", "acct_empty": "Aún no hay riders guardados.", "acct_logout": "Cerrar sesión", "acct_untitled": "Rider sin título", "acct_rename_q": "Nuevo nombre para este rider:", "acct_delete_q": "¿Eliminar este rider? No se puede deshacer.", "acct_cloud_save": "Guardar", "acct_share": "Compartir", "acct_dup": "Duplicar", "acct_copy_suffix": "(copia)", "acct_duplicated": "Duplicado.", "acct_share_copied": "Enlace para compartir copiado al portapapeles.", "acct_share_prompt": "Copia este enlace para compartir:", "shared_banner": "Rider compartido · solo lectura", "shared_cta": "Crea el tuyo gratis en roborider.nl", "pro_login_hint": "Inicia sesión primero para que Pro quede vinculado a tu cuenta en todos los dispositivos.", "pro_login_btn": "Inicia sesión para activar Pro", "pro_need_login": "Inicia sesión primero — así tu licencia Pro se vincula a tu cuenta.", "step_prev": "Atrás", "step_next": "Siguiente", "step_preview": "Vista previa", "step_count": "Paso {n} / {t}", "free_limit": "El plan gratuito incluye 1 rider guardado. Pasa a Pro para riders ilimitados (y sin marca de agua)."});
+/* --- Aux/output section, bulk add & auto-numbering (all 5 languages) --- */
+Object.assign(I18N.en,{sec_aux:"Monitor mixes & outputs",th_aux:"AUX",th_dest:"Mix / destination",th_type:"Type",plus_aux:"+ aux",hint_aux:"IEM mixes, wedges, FX and engineer channels. Reorder with ↑↓ — the numbering updates automatically.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Engineer",aux_t_other:"Other",bulk_total:"Channels needed:",aux_bulk_total:"Auxes needed:",bulk_add:"Fill",hint_bulk:"Type e.g. 48 and press Fill — empty channels are added up to that number.",hint_autonum:"Channel numbers follow the list order automatically — use ↑↓ to reorder or ⤵ to insert a row."});
+Object.assign(I18N.nl,{sec_aux:"Monitormixen & outputs",th_aux:"AUX",th_dest:"Mix / bestemming",th_type:"Type",plus_aux:"+ aux",hint_aux:"In-earmixen, wedges, FX en engineer-kanalen. Herorden met ↑↓ — de nummering loopt automatisch mee.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Engineer",aux_t_other:"Anders",bulk_total:"Kanalen nodig:",aux_bulk_total:"Auxen nodig:",bulk_add:"Aanvullen",hint_bulk:"Typ bijv. 48 en klik Aanvullen — er komen lege kanalen bij tot dat aantal.",hint_autonum:"Kanaalnummers volgen automatisch de volgorde van de lijst — gebruik ↑↓ om te schuiven of ⤵ om een rij tussen te voegen."});
+Object.assign(I18N.de,{sec_aux:"Monitorwege & Outputs",th_aux:"AUX",th_dest:"Mix / Ziel",th_type:"Typ",plus_aux:"+ Aux",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Engineer",aux_t_other:"Sonstiges",bulk_total:"Benötigte Kanäle:",aux_bulk_total:"Benötigte Auxwege:",bulk_add:"Auffüllen",hint_bulk:"Z. B. 48 eingeben und Auffüllen drücken — leere Kanäle werden bis zu dieser Zahl ergänzt.",hint_autonum:"Kanalnummern folgen automatisch der Reihenfolge — mit ↑↓ verschieben oder mit ⤵ eine Zeile einfügen."});
+Object.assign(I18N.fr,{sec_aux:"Retours & sorties",th_aux:"AUX",th_dest:"Mix / destination",th_type:"Type",plus_aux:"+ aux",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Ingénieur",aux_t_other:"Autre",bulk_total:"Canaux nécessaires :",aux_bulk_total:"Aux nécessaires :",bulk_add:"Compléter",hint_bulk:"Tape p. ex. 48 puis Compléter — des canaux vides sont ajoutés jusqu'à ce nombre.",hint_autonum:"Les numéros de canaux suivent automatiquement l'ordre de la liste — ↑↓ pour déplacer, ⤵ pour insérer une ligne."});
+Object.assign(I18N.es,{sec_aux:"Mezclas de monitor y salidas",th_aux:"AUX",th_dest:"Mezcla / destino",th_type:"Tipo",plus_aux:"+ aux",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola.",aux_t_wedge:"Cuña",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Técnico",aux_t_other:"Otro",bulk_total:"Canales necesarios:",aux_bulk_total:"Aux necesarios:",bulk_add:"Completar",hint_bulk:"Escribe p. ej. 48 y pulsa Completar — se añaden canales vacíos hasta ese número.",hint_autonum:"Los números de canal siguen automáticamente el orden de la lista — usa ↑↓ para mover o ⤵ para insertar una fila."});
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -1027,6 +1046,8 @@ function section(n,title,body){
 }
 function renderForm(){
   captureOpenState();
+  if(!Array.isArray(S.auxes)||!S.auxes.length)S.auxes=[{n:"1",dest:"",type:"",notes:""}];
+  renumberInputs();renumberAuxes();
   const scrollY=$("editor")?$("editor").scrollTop:0;
   let h="";
   h+=section(1,L("sec_general"),`
@@ -1058,15 +1079,24 @@ function renderForm(){
   `);
   h+=section(3,L("sec_inputlist"),`
     ${inputPresetChips()}
-    ${micDatalist()}
     <div class="hint">${L("hint_48v")} · ${L("hint_micdi")}</div>
+    <div class="hint">${L("hint_autonum")}</div>
     <div id="rep-inputs"></div>
     <button class="add" onclick="addInput()">${L("plus_channel")}</button>
+    <div class="bulkrow"><span class="chips-lbl">${L("bulk_total")}</span><input type="number" id="bulkChN" min="1" max="96" placeholder="48"><button class="chip" onclick="fillChannels()">${L("bulk_add")}</button></div>
+    <div class="hint">${L("hint_bulk")}</div>
   `);
-  h+=section(4,L("sec_backline"),`
+  h+=section(4,L("sec_aux"),`
+    ${auxPresetChips()}
+    <div class="hint">${L("hint_aux")}</div>
+    <div id="rep-auxes"></div>
+    <button class="add" onclick="addAux()">${L("plus_aux")}</button>
+    <div class="bulkrow"><span class="chips-lbl">${L("aux_bulk_total")}</span><input type="number" id="bulkAuxN" min="1" max="32" placeholder="8"><button class="chip" onclick="fillAuxes()">${L("bulk_add")}</button></div>
+  `);
+  h+=section(5,L("sec_backline"),`
     ${field(L("f_backline"),S.backline,"backline",{type:"textarea",hint:L("hint_bullets")})}
   `);
-  h+=section(5,L("sec_technical"),`
+  h+=section(6,L("sec_technical"),`
     ${field(L("f_soundcheck"),S.tech.soundcheck,"tech.soundcheck",{type:"textarea"})}
     <label class="fld">${L("f_crew")}</label>
     <div id="rep-crew"></div>
@@ -1083,7 +1113,7 @@ function renderForm(){
     ${field(L("f_wireless"),S.tech.wireless,"tech.wireless",{type:"textarea"})}
     ${wirelessChips()}
   `);
-  h+=section(6,L("sec_lights"),`
+  h+=section(7,L("sec_lights"),`
     ${field(L("f_fixtures"),S.lights.fixtures,"lights.fixtures",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('lights.fixtures','lights')}
     <label class="fld">${L("f_console_own")}</label>
@@ -1100,7 +1130,7 @@ function renderForm(){
     ${S.lights.photo?`<img class="stageplot-img" src="${S.lights.photo}" style="margin-top:8px">`:""}
     <div class="hint">${L("hint_lightphoto")}</div>
   `);
-  h+=section(7,L("sec_hospitality"),`
+  h+=section(8,L("sec_hospitality"),`
     ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('hosp.dressing','dressing')}
     ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
@@ -1163,10 +1193,10 @@ function renderRepeats(){
   mountRepeat("rep-inputs",S.inputs,(c,i)=>`
     <div class="repeat">
       <div class="row">
-        <input type="text" placeholder="${L('th_ch')}" style="flex:0 0 48px" data-rep="inputs.${i}.ch" value="${esc(c.ch)}">
+        <span class="chno" title="${L('th_ch')}">${i+1}</span>
         <input type="text" placeholder="${L('th_input')}" data-rep="inputs.${i}.input" value="${esc(c.input)}">
-        <input type="text" placeholder="${L('th_micdi')}" list="micList" style="flex:0 0 110px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
-        ${rowCtl('inputs',i)}
+        <input type="text" placeholder="${L('th_micdi')}" data-mic autocomplete="off" style="flex:0 0 110px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
+        ${rowCtl('inputs',i,1)}
       </div>
       <div class="row">
         <input type="text" placeholder="${L('th_48v')}" style="flex:0 0 48px" data-rep="inputs.${i}.p48" value="${esc(c.p48)}">
@@ -1175,21 +1205,37 @@ function renderRepeats(){
       </div>
       <input type="text" placeholder="${L('th_notes')}" data-rep="inputs.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
     </div>`);
+  mountRepeat("rep-auxes",S.auxes,(c,i)=>`
+    <div class="repeat">
+      <div class="row">
+        <span class="chno" title="${L('th_aux')}">${i+1}</span>
+        <input type="text" placeholder="${L('th_dest')}" data-rep="auxes.${i}.dest" value="${esc(c.dest)}">
+        <select data-rep="auxes.${i}.type" style="flex:0 0 96px;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${auxTypeOpts(c.type)}</select>
+        ${rowCtl('auxes',i,1)}
+      </div>
+      <input type="text" placeholder="${L('th_notes')}" data-rep="auxes.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+    </div>`);
 }
 function mountRepeat(id,arr,tpl){const el=$(id);if(!el)return;el.innerHTML=arr.map(tpl).join("");
-  el.querySelectorAll("[data-rep]").forEach(inp=>inp.addEventListener("input",e=>{setRep(e.target.dataset.rep,e.target.value);renderPreview();}));}
+  el.querySelectorAll("[data-rep]").forEach(inp=>{const h=e=>{setRep(e.target.dataset.rep,e.target.value);renderPreview();};inp.addEventListener("input",h);inp.addEventListener("change",h);});}
 
 function setPath(p,v){const k=p.split(".");let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;}
 function getPath(p){return p.split(".").reduce((o,k)=>o&&o[k],S);}
 function setRep(p,v){const k=p.split(".");let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;}
 function addRow(p,item){const a=getPath(p);a.push(typeof item==="object"?JSON.parse(JSON.stringify(item)):item);renderForm();renderPreview();}
 function addInput(){const a=S.inputs;a.push({ch:String(a.length+1),input:"",micdi:"",p48:"",stand:"",pos:"",notes:""});renderForm();renderPreview();}
-function delRow(p,i){const a=getPath(p);a.splice(i,1);if(p==="inputs")renumberInputs();renderForm();renderPreview();}
-function moveRow(p,i,dir){const a=getPath(p);const j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];if(p==="inputs")renumberInputs();renderForm();renderPreview();}
-function dupRow(p,i){const a=getPath(p);const it=a[i];a.splice(i+1,0,(typeof it==="object")?JSON.parse(JSON.stringify(it)):it);if(p==="inputs")renumberInputs();renderForm();renderPreview();}
-function rowCtl(p,i){return `<div class="rowctl">`+
+function addAux(){const a=S.auxes;a.push({n:String(a.length+1),dest:"",type:"",notes:""});renderForm();renderPreview();}
+function reIdx(p){if(p==="inputs")renumberInputs();if(p==="auxes")renumberAuxes();}
+function delRow(p,i){const a=getPath(p);a.splice(i,1);reIdx(p);renderForm();renderPreview();}
+function moveRow(p,i,dir){const a=getPath(p);const j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];reIdx(p);renderForm();renderPreview();}
+function dupRow(p,i){const a=getPath(p);const it=a[i];a.splice(i+1,0,(typeof it==="object")?JSON.parse(JSON.stringify(it)):it);reIdx(p);renderForm();renderPreview();}
+function insRow(p,i){const a=getPath(p);const it=(p==="auxes")?{n:"",dest:"",type:"",notes:""}:{ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""};a.splice(i+1,0,it);reIdx(p);renderForm();renderPreview();}
+function fillChannels(){const e=$("bulkChN");const n=Math.min(96,parseInt(e&&e.value,10)||0);if(!n)return;while(S.inputs.length<n)S.inputs.push({ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""});renumberInputs();renderForm();renderPreview();}
+function fillAuxes(){const e=$("bulkAuxN");const n=Math.min(32,parseInt(e&&e.value,10)||0);if(!n)return;while(S.auxes.length<n)S.auxes.push({n:"",dest:"",type:"",notes:""});renumberAuxes();renderForm();renderPreview();}
+function rowCtl(p,i,ins){return `<div class="rowctl">`+
   `<button class="mini2" title="up" onclick="moveRow('${p}',${i},-1)">↑</button>`+
   `<button class="mini2" title="down" onclick="moveRow('${p}',${i},1)">↓</button>`+
+  (ins?`<button class="mini2" title="insert below" onclick="insRow('${p}',${i})">⤵</button>`:"")+
   `<button class="mini2" title="duplicate" onclick="dupRow('${p}',${i})">⧉</button>`+
   `<button class="mini2" title="delete" onclick="delRow('${p}',${i})">×</button></div>`;}
 function travelTotal(){return S.travelParty.reduce((s,x)=>s+(parseInt(x.count,10)||0),0);}
@@ -1236,9 +1282,11 @@ function downscaleDataURL(src,max,q,cb){try{
 /* ===================== Preview ===================== */
 function renderPreview(){
   document.documentElement.style.setProperty("--accent",S.band.accent||"#1a1a1a");
+  document.documentElement.style.setProperty("--docfoot",JSON.stringify(((S.band.name||"").trim()? (S.band.name.trim()+" · ") : "")+(S.band.subtitle||L("subtitle_default"))));
   let h="";
   /* cover */
   h+=`<div class="page doc-cover">
+    <div class="cover-accent"></div>
     ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}">`:""}
     <h1 class="doc-band">${esc(S.band.name||L("bandname_ph"))}</h1>
     <div class="doc-title">${esc(S.band.subtitle||L("subtitle_default"))}</div>
@@ -1264,6 +1312,14 @@ function renderPreview(){
     inp=`<table class="grid"><thead><tr><th>${L("th_ch")}</th><th>${L("th_input")}</th><th>${L("th_micdi")}</th><th>${L("th_48v")}</th><th>${L("th_stand")}</th><th>${L("th_position")}</th><th>${L("th_notes")}</th></tr></thead><tbody>`;
     inputs.forEach(r=>inp+=`<tr><td>${esc(r.ch)}</td><td>${esc(r.input)}</td><td>${esc(r.micdi)}</td><td>${esc(r.p48)}</td><td>${esc(r.stand)}</td><td>${esc(r.pos)}</td><td>${esc(r.notes)}</td></tr>`);
     inp+=`</tbody></table>`;
+  }
+  /* aux / outputs */
+  let aux="";
+  const auxes=(S.auxes||[]).filter(r=>r.dest&&r.dest.trim());
+  if(auxes.length){
+    aux=`<table class="grid"><thead><tr><th>${L("th_aux")}</th><th>${L("th_dest")}</th><th>${L("th_type")}</th><th>${L("th_notes")}</th></tr></thead><tbody>`;
+    auxes.forEach(r=>aux+=`<tr><td>${esc(r.n)}</td><td>${esc(r.dest)}</td><td>${auxTypeLbl(r.type)}</td><td>${esc(r.notes)}</td></tr>`);
+    aux+=`</tbody></table>`;
   }
   /* backline */
   let bl=""; if(t(S.backline)) bl=bulletize(S.backline);
@@ -1303,6 +1359,7 @@ function renderPreview(){
   if(gen) h+=pageBlock(L("sec_general"),gen);
   if(plot) h+=pageBlock(L("sec_stageplot"),plot);
   if(inp) h+=pageBlock(L("sec_inputlist"),inp);
+  if(aux) h+=pageBlock(L("sec_aux"),aux);
   if(bl) h+=pageBlock(L("sec_backline"),bl);
   if(tc) h+=pageBlock(L("sec_technical"),tc);
   if(li) h+=pageBlock(L("sec_lights"),li);
@@ -1496,7 +1553,7 @@ function plotPreviewHTML(){
 
 /* ===================== Quick start wizard ===================== */
 const WIZ_INSTR=[
-  {k:"leadvocal",en:"Lead vocal",nl:"Leadzang",qty:false,def:true},
+  {k:"leadvocal",en:"Lead vocal",nl:"Leadzang",qty:true,def:true},
   {k:"bgvocal",en:"Backing vocals",nl:"Backing vocals",qty:true},
   {k:"drums",en:"Drums",nl:"Drums",qty:false},
   {k:"percussion",en:"Percussion",nl:"Percussie",qty:false},
@@ -1558,7 +1615,7 @@ function wizardBuild(){
   if(hasOther){const n=otherN();for(let i=1;i<=n;i++)add(n>1?(otherName+" "+i):otherName,"Mic","","");}
   if(on("dj")){add("Playback L","DI","X","DJ");add("Playback R","DI","X","DJ");}
   if(on("bgvocal")){const n=qty("bgvocal");for(let i=1;i<=n;i++)add(n>1?("Backing Vocal "+i):"Backing Vocal","Mic","","");}
-  if(on("leadvocal"))add("Lead Vocal","Mic","","Centre");
+  if(on("leadvocal")){const n=qty("leadvocal");for(let i=1;i<=n;i++)add(n>1?("Lead Vocal "+i):"Lead Vocal","Mic","","Centre");}
   if(S.inputs.length===0)S.inputs=[{ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}];
   renumberInputs();
   let mus=0;
@@ -1566,7 +1623,7 @@ function wizardBuild(){
   if(on("eguitar"))mus+=qty("eguitar"); if(on("acguitar"))mus+=qty("acguitar");
   if(on("keys"))mus+=qty("keys"); if(on("strings"))mus+=qty("strings"); if(on("horns"))mus+=qty("horns");
   if(on("dj"))mus++; if(hasOther)mus+=otherN();
-  if(mus===0&&on("leadvocal"))mus=1;
+  if(on("leadvocal")){const n=qty("leadvocal");mus+=(mus===0?n:n-1);}
   S.travelParty=[{label:"Band",count:String(Math.max(1,mus))}];
   S.tech.monitors = wedges ? L("wiz_t_wedges") : L("wiz_t_iem");
   const bk=(document.querySelector('input[name=wzback]:checked')||{}).value||"own";
@@ -1587,7 +1644,7 @@ function wizardBuild(){
   if(on("bass"))place("bass",18,56);
   if(on("eguitar")){const n=qty("eguitar");place("guitar",82,56);if(n>1)place("guitar",68,44,{label:"GTR 2"});}
   if(on("acguitar"))place("guitar",38,50,{label:"AC GTR"});
-  if(on("leadvocal"))place("vocal",50,64);
+  if(on("leadvocal")){const n=Math.min(3,qty("leadvocal"));const xs=n===1?[50]:n===2?[40,60]:[30,50,70];for(let i=0;i<n;i++)place("vocal",xs[i],64,n>1?{label:"LEAD "+(i+1)}:null);}
   const pw=PLOT_TYPES.power;
   S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:11,y:40,w:pw.w,h:pw.h,rot:0});
   S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:89,y:40,w:pw.w,h:pw.h,rot:0});
@@ -1620,11 +1677,69 @@ function inputPresetChips(){
   const lang=S.lang;
   return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+
     Object.keys(INPUT_PRESETS).map(k=>`<button class="chip" onclick="addInputPreset('${k}')">+ ${esc(INPUT_PRESETS[k].lbl[lang]||INPUT_PRESETS[k].lbl.en)}</button>`).join("")+
-    `<button class="chip" style="color:var(--muted)" onclick="renumberInputs();renderForm();renderPreview()">${L('qa_renumber')}</button></div>`;
+    `</div>`;
 }
-/* Common microphones / DI for the input list (datalist suggestions) */
+/* ---- Aux / output section (monitor mixes, IEM, FX, engineer channels) ---- */
+function renumberAuxes(){S.auxes.forEach((r,i)=>r.n=String(i+1));}
+const AUX_TYPES=["wedge","iem","fx","eng","other"];
+function auxTypeOpts(sel){return `<option value=""${sel?"":" selected"}>—</option>`+AUX_TYPES.map(t=>`<option value="${t}"${sel===t?" selected":""}>${esc(L("aux_t_"+t))}</option>`).join("");}
+function auxTypeLbl(t){return t?esc(L("aux_t_"+t)):"";}
+const AUX_PRESETS={
+  wedge:{lbl:{en:"Wedge mix",nl:"Wedge-mix",de:"Wedge-Mix",fr:"Mix wedge",es:"Mezcla cuña"},rows:[{dest:"Wedge",type:"wedge"}]},
+  iem:{lbl:{en:"IEM (st)",nl:"In-ears (st)",de:"In-Ears (st)",fr:"In-ears (st)",es:"In-ears (st)"},rows:[{dest:"IEM",type:"iem",notes:"Stereo"}]},
+  rev:{lbl:{en:"Reverb",nl:"Reverb",de:"Reverb",fr:"Réverb",es:"Reverb"},rows:[{dest:"Reverb vocals",type:"fx"}]},
+  delay:{lbl:{en:"Delay",nl:"Delay",de:"Delay",fr:"Delay",es:"Delay"},rows:[{dest:"Delay vocals",type:"fx"}]},
+  eng:{lbl:{en:"Engineer ch.",nl:"Engineer-kanaal",de:"Engineer-Kanal",fr:"Canal ingé",es:"Canal técnico"},rows:[{dest:"Engineer IEM",type:"eng"}]}
+};
+function addAuxPreset(key){
+  const p=AUX_PRESETS[key];if(!p)return;
+  if(S.auxes.length===1&&!S.auxes[0].dest.trim())S.auxes=[];
+  p.rows.forEach(r=>S.auxes.push({n:"",dest:r.dest,type:r.type||"",notes:r.notes||""}));
+  renumberAuxes();renderForm();renderPreview();
+}
+function auxPresetChips(){
+  const lang=S.lang;
+  return `<div class="chips"><span class="chips-lbl">${L('qa_presets')}</span>`+
+    Object.keys(AUX_PRESETS).map(k=>`<button class="chip" onclick="addAuxPreset('${k}')">+ ${esc(AUX_PRESETS[k].lbl[lang]||AUX_PRESETS[k].lbl.en)}</button>`).join("")+`</div>`;
+}
+/* Common microphones / DI for the input list */
 const MICS=["SM58","Beta 58A","e835","Beta 87A","KSM9","SM57","Beta 57A","e906","e609","MD421","Beta 52A","D6","e602","Beta 91A","e901","Beta 98A","e904","e604","SM81","KM184","C414","e914","Active DI","Passive DI","Radial J48","Radial JDI","BSS AR133"];
-function micDatalist(){return `<datalist id="micList">`+MICS.map(m=>`<option value="${esc(m)}"></option>`).join("")+`</datalist>`;}
+/* Custom suggestion dropdown for the Mic/DI field.
+   Replaces <datalist>, which renders/scrolls badly on iOS Safari. */
+let _suggEl=null,_suggFor=null;
+function showMicSugg(inp){
+  const q=(inp.value||"").trim().toLowerCase();
+  const opts=MICS.filter(m=>!q||m.toLowerCase().indexOf(q)>=0);
+  if(!opts.length){hideMicSugg();return;}
+  if(!_suggEl){_suggEl=document.createElement("div");_suggEl.className="sugg";document.body.appendChild(_suggEl);}
+  _suggFor=inp;
+  _suggEl.innerHTML=opts.map(m=>`<div class="sugg-opt" data-v="${esc(m)}">${esc(m)}</div>`).join("");
+  _suggEl.querySelectorAll(".sugg-opt").forEach(o=>o.addEventListener("pointerdown",ev=>{ev.preventDefault();pickMicSugg(o.dataset.v);}));
+  const r=inp.getBoundingClientRect();
+  const below=window.innerHeight-r.bottom;
+  _suggEl.style.left=Math.max(6,Math.min(r.left,window.innerWidth-186))+"px";
+  _suggEl.style.width=Math.max(r.width,170)+"px";
+  const H=Math.min(200,opts.length*39+2);
+  if(below>H+10||below>r.top){
+    _suggEl.style.top=(r.bottom+3)+"px";_suggEl.style.bottom="auto";
+    _suggEl.style.maxHeight=Math.max(80,Math.min(200,below-10))+"px";
+  }else{
+    _suggEl.style.top="auto";_suggEl.style.bottom=(window.innerHeight-r.top+3)+"px";
+    _suggEl.style.maxHeight=Math.max(80,Math.min(200,r.top-10))+"px";
+  }
+  _suggEl.style.display="block";
+}
+function pickMicSugg(v){
+  if(!_suggFor)return;
+  _suggFor.value=v;
+  _suggFor.dispatchEvent(new Event("input",{bubbles:true}));
+  hideMicSugg();
+}
+function hideMicSugg(){if(_suggEl)_suggEl.style.display="none";_suggFor=null;}
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matches("input[data-mic]"))showMicSugg(t);});
+document.addEventListener("input",e=>{const t=e.target;if(t&&t.matches&&t.matches("input[data-mic]")&&t===document.activeElement)showMicSugg(t);});
+document.addEventListener("focusout",e=>{const t=e.target;if(t&&t.matches&&t.matches("input[data-mic]"))setTimeout(()=>{if(document.activeElement!==_suggFor)hideMicSugg();},120);});
+window.addEventListener("scroll",e=>{if(_suggFor&&e.target!==_suggEl)hideMicSugg();},true);
 
 /* Wireless / IEM systems + EU/NL frequency bands (quick-add to wireless field) */
 const WIRELESS={
@@ -1914,6 +2029,16 @@ function loadExample(){
   if(!members.includes("dj")||_chance(.7)) add("Lead Vocal","XLR","","Centre");
   if((formation==="four"||formation==="five")&&_chance(.6)) add("BV Vocal","XLR","");
   renumberInputs();
+  S.auxes=[];
+  if(formation!=="dj"){
+    const aad=(dest,type,notes)=>S.auxes.push({n:"",dest:dest,type:type,notes:notes||""});
+    aad("Lead vocal wedge","wedge");
+    if(members.includes("drums"))aad("Drums IEM","iem","Stereo");
+    if(members.includes("keys")||members.includes("lead-keys"))aad("Keys wedge","wedge");
+    aad("Reverb vocals","fx");
+    renumberAuxes();
+  }
+  if(!S.auxes.length)S.auxes=[{n:"1",dest:"",type:"",notes:""}];
   S.plot.items=[];
   const P=(type,x,y,extra)=>{const dft=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:dft.lbl,x:x,y:y,w:dft.w,h:dft.h,rot:0},extra||{}));};
   if(members.includes("drums")) P("drums",_chance(.5)?52:50,24);
