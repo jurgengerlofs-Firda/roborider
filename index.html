@@ -78,16 +78,19 @@
   .hero h1{font-size:56px}
   .hero p.sub{margin:0 0 36px}
   .hero-mark{width:92px;margin:0 0 26px}
-  .hv-doc{width:100%;max-width:480px;margin-left:auto;background:#fff;border:1px solid var(--hair);box-shadow:0 32px 64px -36px rgba(27,26,23,.35);padding:34px 34px 30px}
+  .hero-visual{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .hv-doc{position:relative;width:100%;background:#fff;border:1px solid var(--hair);box-shadow:0 32px 64px -36px rgba(27,26,23,.35);padding:24px 22px 20px}
+  .hv-p2{margin-top:30px}
+  .hv-page{position:absolute;top:10px;right:14px;font-family:var(--display);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
   .hv-accent{width:38px;height:3px;background:var(--clay);margin-bottom:16px}
   .hv-eyebrow{font-family:var(--display);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
-  .hv-band{font-family:var(--display);font-weight:300;font-size:30px;letter-spacing:1px;margin:6px 0 20px;color:var(--ink)}
+  .hv-band{font-family:var(--display);font-weight:300;font-size:22px;letter-spacing:1px;margin:6px 0 18px;color:var(--ink)}
   .hv-h{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
   .hv-h span:first-child{color:var(--clay)}
-  .hv-tbl{width:100%;border-collapse:collapse;font-size:10.5px}
+  .hv-tbl{width:100%;border-collapse:collapse;font-size:9.5px}
   .hv-tbl th{font-family:var(--display);font-weight:400;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--ink);padding:4px 6px}
   .hv-tbl td{border-bottom:1px solid var(--hair);padding:5px 6px;text-align:left}
-  .hv-plot{position:relative;aspect-ratio:16/9;border:1px solid var(--ink);background:#fff}
+  .hv-plot{position:relative;aspect-ratio:4/4.4;border:1px solid var(--ink);background:#fff}
   .hv-plot .b{position:absolute;border:1px solid var(--ink);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px;line-height:1.25}
   .hv-plot .b small{font-size:6.5px;letter-spacing:.5px;color:var(--muted);text-transform:none}
   .hv-plot .r{background:#efe9dc}
@@ -99,7 +102,12 @@
     .hero-copy .cta{justify-content:center}
     .hero-mark{margin:0 auto 24px}
     .hero h1{font-size:40px}
-    .hv-doc{margin:0 auto;max-width:440px}
+    .hero-visual{max-width:560px;margin:0 auto}
+  }
+  @media(max-width:560px){
+    .hero-visual{grid-template-columns:1fr;max-width:400px}
+    .hv-p2{margin-top:0}
+    .hv-plot{aspect-ratio:16/12}
   }
   .hero-shot{max-width:980px;margin:56px auto 0;padding:0 4px}
   .bframe{border:1px solid var(--hair);border-radius:11px;overflow:hidden;background:#fff;box-shadow:0 34px 70px -34px rgba(27,26,23,.38)}
@@ -256,29 +264,49 @@
   </div>
   <div class="hero-visual" aria-hidden="true">
     <div class="hv-doc">
+      <div class="hv-page">p. 1</div>
       <div class="hv-accent"></div>
       <div class="hv-eyebrow">Technical &amp; Hospitality Rider</div>
       <div class="hv-band" data-i="hv_band">YOUR BAND NAME</div>
       <div class="hv-h"><span>02</span><span data-i="hv_plot_t">Stage plot</span></div>
       <div class="hv-plot">
-        <div class="b r" style="left:6%;top:10%;width:24%;height:34%">Keys<small>riser 2×1×0.2</small></div>
-        <div class="b r" style="left:37%;top:7%;width:28%;height:40%">Drums<small>riser 3×2×0.4</small></div>
-        <div class="b" style="left:71%;top:13%;width:16%;height:20%">Bass</div>
-        <div class="b" style="left:16%;top:60%;width:14%;height:17%">BV</div>
-        <div class="b" style="left:42%;top:58%;width:17%;height:19%">Lead vox</div>
-        <div class="b" style="left:71%;top:57%;width:16%;height:19%">Guitar</div>
-        <div class="b m" style="left:14%;top:84%;width:11%;height:9%">Mon</div>
-        <div class="b m" style="left:44%;top:84%;width:11%;height:9%">Mon</div>
-        <div class="b m" style="left:74%;top:84%;width:11%;height:9%">Mon</div>
+        <div class="b r" style="left:5%;top:8%;width:25%;height:36%">Keys<small>riser 2×1×0.2 m</small></div>
+        <div class="b r" style="left:36%;top:5%;width:29%;height:42%">Drums<small>riser 3×2×0.4 m</small></div>
+        <div class="b" style="left:70%;top:12%;width:17%;height:22%">Bass</div>
+        <div class="b" style="left:14%;top:58%;width:16%;height:19%">BV</div>
+        <div class="b" style="left:41%;top:56%;width:18%;height:21%">Lead vox</div>
+        <div class="b" style="left:70%;top:56%;width:17%;height:20%">Guitar</div>
+        <div class="b m" style="left:16%;top:83%;width:11%;height:9%">Mon 3</div>
+        <div class="b m" style="left:44%;top:83%;width:11%;height:9%">Mon 1</div>
+        <div class="b m" style="left:73%;top:83%;width:11%;height:9%">Mon 2</div>
         <div class="hv-front" data-i="hv_front">Audience / front of stage</div>
       </div>
-      <div class="hv-h" style="margin-top:20px"><span>03</span><span data-i="hv_input_t">Input list</span></div>
+    </div>
+    <div class="hv-doc hv-p2">
+      <div class="hv-page">p. 2</div>
+      <div class="hv-h"><span>03</span><span data-i="hv_input_t">Input list</span></div>
       <table class="hv-tbl">
         <tr><th>CH</th><th>Input</th><th>Mic/DI</th><th>48V</th></tr>
         <tr><td>1</td><td>Kick</td><td>Beta 52A</td><td></td></tr>
-        <tr><td>2</td><td>Snare top</td><td>SM57</td><td></td></tr>
-        <tr><td>8</td><td>Bass</td><td>Radial J48</td><td>X</td></tr>
-        <tr><td>12</td><td>Lead vocal</td><td>Beta 58A</td><td></td></tr>
+        <tr><td>2</td><td>Snare</td><td>SM57</td><td></td></tr>
+        <tr><td>3</td><td>Hi-hat</td><td>SM81</td><td>X</td></tr>
+        <tr><td>4</td><td>Overhead L</td><td>C414</td><td>X</td></tr>
+        <tr><td>5</td><td>Overhead R</td><td>C414</td><td>X</td></tr>
+        <tr><td>6</td><td>Bass</td><td>Radial J48</td><td>X</td></tr>
+        <tr><td>7</td><td>Guitar amp</td><td>SM57</td><td></td></tr>
+        <tr><td>8</td><td>Keys L</td><td>DI</td><td>X</td></tr>
+        <tr><td>9</td><td>Keys R</td><td>DI</td><td>X</td></tr>
+        <tr><td>10</td><td>Lead vocal</td><td>Beta 58A</td><td></td></tr>
+        <tr><td>11</td><td>Backing vocal</td><td>SM58</td><td></td></tr>
+      </table>
+      <div class="hv-h" style="margin-top:16px"><span>04</span><span data-i="hv_out_t">Outputs</span></div>
+      <table class="hv-tbl">
+        <tr><th>OUT</th><th>Mix</th><th>Type</th></tr>
+        <tr><td>1</td><td>Lead vocal wedge</td><td>Wedge</td></tr>
+        <tr><td>2</td><td>Guitar wedge</td><td>Wedge</td></tr>
+        <tr><td>3</td><td>Backing vocal wedge</td><td>Wedge</td></tr>
+        <tr><td>4–5</td><td>Drums IEM</td><td>IEM (st)</td></tr>
+        <tr><td>6–7</td><td>Keys IEM</td><td>IEM (st)</td></tr>
       </table>
     </div>
   </div>
@@ -403,7 +431,7 @@ const T={
   show_h:"This is what you'll send",
   show_lead:"A clean, consistent rider — cover, stage plot, input list and hospitality — exported as a polished PDF.",
   show_cta:"Open this in the builder",
-  hv_band:"YOUR BAND NAME", hv_plot_t:"Stage plot", hv_input_t:"Input list", hv_front:"Audience / front of stage",
+  hv_band:"YOUR BAND NAME", hv_plot_t:"Stage plot", hv_input_t:"Input list", hv_out_t:"Outputs", hv_front:"Audience / front of stage",
   send1_h:"General &amp; contacts", send1_p:"Band name, logo and accent colour, your tour manager and FOH contacts, travelling party and guest list.",
   send2_h:"Stage plot", send2_p:"Drag-and-drop editor: risers with dimensions, monitors, amps and power drops. Works on your phone too.",
   send3_h:"Input list", send3_p:"Auto-numbered channels with mic/DI suggestions, 48V, stands and positions. Need 48 channels? Added in one go.",
@@ -466,7 +494,7 @@ const T={
   show_h:"Dit is wat je verstuurt",
   show_lead:"Een strakke, consistente rider — cover, stageplot, inputlijst en hospitality — geëxporteerd als verzorgde PDF.",
   show_cta:"Open dit in de builder",
-  hv_band:"JOUW BANDNAAM", hv_plot_t:"Stageplot", hv_input_t:"Inputlijst", hv_front:"Publiek / voorkant podium",
+  hv_band:"JOUW BANDNAAM", hv_plot_t:"Stageplot", hv_input_t:"Inputlijst", hv_out_t:"Outputs", hv_front:"Publiek / voorkant podium",
   send1_h:"Algemeen &amp; contacten", send1_p:"Bandnaam, logo en accentkleur, je tourmanager- en FOH-contacten, reisgezelschap en gastenlijst.",
   send2_h:"Stageplot", send2_p:"Drag-and-drop-editor: risers met maten, monitors, versterkers en stroompunten. Werkt ook op je telefoon.",
   send3_h:"Inputlijst", send3_p:"Automatisch genummerde kanalen met mic/DI-suggesties, 48V, statieven en posities. 48 kanalen nodig? In één keer toegevoegd.",
@@ -529,7 +557,7 @@ const T={
   show_h:"Das verschickst du",
   show_lead:"Ein sauberer, einheitlicher Rider — Deckblatt, Stageplan, Inputliste und Hospitality — als elegantes PDF exportiert.",
   show_cta:"Im Builder öffnen",
-  hv_band:"DEIN BANDNAME", hv_plot_t:"Bühnenplan", hv_input_t:"Inputliste", hv_front:"Publikum / Bühnenvorderkante",
+  hv_band:"DEIN BANDNAME", hv_plot_t:"Bühnenplan", hv_input_t:"Inputliste", hv_out_t:"Outputs", hv_front:"Publikum / Bühnenvorderkante",
   send1_h:"Allgemein &amp; Kontakte", send1_p:"Bandname, Logo und Akzentfarbe, deine Tourmanager- und FOH-Kontakte, Reisegruppe und Gästeliste.",
   send2_h:"Bühnenplan", send2_p:"Drag-and-drop-Editor: Riser mit Maßen, Monitore, Amps und Strompunkte. Funktioniert auch am Handy.",
   send3_h:"Inputliste", send3_p:"Automatisch nummerierte Kanäle mit Mikro/DI-Vorschlägen, 48V, Stativen und Positionen. 48 Kanäle nötig? In einem Schritt ergänzt.",
@@ -592,7 +620,7 @@ const T={
   show_h:"Voici ce que vous enverrez",
   show_lead:"Un rider clair et cohérent — couverture, plan de scène, liste d'entrées et hospitality — exporté en PDF soigné.",
   show_cta:"Ouvrir ceci dans l'outil",
-  hv_band:"NOM DU GROUPE", hv_plot_t:"Plan de scène", hv_input_t:"Liste des entrées", hv_front:"Public / devant de scène",
+  hv_band:"NOM DU GROUPE", hv_plot_t:"Plan de scène", hv_input_t:"Liste des entrées", hv_out_t:"Sorties", hv_front:"Public / devant de scène",
   send1_h:"Général &amp; contacts", send1_p:"Nom du groupe, logo et couleur d'accent, tes contacts tour manager et façade, équipe en tournée et liste d'invités.",
   send2_h:"Plan de scène", send2_p:"Éditeur glisser-déposer : praticables avec dimensions, retours, amplis et points d'alimentation. Fonctionne aussi sur téléphone.",
   send3_h:"Liste des entrées", send3_p:"Canaux numérotés automatiquement avec suggestions micro/DI, 48V, pieds et positions. Besoin de 48 canaux ? Ajoutés d'un coup.",
@@ -655,7 +683,7 @@ const T={
   show_h:"Esto es lo que enviarás",
   show_lead:"Un rider limpio y coherente — portada, plano de escenario, lista de entradas y hospitality — exportado como PDF pulido.",
   show_cta:"Abrir esto en la herramienta",
-  hv_band:"NOMBRE DE BANDA", hv_plot_t:"Plano de escenario", hv_input_t:"Lista de entradas", hv_front:"Público / frente del escenario",
+  hv_band:"NOMBRE DE BANDA", hv_plot_t:"Plano de escenario", hv_input_t:"Lista de entradas", hv_out_t:"Salidas", hv_front:"Público / frente del escenario",
   send1_h:"General y contactos", send1_p:"Nombre de banda, logo y color de acento, tus contactos de tour manager y FOH, equipo de gira y lista de invitados.",
   send2_h:"Plano de escenario", send2_p:"Editor de arrastrar y soltar: tarimas con medidas, monitores, amplis y puntos de corriente. Funciona también en el móvil.",
   send3_h:"Lista de entradas", send3_p:"Canales numerados automáticamente con sugerencias de micro/DI, 48V, soportes y posiciones. ¿Necesitas 48 canales? Añadidos de una vez.",
