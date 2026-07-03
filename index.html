@@ -96,6 +96,37 @@
   .hv-plot .r{background:#efe9dc}
   .hv-plot .m{background:#e6dfce}
   .hv-front{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-family:var(--display);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  /* subtle auto-playing demo: cursor drags the drum riser, input rows light up */
+  .hv-cursor{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--clay);box-shadow:0 0 0 3px rgba(154,114,87,.22);opacity:0;left:46%;top:78%;z-index:6;pointer-events:none;animation:hvCur 11s ease-in-out infinite}
+  @keyframes hvCur{
+    0%,16%{opacity:0;left:46%;top:78%}
+    22%{opacity:1;left:46%;top:76%}
+    34%{left:50%;top:24%}
+    40%{left:50%;top:24%}
+    56%{left:55%;top:31%}
+    62%{opacity:1}
+    68%,100%{opacity:0}
+  }
+  .hv-drag{animation:hvDrag 11s ease-in-out infinite}
+  @keyframes hvDrag{0%,40%{transform:translate(0,0)}56%,90%{transform:translate(5%,7%)}98%,100%{transform:translate(0,0)}}
+  .hv-p2 .hv-tbl:first-of-type tr td{animation:hvRow 11s infinite}
+  @keyframes hvRow{0%,100%{background:transparent}2.2%{background:#f3efe6}4.4%{background:transparent}}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(2) td{animation-delay:2.4s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(3) td{animation-delay:2.9s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(4) td{animation-delay:3.4s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(5) td{animation-delay:3.9s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(6) td{animation-delay:4.4s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(7) td{animation-delay:4.9s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(8) td{animation-delay:5.4s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(9) td{animation-delay:5.9s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(10) td{animation-delay:6.4s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(11) td{animation-delay:6.9s}
+  .hv-p2 .hv-tbl:first-of-type tr:nth-child(12) td{animation-delay:7.4s}
+  @media (prefers-reduced-motion:reduce){
+    .hv-cursor{display:none;animation:none}
+    .hv-drag{animation:none}
+    .hv-p2 .hv-tbl:first-of-type tr td{animation:none}
+  }
   @media(max-width:900px){
     .hero{text-align:center;padding:70px 0}
     .hero-grid{grid-template-columns:1fr;gap:44px}
@@ -198,6 +229,20 @@
   .founder-q::before{content:"“";color:var(--clay)} .founder-q::after{content:"”";color:var(--clay)}
   .founder-by{font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:24px}
   @media(max-width:620px){.founder-q{font-size:22px}}
+  .oldnew{background:#efece4;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .on-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:860px;margin:40px auto 0;text-align:left}
+  .on-col{background:#fff;border:1px solid var(--hair);padding:28px 30px}
+  .on-col h3{margin:0 0 14px;font-family:var(--display);font-weight:400;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+  .on-old h3{color:var(--muted)}
+  .on-new{border-color:var(--ink)}
+  .on-new h3{color:var(--clay)}
+  .on-col ul{list-style:none;margin:0;padding:0}
+  .on-col li{padding:10px 0 10px 26px;position:relative;font-size:14px;color:var(--soft);line-height:1.55;border-bottom:1px solid var(--hair);font-weight:400}
+  .on-col li:last-child{border-bottom:none}
+  .on-old li::before{content:"✕";position:absolute;left:2px;top:11px;color:#a13c3c;opacity:.55;font-size:11px}
+  .on-new li::before{content:"✓";position:absolute;left:0;top:10px;color:var(--clay);font-size:13px}
+  @media(max-width:720px){.on-grid{grid-template-columns:1fr}}
+  .p2val{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay);margin:-6px 0 14px}
   .faq{background:#efece4;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
   .faq-list{max-width:720px;margin:20px auto 0;text-align:left}
   .faq details{border-bottom:1px solid var(--hair)}
@@ -271,7 +316,8 @@
       <div class="hv-h"><span>02</span><span data-i="hv_plot_t">Stage plot</span></div>
       <div class="hv-plot">
         <div class="b r" style="left:5%;top:8%;width:25%;height:36%">Keys<small>riser 2×1×0.2 m</small></div>
-        <div class="b r" style="left:36%;top:5%;width:29%;height:42%">Drums<small>riser 3×2×0.4 m</small></div>
+        <div class="b r hv-drag" style="left:36%;top:5%;width:29%;height:42%">Drums<small>riser 3×2×0.4 m</small></div>
+        <div class="hv-cursor"></div>
         <div class="b" style="left:70%;top:12%;width:17%;height:22%">Bass</div>
         <div class="b" style="left:14%;top:58%;width:16%;height:19%">BV</div>
         <div class="b" style="left:41%;top:56%;width:18%;height:21%">Lead vox</div>
@@ -328,6 +374,21 @@
   <a class="btn outline sm" href="rider-builder.html?demo=1" data-i="show_cta" style="margin-top:24px;display:inline-block"></a>
 </div></section>
 
+<section class="oldnew"><div class="wrap">
+  <h2 class="sec" data-i="on_h"></h2>
+  <p class="lead" data-i="on_lead"></p>
+  <div class="on-grid">
+    <div class="on-col on-old">
+      <h3 data-i="on_old_h"></h3>
+      <ul><li data-i="on_old1"></li><li data-i="on_old2"></li><li data-i="on_old3"></li><li data-i="on_old4"></li></ul>
+    </div>
+    <div class="on-col on-new">
+      <h3 data-i="on_new_h"></h3>
+      <ul><li data-i="on_new1"></li><li data-i="on_new2"></li><li data-i="on_new3"></li><li data-i="on_new4"></li></ul>
+    </div>
+  </div>
+</div></section>
+
 <section id="features"><div class="wrap">
   <h2 class="sec" data-i="feat_h"></h2>
   <p class="lead" data-i="feat_lead"></p>
@@ -373,6 +434,7 @@
     <div class="plan feat">
       <span class="tag" data-i="p2_tag"></span>
       <h3 data-i="p2_h"></h3><div class="amt">€29<small> <span data-i="p2_per">once</span></small></div>
+      <div class="p2val" data-i="p2_val"></div>
       <ul><li data-i="p2_1"></li><li data-i="p2_2"></li><li data-i="p2_3"></li><li data-i="p2_4"></li></ul>
       <a class="btn primary" id="p2btn" href="#feedback" data-i="p2_cta"></a>
     </div>
@@ -424,13 +486,17 @@ const T={
   nav_try:"Open the builder",
   hero_badge:"For touring musicians & bands",
   hero_h:"One clean rider. <em>No more back-and-forth</em> with the venue.",
-  hero_sub:"Stop wrestling with old Word files. Build a clean, professional rider — with a drag-and-drop stage plot and input list — and export a polished PDF. In any language.",
+  hero_sub:"Wrong mics ready, missing DIs, stress at load-in — it usually starts with the rider. Build a clean one in minutes: drag-and-drop stage plot, input list and a polished PDF. In any language.",
   hero_cta1:"Build my rider — free",
   hero_cta2:"See how it works",
   hero_sample:"See a sample rider",
   show_h:"This is what you'll send",
   show_lead:"A clean, consistent rider — cover, stage plot, input list and hospitality — exported as a polished PDF.",
   show_cta:"Open this in the builder",
+  on_h:"Still sending that old Word doc?", on_lead:"Your show starts before you arrive. The rider decides whether the right mics and DIs are ready — or not.",
+  on_old_h:"The old way", on_old1:"A Word file from years ago, with someone else's stage plot", on_old2:"Input list and stage plot never quite match", on_old3:"Every change means yet another attachment in a long mail thread", on_old4:"The venue prints an outdated version on show day",
+  on_new_h:"With RoboRider", on_new1:"Drag-and-drop stage plot that matches your input list", on_new2:"Auto-numbered channels and monitor outputs", on_new3:"One share link with QR code — always the latest version", on_new4:"A polished, professional PDF — in five languages",
+  p2_val:"Less than one broken soundcheck",
   hv_band:"YOUR BAND NAME", hv_plot_t:"Stage plot", hv_input_t:"Input list", hv_out_t:"Outputs", hv_front:"Audience / front of stage",
   send1_h:"General &amp; contacts", send1_p:"Band name, logo and accent colour, your tour manager and FOH contacts, travelling party and guest list.",
   send2_h:"Stage plot", send2_p:"Drag-and-drop editor: risers with dimensions, monitors, amps and power drops. Works on your phone too.",
@@ -487,13 +553,17 @@ const T={
   nav_try:"Open de tool",
   hero_badge:"Voor tourende muzikanten & bands",
   hero_h:"Eén strakke rider. <em>Nooit meer heen-en-weer</em> met het podium.",
-  hero_sub:"Stop met klooien in oude Word-bestanden. Bouw een strakke, professionele rider — met een drag-and-drop stageplot en inputlijst — en exporteer een verzorgde PDF. In elke taal.",
+  hero_sub:"Verkeerde mics klaargezet, DI's die missen, stress bij de load-in — het begint bijna altijd bij de rider. Bouw er in minuten een strakke: drag-and-drop stageplot, inputlijst en een verzorgde PDF. In elke taal.",
   hero_cta1:"Maak mijn rider — gratis",
   hero_cta2:"Bekijk hoe het werkt",
   hero_sample:"Bekijk een voorbeeldrider",
   show_h:"Dit is wat je verstuurt",
   show_lead:"Een strakke, consistente rider — cover, stageplot, inputlijst en hospitality — geëxporteerd als verzorgde PDF.",
   show_cta:"Open dit in de builder",
+  on_h:"Stuur je nog dat oude Word-bestand?", on_lead:"Je show begint voordat je aankomt. De rider bepaalt of de juiste mics en DI's klaarstaan — of niet.",
+  on_old_h:"De oude manier", on_old1:"Een Word-bestand van jaren terug, met het stageplot van iemand anders", on_old2:"Inputlijst en stageplot kloppen nét niet met elkaar", on_old3:"Elke wijziging is wéér een bijlage in een lange mailthread", on_old4:"Het podium print op showdag een verouderde versie",
+  on_new_h:"Met RoboRider", on_new1:"Drag-and-drop stageplot dat klopt met je inputlijst", on_new2:"Automatisch genummerde kanalen en monitor-outputs", on_new3:"Eén deel-link met QR-code — altijd de nieuwste versie", on_new4:"Een verzorgde, professionele PDF — in vijf talen",
+  p2_val:"Minder dan één verpeste soundcheck",
   hv_band:"JOUW BANDNAAM", hv_plot_t:"Stageplot", hv_input_t:"Inputlijst", hv_out_t:"Outputs", hv_front:"Publiek / voorkant podium",
   send1_h:"Algemeen &amp; contacten", send1_p:"Bandnaam, logo en accentkleur, je tourmanager- en FOH-contacten, reisgezelschap en gastenlijst.",
   send2_h:"Stageplot", send2_p:"Drag-and-drop-editor: risers met maten, monitors, versterkers en stroompunten. Werkt ook op je telefoon.",
@@ -550,13 +620,17 @@ const T={
   nav_try:"Tool öffnen",
   hero_badge:"Für tourende Musiker & Bands",
   hero_h:"Ein sauberer Rider. <em>Kein Hin und Her</em> mehr mit der Location.",
-  hero_sub:"Schluss mit alten Word-Dateien. Erstelle einen sauberen, professionellen Rider — mit Drag-and-drop-Stageplan und Inputliste — und exportiere ein elegantes PDF. In jeder Sprache.",
+  hero_sub:"Falsche Mikros bereitgestellt, fehlende DIs, Stress beim Load-in — meist fängt es beim Rider an. Erstelle in Minuten einen sauberen: Drag-and-drop-Bühnenplan, Inputliste und ein elegantes PDF. In jeder Sprache.",
   hero_cta1:"Meinen Rider erstellen — gratis",
   hero_cta2:"So funktioniert's",
   hero_sample:"Beispiel-Rider ansehen",
   show_h:"Das verschickst du",
   show_lead:"Ein sauberer, einheitlicher Rider — Deckblatt, Stageplan, Inputliste und Hospitality — als elegantes PDF exportiert.",
   show_cta:"Im Builder öffnen",
+  on_h:"Verschickst du noch die alte Word-Datei?", on_lead:"Deine Show beginnt, bevor du ankommst. Der Rider entscheidet, ob die richtigen Mikros und DIs bereitstehen — oder nicht.",
+  on_old_h:"Der alte Weg", on_old1:"Eine Word-Datei von vor Jahren, mit dem Bühnenplan von jemand anderem", on_old2:"Inputliste und Bühnenplan passen nie ganz zusammen", on_old3:"Jede Änderung ist wieder ein Anhang in einem langen Mail-Thread", on_old4:"Die Location druckt am Showtag eine veraltete Version",
+  on_new_h:"Mit RoboRider", on_new1:"Drag-and-drop-Bühnenplan, der zur Inputliste passt", on_new2:"Automatisch nummerierte Kanäle und Monitor-Outputs", on_new3:"Ein Teilen-Link mit QR-Code — immer die neueste Version", on_new4:"Ein elegantes, professionelles PDF — in fünf Sprachen",
+  p2_val:"Weniger als ein geplatzter Soundcheck",
   hv_band:"DEIN BANDNAME", hv_plot_t:"Bühnenplan", hv_input_t:"Inputliste", hv_out_t:"Outputs", hv_front:"Publikum / Bühnenvorderkante",
   send1_h:"Allgemein &amp; Kontakte", send1_p:"Bandname, Logo und Akzentfarbe, deine Tourmanager- und FOH-Kontakte, Reisegruppe und Gästeliste.",
   send2_h:"Bühnenplan", send2_p:"Drag-and-drop-Editor: Riser mit Maßen, Monitore, Amps und Strompunkte. Funktioniert auch am Handy.",
@@ -613,13 +687,17 @@ const T={
   nav_try:"Ouvrir l'outil",
   hero_badge:"Pour musiciens & groupes en tournée",
   hero_h:"Un rider impeccable. <em>Fini les allers-retours</em> avec la salle.",
-  hero_sub:"Fini de bricoler dans de vieux fichiers Word. Créez un rider clair et professionnel — avec un plan de scène en glisser-déposer et une liste d'entrées — et exportez un PDF soigné. Dans toutes les langues.",
+  hero_sub:"Mauvais micros préparés, DI manquantes, stress au load-in — tout commence par le rider. Créez-en un impeccable en quelques minutes : plan de scène en glisser-déposer, liste d'entrées et un PDF soigné. Dans toutes les langues.",
   hero_cta1:"Créer mon rider — gratuit",
   hero_cta2:"Voir comment ça marche",
   hero_sample:"Voir un exemple de rider",
   show_h:"Voici ce que vous enverrez",
   show_lead:"Un rider clair et cohérent — couverture, plan de scène, liste d'entrées et hospitality — exporté en PDF soigné.",
   show_cta:"Ouvrir ceci dans l'outil",
+  on_h:"Tu envoies encore ce vieux fichier Word ?", on_lead:"Ton concert commence avant ton arrivée. Le rider décide si les bons micros et DI sont prêts — ou pas.",
+  on_old_h:"L'ancienne méthode", on_old1:"Un fichier Word d'il y a des années, avec le plan de scène de quelqu'un d'autre", on_old2:"Liste d'entrées et plan de scène ne concordent jamais tout à fait", on_old3:"Chaque changement = encore une pièce jointe dans un long fil de mails", on_old4:"La salle imprime une version périmée le jour du concert",
+  on_new_h:"Avec RoboRider", on_new1:"Plan de scène en glisser-déposer, cohérent avec ta liste d'entrées", on_new2:"Canaux et sorties retours numérotés automatiquement", on_new3:"Un lien de partage avec QR code — toujours la dernière version", on_new4:"Un PDF soigné et professionnel — en cinq langues",
+  p2_val:"Moins cher qu'une balance ratée",
   hv_band:"NOM DU GROUPE", hv_plot_t:"Plan de scène", hv_input_t:"Liste des entrées", hv_out_t:"Sorties", hv_front:"Public / devant de scène",
   send1_h:"Général &amp; contacts", send1_p:"Nom du groupe, logo et couleur d'accent, tes contacts tour manager et façade, équipe en tournée et liste d'invités.",
   send2_h:"Plan de scène", send2_p:"Éditeur glisser-déposer : praticables avec dimensions, retours, amplis et points d'alimentation. Fonctionne aussi sur téléphone.",
@@ -676,13 +754,17 @@ const T={
   nav_try:"Abrir la herramienta",
   hero_badge:"Para músicos y bandas de gira",
   hero_h:"Un rider impecable. <em>Se acabaron las idas y vueltas</em> con la sala.",
-  hero_sub:"Deja de pelear con viejos archivos de Word. Crea un rider limpio y profesional — con plano de escenario de arrastrar y soltar y lista de entradas — y exporta un PDF pulido. En cualquier idioma.",
+  hero_sub:"Micros equivocados, DI que faltan, estrés en el load-in — casi siempre empieza por el rider. Crea uno impecable en minutos: plano de escenario de arrastrar y soltar, lista de entradas y un PDF pulido. En cualquier idioma.",
   hero_cta1:"Crear mi rider — gratis",
   hero_cta2:"Ver cómo funciona",
   hero_sample:"Ver un rider de ejemplo",
   show_h:"Esto es lo que enviarás",
   show_lead:"Un rider limpio y coherente — portada, plano de escenario, lista de entradas y hospitality — exportado como PDF pulido.",
   show_cta:"Abrir esto en la herramienta",
+  on_h:"¿Sigues enviando ese viejo Word?", on_lead:"Tu show empieza antes de que llegues. El rider decide si los micros y DI correctos están listos — o no.",
+  on_old_h:"La vieja manera", on_old1:"Un archivo de Word de hace años, con el plano de escenario de otra banda", on_old2:"La lista de entradas y el plano nunca cuadran del todo", on_old3:"Cada cambio es otro adjunto más en un hilo de correos eterno", on_old4:"La sala imprime una versión desactualizada el día del show",
+  on_new_h:"Con RoboRider", on_new1:"Plano de escenario de arrastrar y soltar que cuadra con tu lista de entradas", on_new2:"Canales y salidas de monitor numerados automáticamente", on_new3:"Un enlace con código QR — siempre la última versión", on_new4:"Un PDF pulido y profesional — en cinco idiomas",
+  p2_val:"Menos que una prueba de sonido perdida",
   hv_band:"NOMBRE DE BANDA", hv_plot_t:"Plano de escenario", hv_input_t:"Lista de entradas", hv_out_t:"Salidas", hv_front:"Público / frente del escenario",
   send1_h:"General y contactos", send1_p:"Nombre de banda, logo y color de acento, tus contactos de tour manager y FOH, equipo de gira y lista de invitados.",
   send2_h:"Plano de escenario", send2_p:"Editor de arrastrar y soltar: tarimas con medidas, monitores, amplis y puntos de corriente. Funciona también en el móvil.",

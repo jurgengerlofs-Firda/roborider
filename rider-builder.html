@@ -428,6 +428,21 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
   </div>
 </div>
 
+<!-- Feedback / testimonial modal (shown once, after PDF export) -->
+<div class="modal-bg" id="fbModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head"><h3 id="fbTitle"></h3><span class="spacer"></span><button class="btn ghost" onclick="closeFbModal()">✕</button></div>
+    <div style="padding:24px">
+      <p id="fbIntro" style="font-size:13px;color:var(--soft);margin:0 0 14px;line-height:1.55"></p>
+      <textarea id="fbQuote" rows="3" style="width:100%"></textarea>
+      <input type="text" id="fbName" style="width:100%;margin-top:8px">
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--soft);margin-top:12px;cursor:pointer"><input type="checkbox" id="fbMay" style="margin-top:2px;flex:0 0 auto"><span id="fbMayLbl"></span></label>
+      <button class="btn primary" style="width:100%;margin-top:14px" id="fbSend" onclick="fbSubmit()"></button>
+      <p id="fbMsg" class="hint" style="margin-top:8px"></p>
+    </div>
+  </div>
+</div>
+
 <!-- Account / cloud modal -->
 <div class="modal-bg" id="acctModal">
   <div class="modal" style="max-width:460px">
@@ -725,6 +740,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* Feedback / testimonial popup */
+Object.assign(I18N.en,{fb_title:"Enjoying RoboRider?",fb_intro:"You just exported a rider — how did it go? One honest line helps other musicians (and me, solo builder) a lot.",fb_quote_ph:"e.g. \"Finished our rider in 20 minutes — the sound tech was happy.\"",fb_name_ph:"Name & band (shown with your quote)",fb_may:"You may quote me on roborider.nl",fb_send:"Send",fb_thanks:"Thanks a lot — really appreciated!",fb_need:"Write a line first."});
+Object.assign(I18N.nl,{fb_title:"Blij met RoboRider?",fb_intro:"Je hebt net een rider geëxporteerd — hoe beviel het? Eén eerlijke zin helpt andere muzikanten (en mij, solo-bouwer) enorm.",fb_quote_ph:"Bijv. \"Rider in 20 minuten af — de technicus was blij.\"",fb_name_ph:"Naam & band (komt bij je quote te staan)",fb_may:"Je mag me citeren op roborider.nl",fb_send:"Versturen",fb_thanks:"Dankjewel — enorm gewaardeerd!",fb_need:"Schrijf eerst een zin."});
+Object.assign(I18N.de,{fb_title:"Zufrieden mit RoboRider?",fb_intro:"Du hast gerade einen Rider exportiert — wie lief es? Ein ehrlicher Satz hilft anderen Musikern (und mir, Solo-Entwickler) sehr.",fb_quote_ph:"z. B. \"Rider in 20 Minuten fertig — der Techniker war zufrieden.\"",fb_name_ph:"Name & Band (erscheint bei deinem Zitat)",fb_may:"Ihr dürft mich auf roborider.nl zitieren",fb_send:"Senden",fb_thanks:"Vielen Dank — sehr geschätzt!",fb_need:"Schreib zuerst einen Satz."});
+Object.assign(I18N.fr,{fb_title:"Content de RoboRider ?",fb_intro:"Tu viens d'exporter un rider — comment ça s'est passé ? Une phrase honnête aide beaucoup les autres musiciens (et moi, développeur solo).",fb_quote_ph:"p. ex. « Rider terminé en 20 minutes — l'ingé son était content. »",fb_name_ph:"Nom & groupe (affiché avec ta citation)",fb_may:"Vous pouvez me citer sur roborider.nl",fb_send:"Envoyer",fb_thanks:"Merci beaucoup — très apprécié !",fb_need:"Écris d'abord une phrase."});
+Object.assign(I18N.es,{fb_title:"¿Contento con RoboRider?",fb_intro:"Acabas de exportar un rider — ¿qué tal fue? Una frase honesta ayuda mucho a otros músicos (y a mí, desarrollador en solitario).",fb_quote_ph:"p. ej. «Rider listo en 20 minutos — el técnico quedó contento.»",fb_name_ph:"Nombre y banda (aparece junto a tu cita)",fb_may:"Podéis citarme en roborider.nl",fb_send:"Enviar",fb_thanks:"¡Muchas gracias — muy apreciado!",fb_need:"Escribe primero una frase."});
 /* PA-feed type + hint-uitbreiding */
 Object.assign(I18N.en,{aux_t_pa:"PA / fill",hint_aux:"IEM mixes, wedges, FX, engineer channels and PA feeds (mains, subs, fills). Reorder with ↑↓ — numbering updates automatically. Tick ST for stereo (counts as 2 outputs)."});
 Object.assign(I18N.nl,{aux_t_pa:"PA / fill",hint_aux:"In-earmixen, wedges, FX, engineer-kanalen en PA-feeds (mains, subs, fills). Herorden met ↑↓ — de nummering loopt automatisch mee. Vink ST aan voor stereo (telt als 2 outputs)."});
@@ -2141,6 +2162,58 @@ function loadExample(){
   S.stageplot="";
   applyChrome();renderForm();renderPreview();
   if($("aiResult"))$("aiResult").textContent="";
+}
+
+/* ===================== Feedback / testimonial popup ===================== */
+/* Shown ONCE, right after the user closes the print/PDF dialog — the moment they've
+   actually made something. Saves to the Supabase `feedback` table when available
+   (see roborider-feedback-setup.md); falls back to a prefilled email. */
+const FB_EMAIL="jurgen.gerlofs@gmail.com";
+function maybeOfferFeedback(){
+  try{
+    if(localStorage.getItem("rr_fb"))return;
+    if(document.body.classList.contains("shared"))return;
+    const filled=(S.band.name||"").trim()||S.inputs.filter(r=>r.input&&r.input.trim()).length>2;
+    if(!filled)return;
+    setTimeout(openFbModal,700);
+  }catch(e){}
+}
+window.addEventListener("afterprint",maybeOfferFeedback);
+function openFbModal(){
+  $("fbTitle").textContent=L("fb_title");
+  $("fbIntro").textContent=L("fb_intro");
+  $("fbQuote").placeholder=L("fb_quote_ph");
+  $("fbName").placeholder=L("fb_name_ph");
+  $("fbMayLbl").textContent=L("fb_may");
+  $("fbSend").textContent=L("fb_send");
+  $("fbMsg").textContent="";
+  $("fbModal").classList.add("open");
+}
+function closeFbModal(){
+  $("fbModal").classList.remove("open");
+  try{localStorage.setItem("rr_fb","dismissed");}catch(e){}
+}
+async function fbSubmit(){
+  const quote=($("fbQuote").value||"").trim();
+  if(!quote){$("fbMsg").textContent=L("fb_need");return;}
+  const name=($("fbName").value||"").trim();
+  const may=!!$("fbMay").checked;
+  $("fbMsg").textContent="⏳";
+  let ok=false;
+  try{
+    if(sb){
+      const {error}=await sb.from("feedback").insert({quote:quote,name:name,may_publish:may,lang:S.lang,user_id:(user?user.id:null)});
+      ok=!error;
+    }
+  }catch(e){}
+  if(!ok){
+    /* no table / offline → open a prefilled mail instead, nothing gets lost */
+    const body=encodeURIComponent(quote+"\n\n— "+(name||"?")+(may?"\n(mag geciteerd worden op roborider.nl)":""));
+    try{window.open("mailto:"+FB_EMAIL+"?subject="+encodeURIComponent("RoboRider feedback")+"&body="+body);}catch(e){}
+  }
+  try{localStorage.setItem("rr_fb","sent");}catch(e){}
+  $("fbMsg").textContent=L("fb_thanks");
+  setTimeout(function(){$("fbModal").classList.remove("open");},1200);
 }
 
 /* ===================== Boot ===================== */
