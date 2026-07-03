@@ -247,6 +247,11 @@
   .pl-resize{position:absolute;right:-7px;bottom:-7px;width:15px;height:15px;background:#fff;border:2px solid var(--clay);
     border-radius:0;cursor:nwse-resize;display:none;z-index:6}
   .pl-el:hover .pl-resize,.pl-el.sel .pl-resize{display:block}
+  /* alignment guides + size-match highlight */
+  .pl-guide{position:absolute;background:var(--clay);z-index:98;display:none;pointer-events:none;opacity:.85}
+  .pl-guide.v{top:0;bottom:0;width:1px}
+  .pl-guide.h{left:0;right:0;height:1px}
+  .pl-el.match .pl-shape{box-shadow:0 0 0 2px var(--clay)}
   /* read-only plot in the rider preview */
   .plot-preview{position:relative;width:100%;aspect-ratio:16/10;border:1px solid var(--ink);border-radius:0;
     container-type:size;background:#fff;margin-top:4px}
@@ -1550,7 +1555,15 @@ function zOf(type){return Z_ORDER[type]||3;}
 const PLOT_ICONS={drums:"🥁",keys:"🎹",bass:"🎸",guitar:"🎸",vocal:"🎤",riser:"",monitor:"🔈",amp:"🎛️",di:"",power:"⚡",mic:"🎤",perc:"🪘",text:""};
 const SNAP=2; /* grid step in % for alignment */
 function snap(v){return Math.round(v/SNAP)*SNAP;}
-function plotLabelHTML(it){return esc(it.label);}
+/* Label scales with BOTH the box size and the text length, so names stay readable inside small boxes. */
+function plotLabelHTML(it){
+  const lbl=it.label||"";
+  if(!lbl)return "";
+  const md=Math.min(it.w||10,it.h||10);
+  const len=Math.max(3,lbl.length);
+  const fs=Math.max(1.05,Math.min(2.3, md*0.3, 1.0+26/len));
+  return `<span style="font-size:${fs.toFixed(2)}cqh;display:block;max-width:100%;overflow-wrap:break-word">${esc(lbl)}</span>`;
+}
 function uid(){return Math.random().toString(36).slice(2,9);}
 function addPlotItem(type){
   const d=PLOT_TYPES[type];
