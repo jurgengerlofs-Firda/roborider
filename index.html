@@ -71,6 +71,36 @@
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
   .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
+  /* --- hero: two columns with product visual --- */
+  .hero{text-align:left;padding:90px 0}
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:60px;align-items:center}
+  .hero-copy .cta{justify-content:flex-start}
+  .hero h1{font-size:56px}
+  .hero p.sub{margin:0 0 36px}
+  .hero-mark{width:92px;margin:0 0 26px}
+  .hv-doc{width:100%;max-width:480px;margin-left:auto;background:#fff;border:1px solid var(--hair);box-shadow:0 32px 64px -36px rgba(27,26,23,.35);padding:34px 34px 30px}
+  .hv-accent{width:38px;height:3px;background:var(--clay);margin-bottom:16px}
+  .hv-eyebrow{font-family:var(--display);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+  .hv-band{font-family:var(--display);font-weight:300;font-size:30px;letter-spacing:1px;margin:6px 0 20px;color:var(--ink)}
+  .hv-h{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+  .hv-h span:first-child{color:var(--clay)}
+  .hv-tbl{width:100%;border-collapse:collapse;font-size:10.5px}
+  .hv-tbl th{font-family:var(--display);font-weight:400;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--ink);padding:4px 6px}
+  .hv-tbl td{border-bottom:1px solid var(--hair);padding:5px 6px;text-align:left}
+  .hv-plot{position:relative;aspect-ratio:16/9;border:1px solid var(--ink);background:#fff}
+  .hv-plot .b{position:absolute;border:1px solid var(--ink);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px;line-height:1.25}
+  .hv-plot .b small{font-size:6.5px;letter-spacing:.5px;color:var(--muted);text-transform:none}
+  .hv-plot .r{background:#efe9dc}
+  .hv-plot .m{background:#e6dfce}
+  .hv-front{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-family:var(--display);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  @media(max-width:900px){
+    .hero{text-align:center;padding:70px 0}
+    .hero-grid{grid-template-columns:1fr;gap:44px}
+    .hero-copy .cta{justify-content:center}
+    .hero-mark{margin:0 auto 24px}
+    .hero h1{font-size:40px}
+    .hv-doc{margin:0 auto;max-width:440px}
+  }
   .hero-shot{max-width:980px;margin:56px auto 0;padding:0 4px}
   .bframe{border:1px solid var(--hair);border-radius:11px;overflow:hidden;background:#fff;box-shadow:0 34px 70px -34px rgba(27,26,23,.38)}
   .bbar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#eceae3;border-bottom:1px solid var(--hair)}
@@ -137,6 +167,12 @@
   .sheet-plot .star{position:absolute;width:18px;height:14px;border-radius:50%;background:var(--clay);transform:translate(-50%,-50%)}
   .sheet-plot .front{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--display);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding:4px}
   @media(max-width:620px){.sheet-frame{padding:28px 20px}.sheet-band{font-size:36px}.sheet-grid{grid-template-columns:1fr}}
+  .send-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px;max-width:860px;margin:40px auto 0;text-align:left}
+  .send-item{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;column-gap:0;padding:22px 2px;border-bottom:1px solid var(--hair)}
+  .send-item .sn{grid-row:1/3;font-family:var(--display);font-size:12px;color:var(--clay);letter-spacing:1px;padding-top:3px}
+  .send-item h3{margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.3px}
+  .send-item p{margin:0;font-size:14px;color:var(--soft);line-height:1.6;font-weight:400}
+  @media(max-width:720px){.send-grid{grid-template-columns:1fr}}
   .rider-show{display:flex;align-items:center;gap:12px;max-width:760px;margin:44px auto 0}
   .rs-viewport{overflow:hidden;flex:1}
   .rs-track{display:flex;transition:transform .45s ease;align-items:stretch}
@@ -193,7 +229,7 @@
   </div>
 </div></nav>
 
-<header class="hero"><div class="wrap">
+<header class="hero"><div class="wrap hero-grid"><div class="hero-copy">
   <svg class="hero-mark" viewBox="0 0 64 64" role="img" aria-label="RoboRider">
     <defs><radialGradient id="heromic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs>
     <g transform="translate(0,4)">
@@ -217,112 +253,50 @@
     <a class="btn outline" href="rider-builder.html?demo=1" data-i="hero_sample">See a sample rider</a>
   </div>
   <div class="note" data-i="hero_note"></div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="hv-doc">
+      <div class="hv-accent"></div>
+      <div class="hv-eyebrow">Technical &amp; Hospitality Rider</div>
+      <div class="hv-band" data-i="hv_band">YOUR BAND NAME</div>
+      <div class="hv-h"><span>02</span><span data-i="hv_plot_t">Stage plot</span></div>
+      <div class="hv-plot">
+        <div class="b r" style="left:6%;top:10%;width:24%;height:34%">Keys<small>riser 2×1×0.2</small></div>
+        <div class="b r" style="left:37%;top:7%;width:28%;height:40%">Drums<small>riser 3×2×0.4</small></div>
+        <div class="b" style="left:71%;top:13%;width:16%;height:20%">Bass</div>
+        <div class="b" style="left:16%;top:60%;width:14%;height:17%">BV</div>
+        <div class="b" style="left:42%;top:58%;width:17%;height:19%">Lead vox</div>
+        <div class="b" style="left:71%;top:57%;width:16%;height:19%">Guitar</div>
+        <div class="b m" style="left:14%;top:84%;width:11%;height:9%">Mon</div>
+        <div class="b m" style="left:44%;top:84%;width:11%;height:9%">Mon</div>
+        <div class="b m" style="left:74%;top:84%;width:11%;height:9%">Mon</div>
+        <div class="hv-front" data-i="hv_front">Audience / front of stage</div>
+      </div>
+      <div class="hv-h" style="margin-top:20px"><span>03</span><span data-i="hv_input_t">Input list</span></div>
+      <table class="hv-tbl">
+        <tr><th>CH</th><th>Input</th><th>Mic/DI</th><th>48V</th></tr>
+        <tr><td>1</td><td>Kick</td><td>Beta 52A</td><td></td></tr>
+        <tr><td>2</td><td>Snare top</td><td>SM57</td><td></td></tr>
+        <tr><td>8</td><td>Bass</td><td>Radial J48</td><td>X</td></tr>
+        <tr><td>12</td><td>Lead vocal</td><td>Beta 58A</td><td></td></tr>
+      </table>
+    </div>
+  </div>
 </div></header>
 
 <section class="showcase"><div class="wrap">
   <h2 class="sec" data-i="show_h"></h2>
   <p class="lead" data-i="show_lead"></p>
-  <div class="rider-show">
-    <button class="rs-arrow" onclick="rsGo(-1)" aria-label="Previous">‹</button>
-    <div class="rs-viewport"><div class="rs-track" id="rsTrack">
-
-      <div class="rs-slide"><div class="sheet-frame">
-        <div class="sheet-eyebrow"><span>Technical &amp; Hospitality Rider</span><span>2026 · Club tour</span></div>
-        <div class="sheet-band">Velvet Hours</div>
-        <div class="sheet-deck">Five-piece band — drums, bass, guitar, keys and vocals. A clean, professional show day with your local crew.</div>
-        <div class="sheet-h"><span class="n">01</span><span class="t">Contact</span><span class="ln"></span></div>
-        <div class="sheet-grid">
-          <div><div class="k">Tour manager</div><div class="v">Robin Vance · +31 6 12 34 56 78</div></div>
-          <div><div class="k">Email</div><div class="v">booking@velvethours.com</div></div>
-          <div><div class="k">FOH engineer</div><div class="v">Sam Okoro</div></div>
-          <div><div class="k">Monitors</div><div class="v">House (we mix from FOH)</div></div>
-          <div><div class="k">Travelling party</div><div class="v">7 — 5 band · 2 crew</div></div>
-          <div><div class="k">Valid until</div><div class="v">31 Dec 2026</div></div>
-        </div>
-        <div class="sheet-h"><span class="n">·</span><span class="t">Travelling party</span><span class="ln"></span></div>
-        <div class="sheet-grid">
-          <div><div class="k">Lead vocals</div><div class="v">Mara de Vries</div></div>
-          <div><div class="k">Guitar</div><div class="v">Tom Hessels · backing vox</div></div>
-          <div><div class="k">Keys</div><div class="v">Iris Bakker · backing vox</div></div>
-          <div><div class="k">Bass</div><div class="v">Lucas Meijer</div></div>
-          <div><div class="k">Drums</div><div class="v">Daan Visser</div></div>
-          <div><div class="k">Crew</div><div class="v">Robin Vance (TM) · Sam Okoro (FOH)</div></div>
-        </div>
-      </div></div>
-      <div class="rs-slide"><div class="sheet-frame">
-        <div class="sheet-eyebrow"><span>Velvet Hours</span><span>Technical Rider</span></div>
-        <div class="sheet-h" style="margin-top:20px"><span class="n">02</span><span class="t">Stage plot</span><span class="ln"></span></div>
-        <div class="sheet-plot">
-          <div class="blk riser" style="left:8%;top:8%;width:22%;height:27%">Keys<small>riser · 2×1×0.2 m</small></div>
-          <div class="blk riser" style="left:38%;top:6%;width:25%;height:31%">Drums<small>riser · 3×2×0.4 m</small></div>
-          <div class="blk" style="left:67%;top:11%;width:15%;height:16%">Bass</div>
-          <div class="blk" style="left:85%;top:9%;width:10%;height:12%">230V</div>
-          <div class="blk" style="left:21%;top:58%;width:15%;height:16%">Backing vox</div>
-          <div class="blk" style="left:44%;top:58%;width:16%;height:16%">Lead vox</div>
-          <div class="blk" style="left:70%;top:56%;width:17%;height:17%">Guitar</div>
-          <div class="blk" style="left:12%;top:83%;width:11%;height:9%">Mon</div>
-          <div class="blk" style="left:35%;top:83%;width:11%;height:9%">Mon</div>
-          <div class="blk" style="left:55%;top:83%;width:11%;height:9%">Mon</div>
-          <div class="blk" style="left:77%;top:83%;width:11%;height:9%">Mon</div>
-          <div class="front">Audience / front of stage</div>
-        </div>
-      </div></div>
-      <div class="rs-slide"><div class="sheet-frame">
-        <div class="sheet-eyebrow"><span>Velvet Hours</span><span>Technical Rider</span></div>
-        <div class="sheet-h" style="margin-top:20px"><span class="n">03</span><span class="t">Input list</span><span class="ln"></span></div>
-        <table class="sheet-tbl">
-          <tr><th>CH</th><th>Input</th><th>Mic / DI</th><th>48V</th><th>Position</th></tr>
-          <tr><td>1</td><td>Kick</td><td>Beta 52A</td><td></td><td>Drums</td></tr>
-          <tr><td>2</td><td>Snare top</td><td>SM57</td><td></td><td>Drums</td></tr>
-          <tr><td>3</td><td>Hi-hat</td><td>SM81</td><td>X</td><td>Drums</td></tr>
-          <tr><td>4</td><td>Rack tom</td><td>e604</td><td></td><td>Drums</td></tr>
-          <tr><td>5</td><td>Floor tom</td><td>e604</td><td></td><td>Drums</td></tr>
-          <tr><td>6</td><td>Overhead L</td><td>C414</td><td>X</td><td>Drums</td></tr>
-          <tr><td>7</td><td>Overhead R</td><td>C414</td><td>X</td><td>Drums</td></tr>
-          <tr><td>8</td><td>Bass</td><td>Radial J48 DI</td><td>X</td><td>Bass</td></tr>
-          <tr><td>9</td><td>Guitar amp</td><td>SM57</td><td></td><td>Guitar</td></tr>
-          <tr><td>10</td><td>Keys L</td><td>DI</td><td>X</td><td>Keys</td></tr>
-          <tr><td>11</td><td>Keys R</td><td>DI</td><td>X</td><td>Keys</td></tr>
-          <tr><td>12</td><td>Lead vocal</td><td>Beta 58A</td><td></td><td>Centre</td></tr>
-          <tr><td>13</td><td>Backing vox (gtr)</td><td>SM58</td><td></td><td>Stage R</td></tr>
-          <tr><td>14</td><td>Backing vox (keys)</td><td>SM58</td><td></td><td>Stage L</td></tr>
-        </table>
-      </div></div>
-      <div class="rs-slide"><div class="sheet-frame">
-        <div class="sheet-eyebrow"><span>Velvet Hours</span><span>Technical Rider</span></div>
-        <div class="sheet-h" style="margin-top:20px"><span class="n">04</span><span class="t">Technical</span><span class="ln"></span></div>
-        <div class="sheet-grid">
-          <div><div class="k">Monitoring</div><div class="v">4 wedge mixes + 1 drum fill, from FOH</div></div>
-          <div><div class="k">FOH console</div><div class="v">Digital 32-ch (DiGiCo / Midas / A&amp;H)</div></div>
-          <div><div class="k">PA</div><div class="v">Line-array, even coverage, ≤103 dB(A)</div></div>
-          <div><div class="k">Wireless</div><div class="v">1× handheld Beta 58A, 823–832 MHz (ours)</div></div>
-          <div><div class="k">Stage</div><div class="v">Min 8×6 m · drum riser 3×2×0.4 m</div></div>
-          <div><div class="k">Power</div><div class="v">230V at marked positions</div></div>
-          <div><div class="k">Backline</div><div class="v">We bring our own; drum shells from house</div></div>
-          <div><div class="k">Local crew</div><div class="v">1 monitor tech · 2 stagehands</div></div>
-          <div><div class="k">Soundcheck</div><div class="v">45 min + 15 min line check</div></div>
-        </div>
-        <div class="sheet-h"><span class="n">·</span><span class="t">Lighting</span><span class="ln"></span></div>
-        <p style="font-size:13px;color:var(--soft);font-weight:400;margin:0;line-height:1.6">Warm front wash with a few specials for the singer; hazer if available. GrandMA / Avolites / Hog all fine — house operator welcome, we'll talk it through on the day.</p>
-      </div></div>
-      <div class="rs-slide"><div class="sheet-frame">
-        <div class="sheet-eyebrow"><span>Velvet Hours</span><span>Hospitality Rider</span></div>
-        <div class="sheet-h" style="margin-top:20px"><span class="n">05</span><span class="t">Hospitality</span><span class="ln"></span></div>
-        <div style="font-size:13px;color:var(--soft);font-weight:400;line-height:1.95">
-          Clean, lockable dressing room for 7 people, with mirror and power.<br>
-          Warm, healthy meal for 7 (no fast food) · 2× vegetarian · 1× gluten-free.<br>
-          Still water, coffee &amp; tea, 24 local beers, soft drinks, 1 bottle dry white wine.<br>
-          Snacks: fruit, nuts and chocolate.<br>
-          7 clean towels · WiFi + password · parking for 1 van + 1 car.<br>
-          Buy-out €30 p.p. if catering isn't possible.
-        </div>
-      </div></div>
-
-    </div></div>
-        <button class="rs-arrow" onclick="rsGo(1)" aria-label="Next">›</button>
+  <div class="send-grid">
+    <div class="send-item"><div class="sn">01</div><h3 data-i="send1_h"></h3><p data-i="send1_p"></p></div>
+    <div class="send-item"><div class="sn">02</div><h3 data-i="send2_h"></h3><p data-i="send2_p"></p></div>
+    <div class="send-item"><div class="sn">03</div><h3 data-i="send3_h"></h3><p data-i="send3_p"></p></div>
+    <div class="send-item"><div class="sn">04</div><h3 data-i="send4_h"></h3><p data-i="send4_p"></p></div>
+    <div class="send-item"><div class="sn">05</div><h3 data-i="send5_h"></h3><p data-i="send5_p"></p></div>
+    <div class="send-item"><div class="sn">06</div><h3 data-i="send6_h"></h3><p data-i="send6_p"></p></div>
+    <div class="send-item"><div class="sn">07</div><h3 data-i="send7_h"></h3><p data-i="send7_p"></p></div>
+    <div class="send-item"><div class="sn">08</div><h3 data-i="send8_h"></h3><p data-i="send8_p"></p></div>
   </div>
-  <div class="rs-dots" id="rsDots"><button class="on" onclick="rsDot(0)"></button><button onclick="rsDot(1)"></button><button onclick="rsDot(2)"></button><button onclick="rsDot(3)"></button><button onclick="rsDot(4)"></button></div>
-  <div class="rs-cap" id="rsCap"></div>
   <a class="btn outline sm" href="rider-builder.html?demo=1" data-i="show_cta" style="margin-top:24px;display:inline-block"></a>
 </div></section>
 
@@ -421,7 +395,7 @@ const T={
  en:{
   nav_try:"Open the builder",
   hero_badge:"For touring musicians & bands",
-  hero_h:"Your technical &amp; hospitality rider, <em>done in minutes</em>",
+  hero_h:"One clean rider. <em>No more back-and-forth</em> with the venue.",
   hero_sub:"Stop wrestling with old Word files. Build a clean, professional rider — with a drag-and-drop stage plot and input list — and export a polished PDF. In any language.",
   hero_cta1:"Build my rider — free",
   hero_cta2:"See how it works",
@@ -429,6 +403,15 @@ const T={
   show_h:"This is what you'll send",
   show_lead:"A clean, consistent rider — cover, stage plot, input list and hospitality — exported as a polished PDF.",
   show_cta:"Open this in the builder",
+  hv_band:"YOUR BAND NAME", hv_plot_t:"Stage plot", hv_input_t:"Input list", hv_front:"Audience / front of stage",
+  send1_h:"General &amp; contacts", send1_p:"Band name, logo and accent colour, your tour manager and FOH contacts, travelling party and guest list.",
+  send2_h:"Stage plot", send2_p:"Drag-and-drop editor: risers with dimensions, monitors, amps and power drops. Works on your phone too.",
+  send3_h:"Input list", send3_p:"Auto-numbered channels with mic/DI suggestions, 48V, stands and positions. Need 48 channels? Added in one go.",
+  send4_h:"Monitor mixes &amp; outputs", send4_p:"Wedges, in-ears (stereo counts as 2), FX and engineer channels — numbered the way you want them.",
+  send5_h:"Backline", send5_p:"What you bring yourself and what you need from the house.",
+  send6_h:"Technical", send6_p:"PA, FOH console, monitoring, power, soundcheck times, wireless frequencies and local crew.",
+  send7_h:"Lights", send7_p:"Fixtures and looks, your own or the house console, plus a reference photo from an earlier show.",
+  send8_h:"Hospitality", send8_p:"Dressing room, catering and dietary requirements, drinks, towels and buy-out — quantities calculated from your travelling party.",
   hero_note:"Start free in your browser — no account needed. Make a free account to save your riders and open them on any device.",
   feat_h:"Everything a rider needs, nothing it doesn't",
   feat_lead:"Built by a touring musician who got tired of editing PDFs the night before a show.",
@@ -475,7 +458,7 @@ const T={
  nl:{
   nav_try:"Open de tool",
   hero_badge:"Voor tourende muzikanten & bands",
-  hero_h:"Je technische &amp; hospitality rider, <em>klaar in minuten</em>",
+  hero_h:"Eén strakke rider. <em>Nooit meer heen-en-weer</em> met het podium.",
   hero_sub:"Stop met klooien in oude Word-bestanden. Bouw een strakke, professionele rider — met een drag-and-drop stageplot en inputlijst — en exporteer een verzorgde PDF. In elke taal.",
   hero_cta1:"Maak mijn rider — gratis",
   hero_cta2:"Bekijk hoe het werkt",
@@ -483,6 +466,15 @@ const T={
   show_h:"Dit is wat je verstuurt",
   show_lead:"Een strakke, consistente rider — cover, stageplot, inputlijst en hospitality — geëxporteerd als verzorgde PDF.",
   show_cta:"Open dit in de builder",
+  hv_band:"JOUW BANDNAAM", hv_plot_t:"Stageplot", hv_input_t:"Inputlijst", hv_front:"Publiek / voorkant podium",
+  send1_h:"Algemeen &amp; contacten", send1_p:"Bandnaam, logo en accentkleur, je tourmanager- en FOH-contacten, reisgezelschap en gastenlijst.",
+  send2_h:"Stageplot", send2_p:"Drag-and-drop-editor: risers met maten, monitors, versterkers en stroompunten. Werkt ook op je telefoon.",
+  send3_h:"Inputlijst", send3_p:"Automatisch genummerde kanalen met mic/DI-suggesties, 48V, statieven en posities. 48 kanalen nodig? In één keer toegevoegd.",
+  send4_h:"Monitormixen &amp; outputs", send4_p:"Wedges, in-ears (stereo telt als 2), FX- en engineer-kanalen — genummerd zoals jij het wilt.",
+  send5_h:"Backline", send5_p:"Wat je zelf meeneemt en wat je van het huis nodig hebt.",
+  send6_h:"Techniek", send6_p:"PA, FOH-tafel, monitoring, stroom, soundchecktijden, draadloze frequenties en lokale crew.",
+  send7_h:"Licht", send7_p:"Fixtures en looks, eigen of huis-lichttafel, plus een referentiefoto van een eerdere show.",
+  send8_h:"Hospitality", send8_p:"Kleedkamer, catering en dieetwensen, drankjes, handdoeken en buy-out — aantallen berekend uit je reisgezelschap.",
   hero_note:"Start gratis in je browser — geen account nodig. Maak een gratis account om je riders te bewaren en op elk apparaat te openen.",
   feat_h:"Alles wat een rider nodig heeft, niets te veel",
   feat_lead:"Gebouwd door een tourende muzikant die geen zin meer had om de avond voor een show PDF's te editen.",
@@ -529,7 +521,7 @@ const T={
  de:{
   nav_try:"Tool öffnen",
   hero_badge:"Für tourende Musiker & Bands",
-  hero_h:"Dein Technical &amp; Hospitality Rider, <em>in Minuten fertig</em>",
+  hero_h:"Ein sauberer Rider. <em>Kein Hin und Her</em> mehr mit der Location.",
   hero_sub:"Schluss mit alten Word-Dateien. Erstelle einen sauberen, professionellen Rider — mit Drag-and-drop-Stageplan und Inputliste — und exportiere ein elegantes PDF. In jeder Sprache.",
   hero_cta1:"Meinen Rider erstellen — gratis",
   hero_cta2:"So funktioniert's",
@@ -537,6 +529,15 @@ const T={
   show_h:"Das verschickst du",
   show_lead:"Ein sauberer, einheitlicher Rider — Deckblatt, Stageplan, Inputliste und Hospitality — als elegantes PDF exportiert.",
   show_cta:"Im Builder öffnen",
+  hv_band:"DEIN BANDNAME", hv_plot_t:"Bühnenplan", hv_input_t:"Inputliste", hv_front:"Publikum / Bühnenvorderkante",
+  send1_h:"Allgemein &amp; Kontakte", send1_p:"Bandname, Logo und Akzentfarbe, deine Tourmanager- und FOH-Kontakte, Reisegruppe und Gästeliste.",
+  send2_h:"Bühnenplan", send2_p:"Drag-and-drop-Editor: Riser mit Maßen, Monitore, Amps und Strompunkte. Funktioniert auch am Handy.",
+  send3_h:"Inputliste", send3_p:"Automatisch nummerierte Kanäle mit Mikro/DI-Vorschlägen, 48V, Stativen und Positionen. 48 Kanäle nötig? In einem Schritt ergänzt.",
+  send4_h:"Monitorwege &amp; Outputs", send4_p:"Wedges, In-Ears (Stereo zählt als 2), FX- und Engineer-Kanäle — nummeriert, wie du es willst.",
+  send5_h:"Backline", send5_p:"Was du selbst mitbringst und was du vom Haus brauchst.",
+  send6_h:"Technik", send6_p:"PA, FOH-Pult, Monitoring, Strom, Soundcheck-Zeiten, Funkfrequenzen und lokale Crew.",
+  send7_h:"Licht", send7_p:"Scheinwerfer und Looks, eigenes oder Haus-Lichtpult, plus ein Referenzfoto einer früheren Show.",
+  send8_h:"Hospitality", send8_p:"Garderobe, Catering und Diätwünsche, Getränke, Handtücher und Buy-out — Mengen aus deiner Reisegruppe berechnet.",
   hero_note:"Starte gratis im Browser — ohne Konto. Erstelle ein kostenloses Konto, um deine Rider zu speichern und auf jedem Gerät zu öffnen.",
   feat_h:"Alles, was ein Rider braucht — nicht mehr",
   feat_lead:"Entwickelt von einem tourenden Musiker, der keine Lust mehr hatte, am Vorabend einer Show PDFs zu bearbeiten.",
@@ -583,7 +584,7 @@ const T={
  fr:{
   nav_try:"Ouvrir l'outil",
   hero_badge:"Pour musiciens & groupes en tournée",
-  hero_h:"Votre rider technique &amp; hospitality, <em>prêt en minutes</em>",
+  hero_h:"Un rider impeccable. <em>Fini les allers-retours</em> avec la salle.",
   hero_sub:"Fini de bricoler dans de vieux fichiers Word. Créez un rider clair et professionnel — avec un plan de scène en glisser-déposer et une liste d'entrées — et exportez un PDF soigné. Dans toutes les langues.",
   hero_cta1:"Créer mon rider — gratuit",
   hero_cta2:"Voir comment ça marche",
@@ -591,6 +592,15 @@ const T={
   show_h:"Voici ce que vous enverrez",
   show_lead:"Un rider clair et cohérent — couverture, plan de scène, liste d'entrées et hospitality — exporté en PDF soigné.",
   show_cta:"Ouvrir ceci dans l'outil",
+  hv_band:"NOM DU GROUPE", hv_plot_t:"Plan de scène", hv_input_t:"Liste des entrées", hv_front:"Public / devant de scène",
+  send1_h:"Général &amp; contacts", send1_p:"Nom du groupe, logo et couleur d'accent, tes contacts tour manager et façade, équipe en tournée et liste d'invités.",
+  send2_h:"Plan de scène", send2_p:"Éditeur glisser-déposer : praticables avec dimensions, retours, amplis et points d'alimentation. Fonctionne aussi sur téléphone.",
+  send3_h:"Liste des entrées", send3_p:"Canaux numérotés automatiquement avec suggestions micro/DI, 48V, pieds et positions. Besoin de 48 canaux ? Ajoutés d'un coup.",
+  send4_h:"Retours &amp; sorties", send4_p:"Wedges, in-ears (la stéréo compte pour 2), FX et canaux ingénieur — numérotés comme tu le veux.",
+  send5_h:"Backline", send5_p:"Ce que tu apportes toi-même et ce qu'il te faut de la salle.",
+  send6_h:"Technique", send6_p:"Système son, console façade, retours, alimentation, horaires de balance, fréquences HF et équipe locale.",
+  send7_h:"Lumière", send7_p:"Projecteurs et ambiances, ta console ou celle de la salle, plus une photo de référence d'un concert précédent.",
+  send8_h:"Hospitality", send8_p:"Loge, catering et régimes, boissons, serviettes et buy-out — quantités calculées d'après ton équipe en tournée.",
   hero_note:"Commencez gratuitement dans votre navigateur — sans compte. Créez un compte gratuit pour enregistrer vos riders et les ouvrir sur tous vos appareils.",
   feat_h:"Tout ce qu'un rider doit avoir, rien de superflu",
   feat_lead:"Conçu par un musicien en tournée fatigué d'éditer des PDF la veille d'un concert.",
@@ -637,7 +647,7 @@ const T={
  es:{
   nav_try:"Abrir la herramienta",
   hero_badge:"Para músicos y bandas de gira",
-  hero_h:"Tu rider técnico y de hospitality, <em>listo en minutos</em>",
+  hero_h:"Un rider impecable. <em>Se acabaron las idas y vueltas</em> con la sala.",
   hero_sub:"Deja de pelear con viejos archivos de Word. Crea un rider limpio y profesional — con plano de escenario de arrastrar y soltar y lista de entradas — y exporta un PDF pulido. En cualquier idioma.",
   hero_cta1:"Crear mi rider — gratis",
   hero_cta2:"Ver cómo funciona",
@@ -645,6 +655,15 @@ const T={
   show_h:"Esto es lo que enviarás",
   show_lead:"Un rider limpio y coherente — portada, plano de escenario, lista de entradas y hospitality — exportado como PDF pulido.",
   show_cta:"Abrir esto en la herramienta",
+  hv_band:"NOMBRE DE BANDA", hv_plot_t:"Plano de escenario", hv_input_t:"Lista de entradas", hv_front:"Público / frente del escenario",
+  send1_h:"General y contactos", send1_p:"Nombre de banda, logo y color de acento, tus contactos de tour manager y FOH, equipo de gira y lista de invitados.",
+  send2_h:"Plano de escenario", send2_p:"Editor de arrastrar y soltar: tarimas con medidas, monitores, amplis y puntos de corriente. Funciona también en el móvil.",
+  send3_h:"Lista de entradas", send3_p:"Canales numerados automáticamente con sugerencias de micro/DI, 48V, soportes y posiciones. ¿Necesitas 48 canales? Añadidos de una vez.",
+  send4_h:"Mezclas de monitor y salidas", send4_p:"Cuñas, in-ears (el estéreo cuenta como 2), FX y canales del técnico — numerados como tú quieras.",
+  send5_h:"Backline", send5_p:"Lo que llevas tú y lo que necesitas de la sala.",
+  send6_h:"Técnico", send6_p:"PA, consola FOH, monitoreo, corriente, horarios de prueba de sonido, frecuencias inalámbricas y equipo local.",
+  send7_h:"Luces", send7_p:"Focos y ambientes, tu mesa o la de la sala, más una foto de referencia de un show anterior.",
+  send8_h:"Hospitality", send8_p:"Camerino, catering y dietas, bebidas, toallas y buy-out — cantidades calculadas según tu equipo de gira.",
   hero_note:"Empieza gratis en tu navegador — sin cuenta. Crea una cuenta gratuita para guardar tus riders y abrirlos en cualquier dispositivo.",
   feat_h:"Todo lo que un rider necesita, nada de más",
   feat_lead:"Creado por un músico de gira cansado de editar PDF la noche antes de un concierto.",
@@ -698,17 +717,10 @@ const GUIDES={
    {q:"Saved me an hour before our show.", by:"Alex — bassist, The Example"} */
 const TESTIMONIALS=[
 ];
-const RS_CAPS={en:["Cover","Stage plot","Input list","Technical","Hospitality"],nl:["Cover","Stageplot","Inputlijst","Technisch","Hospitality"]};
-let rsI=0;const rsN=5;let rsTimer=null;
-function rsRender(){const t=document.getElementById("rsTrack");if(!t)return;t.style.transform="translateX("+(-rsI*100)+"%)";document.querySelectorAll("#rsDots button").forEach((d,i)=>d.classList.toggle("on",i===rsI));const caps=RS_CAPS[curLang]||RS_CAPS.en;const c=document.getElementById("rsCap");if(c)c.textContent="0"+(rsI+1)+" / 0"+rsN+" · "+caps[rsI];}
-function rsGo(d){rsI=(rsI+d+rsN)%rsN;rsRender();rsStop();}
-function rsDot(i){rsI=i;rsRender();rsStop();}
-function rsStop(){if(rsTimer){clearInterval(rsTimer);rsTimer=null;}}
-function rsStart(){rsStop();rsTimer=setInterval(()=>{rsI=(rsI+1)%rsN;rsRender();},6000);}
 function setLang(l){
   document.querySelectorAll(".lang button").forEach(b=>b.classList.remove("on"));
   document.getElementById("lg-"+l).classList.add("on");
-  document.documentElement.lang=l;curLang=l;rsRender();
+  document.documentElement.lang=l;curLang=l;
   const d=T[l];
   document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(d[k]!==undefined)el.innerHTML=d[k];});
   const g=(GUIDES[l]||GUIDES.en); const gg=document.getElementById("guidesGrid");
@@ -723,7 +735,6 @@ function setLang(l){
   if(p2)p2.href=live?CHECKOUT_URL:"#feedback"; if(p3)p3.href="#feedback";
 }
 setLang("en");
-rsStart();
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). Sign up free at goatcounter.com and register the code "roborider". -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
