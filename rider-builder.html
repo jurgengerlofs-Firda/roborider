@@ -742,6 +742,11 @@ Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötig
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
 /* Parking & logistiek, dressing rooms, catering-calculator */
+Object.assign(I18N.en,{ph_count:"number",hint_travel:"One row per group (band, crew, driver…) with the NUMBER OF PEOPLE per row — the Σ adds them up and feeds the catering calculator."});
+Object.assign(I18N.nl,{ph_count:"aantal",hint_travel:"Eén rij per groep (band, crew, chauffeur…) met het AANTAL PERSONEN per rij — de Σ telt ze op en voedt de catering-calculator."});
+Object.assign(I18N.de,{ph_count:"Anzahl",hint_travel:"Eine Zeile pro Gruppe (Band, Crew, Fahrer…) mit der PERSONENZAHL pro Zeile — die Σ addiert sie und speist den Catering-Rechner."});
+Object.assign(I18N.fr,{ph_count:"nombre",hint_travel:"Une ligne par groupe (groupe, équipe, chauffeur…) avec le NOMBRE DE PERSONNES par ligne — le Σ les additionne et alimente le calculateur catering."});
+Object.assign(I18N.es,{ph_count:"cantidad",hint_travel:"Una fila por grupo (banda, equipo, conductor…) con el NÚMERO DE PERSONAS por fila — el Σ las suma y alimenta la calculadora de catering."});
 Object.assign(I18N.en,{sec_park:"Parking & logistics",f_vehicles:"Vehicles",plus_vehicle:"+ vehicle",th_vehicle:"Vehicle",th_plate:"Licence plate",th_height:"Height (m)",f_parknotes:"Requests to the venue",veh_car:"Car",veh_van:"Van",veh_sprinter:"Sprinter/bandbus",veh_bus:"Nightliner",veh_truck:"Truck + trailer",veh_other:"Other",f_rooms:"Dressing rooms (per group)",plus_room:"+ room",sub_rooms:"Dressing rooms",persons_word:"pers.",ph_room_who:"For whom (band / crew / artist)",ph_room_notes:"Wishes for this room (optional)",calc_people:"People:",calc_day_show:"Evening show",calc_day_full:"Full day / festival",calc_warm:"Hot weather",calc_alc:"Alcohol",calc_btn:"Calculate & fill",hint_calc:"Rules of thumb for drinks, towels and catering — overwrites those fields, adjust freely afterwards.",hosp_t_catering_day:"Lunch + warm, healthy meal for {n} people"});
 Object.assign(I18N.nl,{sec_park:"Parkeren & logistiek",f_vehicles:"Voertuigen",plus_vehicle:"+ voertuig",th_vehicle:"Voertuig",th_plate:"Kenteken",th_height:"Hoogte (m)",f_parknotes:"Verzoeken aan het huis",veh_car:"Auto",veh_van:"Busje",veh_sprinter:"Sprinter/bandbus",veh_bus:"Nightliner",veh_truck:"Vrachtwagen + trailer",veh_other:"Anders",f_rooms:"Kleedkamers (per groep)",plus_room:"+ kleedkamer",sub_rooms:"Kleedkamers",persons_word:"pers.",ph_room_who:"Voor wie (band / crew / artiest)",ph_room_notes:"Wensen voor deze kamer (optioneel)",calc_people:"Personen:",calc_day_show:"Avondshow",calc_day_full:"Hele dag / festival",calc_warm:"Warm weer",calc_alc:"Alcohol",calc_btn:"Bereken & vul in",hint_calc:"Vuistregels voor drankjes, handdoeken en catering — overschrijft die velden, daarna vrij aan te passen.",hosp_t_catering_day:"Lunch + warme, gezonde maaltijd voor {n} personen"});
 Object.assign(I18N.de,{sec_park:"Parken & Logistik",f_vehicles:"Fahrzeuge",plus_vehicle:"+ Fahrzeug",th_vehicle:"Fahrzeug",th_plate:"Kennzeichen",th_height:"Höhe (m)",f_parknotes:"Bitten an das Haus",veh_car:"Auto",veh_van:"Transporter",veh_sprinter:"Sprinter/Bandbus",veh_bus:"Nightliner",veh_truck:"LKW + Anhänger",veh_other:"Sonstiges",f_rooms:"Garderoben (pro Gruppe)",plus_room:"+ Garderobe",sub_rooms:"Garderoben",persons_word:"Pers.",ph_room_who:"Für wen (Band / Crew / Künstler)",ph_room_notes:"Wünsche für diesen Raum (optional)",calc_people:"Personen:",calc_day_show:"Abendshow",calc_day_full:"Ganzer Tag / Festival",calc_warm:"Heißes Wetter",calc_alc:"Alkohol",calc_btn:"Berechnen & ausfüllen",hint_calc:"Faustregeln für Getränke, Handtücher und Catering — überschreibt diese Felder, danach frei anpassbar.",hosp_t_catering_day:"Lunch + warme, gesunde Mahlzeit für {n} Personen"});
@@ -1127,9 +1132,10 @@ function renderForm(){
     <label class="fld">${L("f_contacts")}</label>
     <div id="rep-contacts"></div>
     <button class="add" onclick="addRow('contacts',{role:'',name:'',email:'',phone:''})">${L("plus_contact")}</button>
-    <label class="fld">${L("f_travel")} <span style="color:var(--brand)">(Σ ${travelTotal()})</span></label>
+    <label class="fld">${L("f_travel")} <span style="color:var(--brand)">(Σ ${travelTotal()} ${L("persons_word")})</span></label>
     <div id="rep-travelParty"></div>
     <button class="add" onclick="addRow('travelParty',{label:'',count:''})">${L("plus_role")}</button>
+    <div class="hint">${L("hint_travel")}</div>
     ${field(L("f_guests"),S.guests,"guests",{type:"textarea",hint:L("hint_guests")})}
   `);
   h+=section(2,L("sec_stageplot"),`
@@ -1254,7 +1260,7 @@ function renderRepeats(){
   mountRepeat("rep-travelParty",S.travelParty,(c,i)=>`
     <div class="repeat"><div class="row">
       <input type="text" data-rep="travelParty.${i}.label" value="${esc(c.label)}">
-      <input type="text" placeholder="#" style="flex:0 0 70px" data-rep="travelParty.${i}.count" value="${esc(c.count)}">
+      <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 84px" data-rep="travelParty.${i}.count" value="${esc(c.count)}">
       ${rowCtl('travelParty',i)}
     </div></div>`);
   mountRepeat("rep-dietary",S.hosp.dietary,(c,i)=>`
@@ -1265,13 +1271,13 @@ function renderRepeats(){
   mountRepeat("rep-drinks",S.hosp.drinks,(c,i)=>`
     <div class="repeat"><div class="row">
       <input type="text" data-rep="hosp.drinks.${i}.item" value="${esc(c.item)}">
-      <input type="text" placeholder="#" style="flex:0 0 90px" data-rep="hosp.drinks.${i}.qty" value="${esc(c.qty)}">
+      <input type="text" placeholder="${L('ph_count')}" style="flex:0 0 90px" data-rep="hosp.drinks.${i}.qty" value="${esc(c.qty)}">
       ${rowCtl('hosp.drinks',i)}
     </div></div>`);
   mountRepeat("rep-crew",S.tech.crew,(c,i)=>`
     <div class="repeat"><div class="row">
       <input type="text" data-rep="tech.crew.${i}.role" value="${esc(c.role)}">
-      <input type="text" placeholder="#" style="flex:0 0 70px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">
+      <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 84px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">
       ${rowCtl('tech.crew',i)}
     </div></div>`);
   mountRepeat("rep-rooms",S.hosp.rooms,(c,i)=>`
@@ -1949,7 +1955,7 @@ function addQuick(group,id){
 /* Catering calculator — rules of thumb per person, day type and weather. Overwrites drinks/towels/catering (the hint says so). */
 function fillHosp(){
   const e=$("calcN");
-  const n=Math.max(1,parseInt(e&&e.value,10)||travelTotal()||0);
+  const n=Math.min(99,Math.max(1,parseInt(e&&e.value,10)||travelTotal()||0));
   if(!n){alert(L("hosp_fill_none"));return;}
   const full=(($("calcDay")||{}).value)==="full";
   const warm=!!($("calcWarm")&&$("calcWarm").checked);
