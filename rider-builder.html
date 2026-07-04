@@ -155,6 +155,15 @@
   .sugg-opt:hover{background:#f5f2ea}
   .stchk{display:flex;align-items:center;gap:3px;font-family:var(--display);font-size:9px;letter-spacing:1px;color:var(--muted);flex:0 0 auto;cursor:pointer}
   .stchk input{margin:0}
+  .calcrow{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin:0 0 6px}
+  .calcrow input[type=number]{flex:0 0 60px;padding:8px;border:1px solid var(--hair);background:#fff;font:inherit;font-size:13px}
+  .calcrow select{flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)}
+  .calcrow .chip{flex:0 0 auto}
+  @media(max-width:640px){
+    #preview .page{overflow-x:auto}
+    #preview table.grid{min-width:540px;font-size:10.5px}
+    #preview table.grid th,#preview table.grid td{padding:4px 5px}
+  }
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
@@ -231,7 +240,7 @@
     font-size:2.3cqh;line-height:1.05;border:1px solid var(--ink);border-radius:0;background:#fff;overflow:hidden;padding:2px;color:var(--ink);
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
   .pl-shape.sh-circle{border-radius:50%}
-  .pl-shape.sh-riser{border-style:dashed}
+  .pl-shape.sh-riser{border-style:dashed;background-image:repeating-linear-gradient(45deg,rgba(154,114,87,.12) 0 6px,transparent 6px 14px)}
   .pl-risercap{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:2px;z-index:8;
     font-family:var(--display);font-size:1.7cqh;line-height:1;white-space:nowrap;background:#efe9dc;
     border:1px solid var(--ink);padding:2px 5px;color:var(--ink);pointer-events:none;
@@ -662,7 +671,7 @@ const blank = () => ({
   travelParty:[{label:"",count:""}],
   guests:"",
   hosp:{dressing:"",rooms:[],towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
-  tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",wireless:""},
+  tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",multi:"",wireless:""},
   lights:{fixtures:"",console:"",notes:"",photo:"",consoleOwn:""},
   backline:"",
   inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
@@ -746,6 +755,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* Multikabel/stagebox + subkop */
+Object.assign(I18N.en,{f_multi:"Multicore / stagebox (stage↔FOH)",sub_multi:"Multicore / stagebox"});
+Object.assign(I18N.nl,{f_multi:"Multikabel / stagebox (podium↔FOH)",sub_multi:"Multikabel / stagebox"});
+Object.assign(I18N.de,{f_multi:"Multicore / Stagebox (Bühne↔FOH)",sub_multi:"Multicore / Stagebox"});
+Object.assign(I18N.fr,{f_multi:"Multipaire / stagebox (scène↔façade)",sub_multi:"Multipaire / stagebox"});
+Object.assign(I18N.es,{f_multi:"Manguera / stagebox (escenario↔FOH)",sub_multi:"Manguera / stagebox"});
 /* Stageplot: uitlijn-hulplijnen + maat-snapping */
 Object.assign(I18N.en,{plot_hint:"Click an element to add it, then drag to position. While dragging, elements snap to other elements' centres and edges (guide lines appear); while resizing, they snap to matching sizes. Drag the corner handle to resize, ↻ to rotate, × to delete."});
 Object.assign(I18N.nl,{plot_hint:"Klik een element om het toe te voegen en sleep het op z'n plek. Tijdens het slepen klikt het vast aan middens en randen van andere elementen (er verschijnen hulplijnen); tijdens het vergroten klikt het vast op gelijke maten. Sleep de hoekgreep om te schalen, ↻ om te draaien, × om te verwijderen."});
@@ -1189,7 +1204,10 @@ function renderForm(){
     ${textChip('tech.monitors','monitors')}
     ${field(L("f_pa"),S.tech.pa,"tech.pa",{type:"textarea"})}
     ${textChip('tech.pa','pa')}
+    ${field(L("f_multi"),S.tech.multi||"","tech.multi",{type:"textarea"})}
+    ${textChip('tech.multi','multi')}
     ${field(L("f_wireless"),S.tech.wireless,"tech.wireless",{type:"textarea"})}
+    ${textChip('tech.wireless','wireless')}
     ${wirelessChips()}
   `);
   h+=section(7,L("sec_lights"),`
@@ -1210,13 +1228,13 @@ function renderForm(){
     <div class="hint">${L("hint_lightphoto")}</div>
   `);
   h+=section(8,L("sec_hospitality"),`
-    <div class="bulkrow" style="margin-top:0;flex-wrap:wrap">
-      <span class="chips-lbl">${L("calc_people")}</span><input type="number" id="calcN" min="1" max="99" value="${travelTotal()||""}" placeholder="7" style="flex:0 0 56px">
-      <select id="calcDay" style="flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)">
+    <div class="calcrow">
+      <span class="chips-lbl">${L("calc_people")}</span><input type="number" id="calcN" min="1" max="99" value="${travelTotal()||""}" placeholder="7">
+      <select id="calcDay">
         <option value="show">${L("calc_day_show")}</option><option value="full">${L("calc_day_full")}</option>
       </select>
-      <label class="stchk" style="font-size:9px"><input type="checkbox" id="calcWarm">${esc(L("calc_warm"))}</label>
-      <label class="stchk" style="font-size:9px"><input type="checkbox" id="calcAlc" checked>${esc(L("calc_alc"))}</label>
+      <label class="stchk"><input type="checkbox" id="calcWarm">${esc(L("calc_warm"))}</label>
+      <label class="stchk"><input type="checkbox" id="calcAlc" checked>${esc(L("calc_alc"))}</label>
       <button class="chip" onclick="fillHosp()">${L("calc_btn")}</button>
     </div>
     <div class="hint">${L("hint_calc")}</div>
@@ -1368,6 +1386,10 @@ const TEXTPRESETS={
             nl:"Schone, afsluitbare kleedkamer (sleutel bij de band)\nVerwarming/airco, ventilatie, stromend water\nGrote spiegel met goed licht, bank/stoelen voor het hele gezelschap\nKledingrek + hangers, stopcontacten\nToilet & douche dichtbij, WiFi + wachtwoord"},
   park:{en:"Load-in via dock/ramp preferred — please advise distance to stage\nAny height restriction? Let us know in advance\nCity-centre permit arranged by the venue if required\nSecure parking for overnight stays",
         nl:"Laden/lossen bij voorkeur via laadperron — graag afstand tot podium doorgeven\nHoogtebeperking? Graag vooraf melden\nOntheffing binnenstad indien nodig geregeld door het huis\nBeveiligd parkeren bij overnachting"},
+  multi:{en:"Multicore/stagebox stage↔FOH by the house (min. 24/8 analog, or digital stagebox + CAT)\nIf we bring our own console: 1× CAT/ethernet run stage↔FOH",
+         nl:"Multikabel/stagebox podium↔FOH door het huis (min. 24/8 analoog, of digitale stagebox + CAT)\nBij eigen tafel: 1× CAT/ethernet-lijn podium↔FOH"},
+  wireless:{en:"We bring our own wireless — see input list for counts. Frequencies in the licence-free range (823–832 MHz); we coordinate with house RF on the day.",
+            nl:"Wij nemen eigen zenders mee — aantallen in de inputlijst. Frequenties in de vergunningsvrije band (823–832 MHz); we stemmen op de dag af met de huis-RF."},
   pa:{en:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics / d&b / Adamson or equivalent). We respect a 103 dB LAeq (15 min) limit unless agreed otherwise.",
       nl:"Full-range PA, fase- en tijd-gelijk, gelijkmatige dekking voor de hele zaal (L-Acoustics / d&b / Adamson of gelijkwaardig). Wij respecteren een limiet van 103 dB LAeq (15 min), tenzij anders afgesproken."},
   foh:{en:"FOH at 2/3 of the room, centered, max 30 m from stage. Not under a balcony, protected from weather, on a flat surface (no riser).",
@@ -1462,6 +1484,7 @@ function renderPreview(){
   if(t(S.tech.foh)) tc+=`<h3 class="sub-h">${L("sub_foh")}</h3><p>${esc(S.tech.foh)}</p>`;
   if(t(S.tech.monitors)) tc+=`<h3 class="sub-h">${L("sub_monitors")}</h3><p>${esc(S.tech.monitors)}</p>`;
   if(t(S.tech.pa)) tc+=`<h3 class="sub-h">${L("sub_pa")}</h3><p>${esc(S.tech.pa)}</p>`;
+  if(t(S.tech.multi)) tc+=`<h3 class="sub-h">${L("sub_multi")}</h3><p>${esc(S.tech.multi)}</p>`;
   if(t(S.tech.wireless)) tc+=`<h3 class="sub-h">${L("sub_wireless")}</h3><p>${esc(S.tech.wireless)}</p>`;
   /* lights */
   let li="";
@@ -1571,9 +1594,17 @@ function plotLabelHTML(it){
   return `<span style="font-size:${fs.toFixed(2)}cqh;display:block;max-width:100%;overflow-wrap:break-word">${esc(lbl)}</span>`;
 }
 function uid(){return Math.random().toString(36).slice(2,9);}
+/* Remember the last size you gave each element type (DI, 230V, laptop…), so the next one starts at YOUR size. */
+let PLOT_SIZES={};try{PLOT_SIZES=JSON.parse(localStorage.getItem("rr_plotsizes")||"{}")||{};}catch(e){}
+function rememberPlotSize(it){
+  if(!it||!it.type||it.type==="text")return;
+  PLOT_SIZES[it.type]={w:it.w,h:it.h};
+  try{localStorage.setItem("rr_plotsizes",JSON.stringify(PLOT_SIZES));}catch(e){}
+}
 function addPlotItem(type){
   const d=PLOT_TYPES[type];
-  S.plot.items.push({id:uid(),type,label:d.lbl,x:50,y:42,w:d.w,h:d.h,rot:0});
+  const mem=PLOT_SIZES[type];
+  S.plot.items.push({id:uid(),type,label:d.lbl,x:50,y:42,w:mem?mem.w:d.w,h:mem?mem.h:d.h,rot:0});
   selPlot=S.plot.items[S.plot.items.length-1].id;
   const m=$("plotModal");if(m)m.classList.remove("pal-open");
   renderPlotEditor();renderPreview();
@@ -1584,7 +1615,7 @@ function buildPalette(){
   p.innerHTML=Object.keys(PLOT_TYPES).map(tp=>`<button onclick="addPlotItem('${tp}')">+ ${L('pt_'+tp)}</button>`).join("");
 }
 function shapeStyle(d,it){
-  let s=`background:${d.sh==='text'?'transparent':d.c};`;
+  let s=`background-color:${d.sh==='text'?'transparent':d.c};`;
   if(d.sh==='wedge')s+=`clip-path:${WEDGE};-webkit-clip-path:${WEDGE};`;
   return s;
 }
@@ -1605,7 +1636,25 @@ function buildPlotEl(it){
   const del=document.createElement("button");del.className="pl-ctl pl-del";del.textContent="×";
   del.onclick=ev=>{ev.stopPropagation();S.plot.items=S.plot.items.filter(x=>x.id!==it.id);selPlot=null;renderPlotEditor();renderPreview();};
   const rot=document.createElement("button");rot.className="pl-ctl pl-rot";rot.textContent="↻";
-  rot.onclick=ev=>{ev.stopPropagation();it.rot=((it.rot||0)+45)%360;el.style.transform=`translate(-50%,-50%) rotate(${it.rot}deg)`;renderPreview();};
+  /* ↻: tap = +15°, drag = free rotation (snapped to 5°) */
+  rot.addEventListener("pointerdown",ev=>{
+    ev.stopPropagation();ev.preventDefault();
+    const canvas=el.parentElement,r=canvas.getBoundingClientRect();
+    const cx=r.left+r.width*it.x/100, cy=r.top+r.height*it.y/100;
+    const sx=ev.clientX, sy=ev.clientY; let moved=false;
+    const apply=()=>{el.style.transform=`translate(-50%,-50%) rotate(${it.rot||0}deg)`;};
+    const mv=e2=>{
+      if(Math.abs(e2.clientX-sx)+Math.abs(e2.clientY-sy)<7&&!moved)return;
+      moved=true;
+      const a=Math.atan2(e2.clientY-cy,e2.clientX-cx)*180/Math.PI+90;
+      it.rot=((Math.round(a/5)*5)%360+360)%360;
+      apply();
+    };
+    const up2=()=>{document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",up2);
+      if(!moved){it.rot=((it.rot||0)+15)%360;apply();}
+      renderPreview();};
+    document.addEventListener("pointermove",mv);document.addEventListener("pointerup",up2);
+  });
   const rz=document.createElement("div");rz.className="pl-resize";
   el.appendChild(del);el.appendChild(rot);el.appendChild(rz);
   el.addEventListener("pointerdown",e=>startDrag(e,it,el));
@@ -1693,7 +1742,7 @@ function startResize(e,it,el){
     [mw,mh].forEach(m=>{if(!m)return;const n=canvas.querySelector('.pl-el[data-id="'+m.id+'"]');if(n)n.classList.add("match");});
     const lb=el.querySelector(".pl-shape"); if(lb&&it.type!=="riser")lb.innerHTML=plotLabelHTML(it);
   };
-  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);clearSizeMatch(canvas);renderPreview();};
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);clearSizeMatch(canvas);rememberPlotSize(it);renderPreview();};
   el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
 }
 function renderPlotEditor(){
@@ -1706,8 +1755,8 @@ function plotIsMobile(){return !!(window.matchMedia&&window.matchMedia("(max-wid
 function selItem(){return S.plot.items.find(x=>x.id===selPlot);}
 function clampPlot(v){return Math.max(0,Math.min(100,v));}
 function plotNudge(dx,dy){const it=selItem();if(!it)return;it.x=clampPlot(snap(it.x+dx*SNAP));it.y=clampPlot(snap(it.y+dy*SNAP));renderPlotEditor();renderPreview();}
-function plotSize(dir){const it=selItem();if(!it)return;const s=4;it.w=Math.max(4,Math.min(94,it.w+dir*s));it.h=Math.max(4,Math.min(94,it.h+dir*s));renderPlotEditor();renderPreview();}
-function plotRotateSel(){const it=selItem();if(!it)return;it.rot=((it.rot||0)+45)%360;renderPlotEditor();renderPreview();}
+function plotSize(dir){const it=selItem();if(!it)return;const s=4;it.w=Math.max(4,Math.min(94,it.w+dir*s));it.h=Math.max(4,Math.min(94,it.h+dir*s));rememberPlotSize(it);renderPlotEditor();renderPreview();}
+function plotRotateSel(){const it=selItem();if(!it)return;it.rot=((it.rot||0)+15)%360;renderPlotEditor();renderPreview();}
 function plotDuplicateSel(){const it=selItem();if(!it)return;const c=Object.assign({},it);c.id=uid();c.x=clampPlot(it.x+SNAP*2);c.y=clampPlot(it.y+SNAP*2);S.plot.items.push(c);selPlot=c.id;renderPlotEditor();renderPreview();}
 function plotEditLabelSel(){const it=selItem();if(it)editPlotLabel(it);}
 function plotDeleteSel(){const it=selItem();if(!it)return;S.plot.items=S.plot.items.filter(x=>x.id!==it.id);selPlot=null;renderPlotEditor();renderPreview();}
