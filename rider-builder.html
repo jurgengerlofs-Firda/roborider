@@ -686,7 +686,7 @@ let S = blank();
 
 /* ===================== Pro / subscription (Lemon Squeezy) ===================== */
 /* After you create your Lemon Squeezy product, paste its checkout link below. */
-const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/2b8a1b31-eb3b-4c33-a8b2-2dc7608d89fa";
+const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/fe73b9c7-5498-4c4c-8cb6-8c2104fc57f4";
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
   const b=$("btnPro");
@@ -2075,7 +2075,20 @@ function auxPresetChips(){
     Object.keys(AUX_PRESETS).map(k=>`<button class="chip" onclick="addAuxPreset('${k}')">+ ${esc(AUX_PRESETS[k].lbl[lang]||AUX_PRESETS[k].lbl.en)}</button>`).join("")+`</div>`;
 }
 /* Common microphones / DI for the input list */
-const MICS=["SM58","Beta 58A","e835","Beta 87A","KSM9","SM57","Beta 57A","e906","e609","MD421","Beta 52A","D6","e602","Beta 91A","e901","Beta 98A","e904","e604","SM81","KM184","C414","e914","Active DI","Passive DI","Radial J48","Radial JDI","BSS AR133"];
+const MICS=[
+  /* zang — dynamisch */
+  "SM58","Beta 58A","e835","e935","e945","OM5","OM7","M80","M88","V7","D5","ND76","KSM8",
+  /* zang — condensator */
+  "Beta 87A","KSM9","KMS105","e865","DPA 2028",
+  /* gitaar/snare/instrument */
+  "SM57","Beta 57A","e906","e609","i5","M201","MD421","MD441","RE20",
+  /* drums */
+  "Beta 52A","D112","D6","e602","e901","Beta 91A","Beta 98A","e904","e604","D2","D4",
+  /* overheads/condensator */
+  "SM81","KM184","C414","C451","e914","NT5","DPA 4099","SM7B",
+  /* DI */
+  "Active DI","Passive DI","Stereo DI","Radial J48","Radial JDI","Radial ProDI","BSS AR133"
+];
 /* Custom suggestion dropdown for the Mic/DI field.
    Replaces <datalist>, which renders/scrolls badly on iOS Safari. */
 let _suggEl=null,_suggFor=null;
