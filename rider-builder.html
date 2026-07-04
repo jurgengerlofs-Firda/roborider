@@ -746,6 +746,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* Stageplot: uitlijn-hulplijnen + maat-snapping */
+Object.assign(I18N.en,{plot_hint:"Click an element to add it, then drag to position. While dragging, elements snap to other elements' centres and edges (guide lines appear); while resizing, they snap to matching sizes. Drag the corner handle to resize, ↻ to rotate, × to delete."});
+Object.assign(I18N.nl,{plot_hint:"Klik een element om het toe te voegen en sleep het op z'n plek. Tijdens het slepen klikt het vast aan middens en randen van andere elementen (er verschijnen hulplijnen); tijdens het vergroten klikt het vast op gelijke maten. Sleep de hoekgreep om te schalen, ↻ om te draaien, × om te verwijderen."});
+Object.assign(I18N.de,{plot_hint:"Klicke ein Element, um es hinzuzufügen, und ziehe es an seine Position. Beim Ziehen rastet es an Mitten und Kanten anderer Elemente ein (Hilfslinien erscheinen); beim Skalieren rastet es auf gleiche Größen ein. Eckpunkt ziehen zum Skalieren, ↻ zum Drehen, × zum Löschen."});
+Object.assign(I18N.fr,{plot_hint:"Clique sur un élément pour l'ajouter, puis glisse-le en place. Pendant le déplacement, il s'aligne sur les centres et bords des autres éléments (des repères apparaissent) ; pendant le redimensionnement, il s'aligne sur les tailles identiques. Glisse la poignée d'angle pour redimensionner, ↻ pour pivoter, × pour supprimer."});
+Object.assign(I18N.es,{plot_hint:"Haz clic en un elemento para añadirlo y arrástralo a su sitio. Al arrastrar se ajusta a los centros y bordes de otros elementos (aparecen guías); al redimensionar se ajusta a tamaños iguales. Arrastra la esquina para escalar, ↻ para girar, × para eliminar."});
 /* Parking & logistiek, dressing rooms, catering-calculator */
 Object.assign(I18N.en,{ph_count:"number",hint_travel:"One row per group (band, crew, driver…) with the NUMBER OF PEOPLE per row — the Σ adds them up and feeds the catering calculator."});
 Object.assign(I18N.nl,{ph_count:"aantal",hint_travel:"Eén rij per groep (band, crew, chauffeur…) met het AANTAL PERSONEN per rij — de Σ telt ze op en voedt de catering-calculator."});
@@ -1613,32 +1619,81 @@ function highlightSel(){document.querySelectorAll("#stagecanvas .pl-el").forEach
   const it=S.plot.items.find(x=>x.id===n.dataset.id);
   n.style.zIndex=on?99:(it?zOf(it.type):3);
 });if(typeof renderPlotList==="function")renderPlotList();if(typeof updatePlotTools==="function")updatePlotTools();}
+/* --- smart guides: snap to other elements' centres and edges while dragging --- */
+const ALIGN_T=1.3; /* snap threshold in % of canvas */
+function plotGuideEls(canvas){
+  let v=canvas.querySelector("#plGuideV"),h=canvas.querySelector("#plGuideH");
+  if(!v){v=document.createElement("div");v.id="plGuideV";v.className="pl-guide v";canvas.appendChild(v);}
+  if(!h){h=document.createElement("div");h.id="plGuideH";h.className="pl-guide h";canvas.appendChild(h);}
+  return {v,h};
+}
+function hidePlotGuides(canvas){
+  const v=canvas.querySelector("#plGuideV"),h=canvas.querySelector("#plGuideH");
+  if(v)v.style.display="none"; if(h)h.style.display="none";
+}
+function clearSizeMatch(canvas){canvas.querySelectorAll(".pl-el.match").forEach(n=>n.classList.remove("match"));}
+/* snap one axis: centre→centre first, then edge→edge; returns {pos,guide} */
+function alignAxis(raw,half,others,axis){
+  for(const o of others){
+    const oc=axis==="x"?o.x:o.y;
+    if(Math.abs(raw-oc)<ALIGN_T)return {pos:oc,guide:oc};
+  }
+  for(const o of others){
+    const oc=axis==="x"?o.x:o.y, oh=(axis==="x"?o.w:o.h)/2;
+    const lo=oc-oh, hi=oc+oh;
+    if(Math.abs((raw-half)-lo)<ALIGN_T)return {pos:lo+half,guide:lo};
+    if(Math.abs((raw+half)-hi)<ALIGN_T)return {pos:hi-half,guide:hi};
+  }
+  return null;
+}
 function startDrag(e,it,el){
   if(e.target.classList.contains("pl-resize")||e.target.classList.contains("pl-ctl"))return;
   if(gesturing)return;
   e.preventDefault();selPlot=it.id;highlightSel();
   const canvas=el.parentElement,r=canvas.getBoundingClientRect();
+  const g=plotGuideEls(canvas);
+  const others=S.plot.items.filter(o=>o.id!==it.id);
   try{el.setPointerCapture(e.pointerId);}catch(_){}
   const move=ev=>{
     if(gesturing)return;
-    it.x=Math.max(0,Math.min(100,snap(((ev.clientX-r.left)/r.width)*100)));
-    it.y=Math.max(0,Math.min(100,snap(((ev.clientY-r.top)/r.height)*100)));
+    const rx=((ev.clientX-r.left)/r.width)*100;
+    const ry=((ev.clientY-r.top)/r.height)*100;
+    const ax=alignAxis(rx,(it.w||0)/2,others,"x");
+    const ay=alignAxis(ry,(it.h||0)/2,others,"y");
+    it.x=Math.max(0,Math.min(100,ax?ax.pos:snap(rx)));
+    it.y=Math.max(0,Math.min(100,ay?ay.pos:snap(ry)));
     el.style.left=it.x+"%";el.style.top=it.y+"%";
+    g.v.style.display=ax?"block":"none"; if(ax)g.v.style.left=ax.guide+"%";
+    g.h.style.display=ay?"block":"none"; if(ay)g.h.style.top=ay.guide+"%";
   };
-  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);renderPreview();};
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);hidePlotGuides(canvas);renderPreview();};
   el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
 }
 function startResize(e,it,el){
   e.preventDefault();e.stopPropagation();
   const canvas=el.parentElement,r=canvas.getBoundingClientRect();
+  const others=S.plot.items.filter(o=>o.id!==it.id);
   try{el.setPointerCapture(e.pointerId);}catch(_){}
   const cx=r.left+r.width*it.x/100, cy=r.top+r.height*it.y/100;
   const move=ev=>{
-    it.w=Math.max(4,Math.min(94,snap((Math.abs(ev.clientX-cx)*2/r.width)*100)));
-    it.h=Math.max(4,Math.min(94,snap((Math.abs(ev.clientY-cy)*2/r.height)*100)));
+    let w=Math.max(4,Math.min(94,(Math.abs(ev.clientX-cx)*2/r.width)*100));
+    let h=Math.max(4,Math.min(94,(Math.abs(ev.clientY-cy)*2/r.height)*100));
+    /* size-match: prefer an element whose BOTH dimensions are close (exact same format), else match per axis */
+    let mw=null,mh=null;
+    const both=others.find(o=>Math.abs(w-o.w)<ALIGN_T&&Math.abs(h-o.h)<ALIGN_T);
+    if(both){w=both.w;h=both.h;mw=mh=both;}
+    else{
+      const ow=others.find(o=>Math.abs(w-o.w)<ALIGN_T); if(ow){w=ow.w;mw=ow;}
+      const oh=others.find(o=>Math.abs(h-o.h)<ALIGN_T); if(oh){h=oh.h;mh=oh;}
+    }
+    it.w=(mw?w:snap(w)); it.h=(mh?h:snap(h));
     el.style.width=it.w+"%";el.style.height=it.h+"%";
+    /* highlight the element(s) whose size we snapped to */
+    clearSizeMatch(canvas);
+    [mw,mh].forEach(m=>{if(!m)return;const n=canvas.querySelector('.pl-el[data-id="'+m.id+'"]');if(n)n.classList.add("match");});
+    const lb=el.querySelector(".pl-shape"); if(lb&&it.type!=="riser")lb.innerHTML=plotLabelHTML(it);
   };
-  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);renderPreview();};
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);clearSizeMatch(canvas);renderPreview();};
   el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
 }
 function renderPlotEditor(){
