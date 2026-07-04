@@ -665,10 +665,10 @@ const DATE_LOCALE={en:"en-GB",nl:"nl-NL",de:"de-DE",fr:"fr-FR",es:"es-ES"};
 /* ===================== State ===================== */
 const blank = () => ({
   lang:"en",
-  band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:""},
+  band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:"",logoSize:"m",logoPos:"left"},
   intro:"",
   contacts:[{role:"Tour manager",name:"",email:"",phone:""}],
-  travelParty:[{label:"",count:""}],
+  travelParty:[{label:"",name:"",count:"1"}],
   guests:"",
   hosp:{dressing:"",rooms:[],towels:"",stage:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
   tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",multi:"",wireless:""},
@@ -757,6 +757,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* Logo-opties + reisgezelschap per persoon */
+Object.assign(I18N.en,{f_logosize:"Logo size",logo_s:"Small",logo_m:"Medium",logo_l:"Large",f_logopos:"Logo position",logopos_left:"Left",logopos_center:"Centre",logopos_right:"Right",btn_logo_remove:"× Remove logo",ph_tp_name:"Name",ph_tp_role:"Role / instrument (drums, FOH, TM…)",hint_travel:"One row per person (name + role), the number defaults to 1. Groups work too: e.g. 'Entourage' with number 5. The Σ feeds the catering calculator; empty rows don't count."});
+Object.assign(I18N.nl,{f_logosize:"Logogrootte",logo_s:"Klein",logo_m:"Middel",logo_l:"Groot",f_logopos:"Logo-positie",logopos_left:"Links",logopos_center:"Midden",logopos_right:"Rechts",btn_logo_remove:"× Logo verwijderen",ph_tp_name:"Naam",ph_tp_role:"Functie / instrument (drums, FOH, TM…)",hint_travel:"Eén rij per persoon (naam + functie), het aantal staat standaard op 1. Groepen kunnen ook: bijv. 'Entourage' met aantal 5. De Σ voedt de catering-calculator; lege rijen tellen niet mee."});
+Object.assign(I18N.de,{f_logosize:"Logogröße",logo_s:"Klein",logo_m:"Mittel",logo_l:"Groß",f_logopos:"Logo-Position",logopos_left:"Links",logopos_center:"Mitte",logopos_right:"Rechts",btn_logo_remove:"× Logo entfernen",ph_tp_name:"Name",ph_tp_role:"Rolle / Instrument (Drums, FOH, TM…)",hint_travel:"Eine Zeile pro Person (Name + Rolle), die Anzahl steht standardmäßig auf 1. Gruppen gehen auch: z. B. 'Entourage' mit Anzahl 5. Die Σ speist den Catering-Rechner; leere Zeilen zählen nicht."});
+Object.assign(I18N.fr,{f_logosize:"Taille du logo",logo_s:"Petit",logo_m:"Moyen",logo_l:"Grand",f_logopos:"Position du logo",logopos_left:"Gauche",logopos_center:"Centre",logopos_right:"Droite",btn_logo_remove:"× Supprimer le logo",ph_tp_name:"Nom",ph_tp_role:"Rôle / instrument (batterie, façade, TM…)",hint_travel:"Une ligne par personne (nom + rôle), le nombre est 1 par défaut. Les groupes marchent aussi : p. ex. 'Entourage' avec 5. Le Σ alimente le calculateur catering ; les lignes vides ne comptent pas."});
+Object.assign(I18N.es,{f_logosize:"Tamaño del logo",logo_s:"Pequeño",logo_m:"Mediano",logo_l:"Grande",f_logopos:"Posición del logo",logopos_left:"Izquierda",logopos_center:"Centro",logopos_right:"Derecha",btn_logo_remove:"× Quitar logo",ph_tp_name:"Nombre",ph_tp_role:"Rol / instrumento (batería, FOH, TM…)",hint_travel:"Una fila por persona (nombre + rol), la cantidad es 1 por defecto. Los grupos también valen: p. ej. 'Entourage' con 5. El Σ alimenta la calculadora; las filas vacías no cuentan."});
 /* FLEMMING-ronde: kleedkamer-inhoud, on-stage, afspraken, productie, versie, presskit */
 Object.assign(I18N.en,{ph_room_items:"Contents of this room (drinks, snacks…) — one per line",f_stagehosp:"On stage before showtime",sub_stagehosp:"On stage",sec_deal:"Agreements & safety",f_safety:"Safety & liability",sub_safety:"Safety & liability",f_media:"Photo, video & interviews",sub_media:"Photo, video & interviews",sec_prod:"Production & SFX",f_backdrop:"Backdrop / LED screen",sub_backdrop:"Backdrop / LED screen",f_sfx:"Special FX",sub_sfx:"Special FX",f_changeover:"Changeover / line check",sub_changeover:"Changeover",f_version:"Rider version",f_presskit:"Presskit / downloads (link)",presskit_word:"Presskit"});
 Object.assign(I18N.nl,{ph_room_items:"Inhoud van deze kamer (drankjes, snacks…) — één per regel",f_stagehosp:"On stage vóór showtime",sub_stagehosp:"On stage",sec_deal:"Afspraken & veiligheid",f_safety:"Veiligheid & aansprakelijkheid",sub_safety:"Veiligheid & aansprakelijkheid",f_media:"Foto, video & interviews",sub_media:"Foto, video & interviews",sec_prod:"Productie & SFX",f_backdrop:"Backdrop / LED-scherm",sub_backdrop:"Backdrop / LED-scherm",f_sfx:"Special FX",sub_sfx:"Special FX",f_changeover:"Changeover / line check",sub_changeover:"Changeover",f_version:"Rider-versie",f_presskit:"Presskit / downloads (link)",presskit_word:"Presskit"});
@@ -1161,6 +1167,18 @@ function renderForm(){
     ${field(L("f_presskit"),S.band.presskit||"","band.presskit",{ph:"https://…"})}
     <label class="fld">${L("f_logo")}</label>
     <input type="file" accept="image/*" onchange="readImg(event,'band.logo')">
+    ${S.band.logo?`
+    <div class="calcrow" style="margin-top:8px">
+      <span class="chips-lbl">${L("f_logosize")}</span>
+      <select onchange="setPath('band.logoSize',this.value);renderPreview()" style="flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)">
+        ${["s","m","l"].map(v=>`<option value="${v}"${(S.band.logoSize||"m")===v?" selected":""}>${L("logo_"+v)}</option>`).join("")}
+      </select>
+      <span class="chips-lbl">${L("f_logopos")}</span>
+      <select onchange="setPath('band.logoPos',this.value);renderPreview()" style="flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)">
+        ${["left","center","right"].map(v=>`<option value="${v}"${(S.band.logoPos||"left")===v?" selected":""}>${L("logopos_"+v)}</option>`).join("")}
+      </select>
+      <button class="chip" onclick="setPath('band.logo','');renderForm();renderPreview()">${L("btn_logo_remove")}</button>
+    </div>`:""}
     <label class="fld">${L("f_accent")}</label>
     <input type="color" data-path="band.accent" value="${S.band.accent}" style="width:46px;height:34px;padding:2px">
     <div class="color-presets">
@@ -1172,7 +1190,7 @@ function renderForm(){
     <button class="add" onclick="addRow('contacts',{role:'',name:'',email:'',phone:''})">${L("plus_contact")}</button>
     <label class="fld">${L("f_travel")} <span style="color:var(--brand)">(Σ ${travelTotal()} ${L("persons_word")})</span></label>
     <div id="rep-travelParty"></div>
-    <button class="add" onclick="addRow('travelParty',{label:'',count:''})">${L("plus_role")}</button>
+    <button class="add" onclick="addRow('travelParty',{label:'',name:'',count:'1'})">${L("plus_role")}</button>
     <div class="hint">${L("hint_travel")}</div>
     ${field(L("f_guests"),S.guests,"guests",{type:"textarea",hint:L("hint_guests")})}
   `);
@@ -1315,11 +1333,15 @@ function renderRepeats(){
       ${rowCtl('contacts',i)}
     </div>`);
   mountRepeat("rep-travelParty",S.travelParty,(c,i)=>`
-    <div class="repeat"><div class="row">
-      <input type="text" data-rep="travelParty.${i}.label" value="${esc(c.label)}">
-      <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 84px" data-rep="travelParty.${i}.count" value="${esc(c.count)}">
-      ${rowCtl('travelParty',i)}
-    </div></div>`);
+    <div class="repeat">
+      <div class="row">
+        <span class="chno">${i+1}</span>
+        <input type="text" placeholder="${L('ph_tp_name')}" data-rep="travelParty.${i}.name" value="${esc(c.name||"")}">
+        <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 64px" data-rep="travelParty.${i}.count" value="${esc(c.count)}">
+        ${rowCtl('travelParty',i)}
+      </div>
+      <input type="text" placeholder="${L('ph_tp_role')}" data-rep="travelParty.${i}.label" value="${esc(c.label)}" style="margin-top:6px">
+    </div>`);
   mountRepeat("rep-dietary",S.hosp.dietary,(c,i)=>`
     <div class="repeat"><div class="row">
       <input type="text" data-rep="hosp.dietary.${i}" value="${esc(c)}">
@@ -1408,7 +1430,7 @@ function rowCtl(p,i,ins){return `<div class="rowctl">`+
   (ins?`<button class="mini2" title="insert below" onclick="insRow('${p}',${i})">⤵</button>`:"")+
   `<button class="mini2" title="duplicate" onclick="dupRow('${p}',${i})">⧉</button>`+
   `<button class="mini2" title="delete" onclick="delRow('${p}',${i})">×</button></div>`;}
-function travelTotal(){return S.travelParty.reduce((s,x)=>s+(parseInt(x.count,10)||0),0);}
+function travelTotal(){return S.travelParty.reduce((s,x)=>s+((((x.label||"").trim()||(x.name||"").trim())?(parseInt(x.count,10)||0):0)),0);}
 /* Standard text blocks per free-text field (language-aware) */
 const TEXTPRESETS={
   dressing:{en:"Clean, lockable dressing room (key to the band)\nHeating/AC, ventilation, running water\nLarge mirror with good light, sofa/chairs for the full party\nClothing rack + hangers, power sockets\nToilet & shower nearby, WiFi + password",
@@ -1477,7 +1499,7 @@ function renderPreview(){
   const qrD=shareU?qrDataURL(shareU):null;
   h+=`<div class="page doc-cover">
     <div class="cover-accent"></div>
-    ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}">`:""}
+    ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}" style="${logoStyle()}">`:""}
     <h1 class="doc-band">${esc(S.band.name||L("bandname_ph"))}</h1>
     <div class="doc-title">${esc(S.band.subtitle||L("subtitle_default"))}</div>
     ${S.band.validUntil?`<div class="doc-valid">${L("valid_until")} ${formatDate(S.band.validUntil)}</div>`:""}
@@ -1491,8 +1513,16 @@ function renderPreview(){
   let gen="";
   if(t(S.intro)) gen+=`<h3 class="sub-h">${L("sub_intro")}</h3><p>${esc(S.intro)}</p>`;
   if(S.contacts.some(c=>c.name.trim()||c.email.trim())) gen+=`<h3 class="sub-h">${L("sub_contact")}</h3>${contactGrid()}`;
-  const tp=S.travelParty.filter(x=>x.label.trim());
-  if(tp.length) gen+=`<h3 class="sub-h">${L("sub_travel")}</h3><ul>${tp.map(x=>`<li>${esc(x.label)}${x.count?` — ${esc(x.count)}`:""}</li>`).join("")}</ul>`;
+  const tp=S.travelParty.filter(x=>(x.label||"").trim()||(x.name||"").trim());
+  if(tp.length){
+    const tot=travelTotal();
+    gen+=`<h3 class="sub-h">${L("sub_travel")}${tot?` (${tot} ${L("persons_word")})`:""}</h3><ul>${tp.map(x=>{
+      const n=(x.name||"").trim(), r=(x.label||"").trim(), c=parseInt(x.count,10)||0;
+      let line=n?`<strong>${esc(n)}</strong>${r?` — ${esc(r)}`:""}`:esc(r);
+      if(c>1)line+=` (${c}×)`;
+      return `<li>${line}</li>`;
+    }).join("")}</ul>`;
+  }
   if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests).replace(/\n/g,"<br>")}</p>`;
   if(t(S.band.presskit)) gen+=`<p><strong>${L("presskit_word")}:</strong> <a href="${esc(S.band.presskit.trim())}" style="color:inherit">${esc(S.band.presskit.trim())}</a></p>`;
   /* stage plot */
@@ -1605,6 +1635,13 @@ function renderPreview(){
   if(typeof scheduleCloudSave==="function") scheduleCloudSave();
 }
 function pageBlock(title,inner){return `<div class="page"><h2 class="sec-h">${esc(title)}</h2>${inner}${wmark()}</div>`;}
+/* logo size + position on the cover */
+function logoStyle(){
+  const sz={s:"50px",m:"80px",l:"130px"}[S.band.logoSize||"m"]||"80px";
+  const pos=S.band.logoPos||"left";
+  const m=pos==="center"?"0 auto 26px":pos==="right"?"0 0 26px auto":"0 0 26px 0";
+  return `max-height:${sz};margin:${m};`;
+}
 /* Watermark on the Free plan — now a real link, so every PDF sent to a venue points back to RoboRider. */
 function wmark(){return `<div class="wmark"><a href="https://roborider.nl/?utm_source=pdf_watermark">Made with RoboRider — create your free technical rider at roborider.nl</a></div>`;}
 function qrDataURL(url){try{if(typeof qrcode==="undefined")return null;const q=qrcode(0,"M");q.addData(url);q.make();return q.createDataURL(4,2);}catch(e){return null;}}
@@ -2377,7 +2414,15 @@ function loadExample(){
     {role:"Tour manager",name:"Robin Vance",email:"booking@velvethours.com",phone:"+31 6 12 34 56 78"},
     {role:"FOH engineer",name:"Sam Okoro",email:"sam@velvethours.com",phone:"+31 6 98 76 54 32"}
   ];
-  S.travelParty=[{label:"Band",count:"5"},{label:"Crew (TM + FOH)",count:"2"}];
+  S.travelParty=[
+    {name:"Mara de Vries",label:"Lead vocals",count:"1"},
+    {name:"Tom Hessels",label:"Guitar / backing vocals",count:"1"},
+    {name:"Iris Bakker",label:"Keys / backing vocals",count:"1"},
+    {name:"Lucas Meijer",label:"Bass",count:"1"},
+    {name:"Daan Visser",label:"Drums",count:"1"},
+    {name:"Robin Vance",label:"Tour manager",count:"1"},
+    {name:"Sam Okoro",label:"FOH engineer",count:"1"}
+  ];
   S.guests="10 guest spots per show — list follows on the day.";
   S.hosp.rooms=[
     {who:"Band",count:"5",notes:"",items:"12× still water\n6× local beer\nCoffee & tea\nFresh fruit & nuts"},
