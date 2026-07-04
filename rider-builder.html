@@ -665,18 +665,20 @@ const DATE_LOCALE={en:"en-GB",nl:"nl-NL",de:"de-DE",fr:"fr-FR",es:"es-ES"};
 /* ===================== State ===================== */
 const blank = () => ({
   lang:"en",
-  band:{name:"",subtitle:"",validUntil:"",accent:"#1a1a1a",logo:""},
+  band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:""},
   intro:"",
   contacts:[{role:"Tour manager",name:"",email:"",phone:""}],
   travelParty:[{label:"",count:""}],
   guests:"",
-  hosp:{dressing:"",rooms:[],towels:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
+  hosp:{dressing:"",rooms:[],towels:"",stage:"",catering:"",dietary:[""],buyout:"",drinks:[{item:"",qty:""}],snacks:""},
   tech:{soundcheck:"",crew:[{role:"",count:""}],stage:"",power:"",foh:"",monitors:"",pa:"",multi:"",wireless:""},
   lights:{fixtures:"",console:"",notes:"",photo:"",consoleOwn:""},
   backline:"",
   inputs:[{ch:"1",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""}],
   auxes:[{n:"1",dest:"",type:"",st:"",notes:""}],
   park:{vehicles:[{type:"",count:"",plate:"",height:""}],notes:""},
+  prod:{backdrop:"",sfx:"",changeover:""},
+  deal:{safety:"",media:""},
   plot:{items:[]},
   stageplot:""
 });
@@ -755,6 +757,12 @@ Object.assign(I18N.nl,{th_aux:"OUT",plus_aux:"+ output",aux_bulk_total:"Outputs 
 Object.assign(I18N.de,{th_aux:"OUT",plus_aux:"+ Output",aux_bulk_total:"Benötigte Outputs:",hint_aux:"In-Ear-Mixe, Wedges, FX und Engineer-Kanäle. Mit ↑↓ umsortieren — die Nummerierung folgt automatisch. ST für Stereo ankreuzen (zählt als 2 Outputs).",hosp_fill:"→ Für {n} Personen ausfüllen (Reisegruppe)",hosp_fill_none:"Trage zuerst deine Reisegruppe ein (Abschnitt 1) — dann berechnen wir die Mengen.",hosp_t_towels:"{n} saubere Handtücher",hosp_t_catering:"Warme, gesunde Mahlzeit für {n} Personen",diet_rest:"Übrige {n} Personen: keine Diätwünsche"});
 Object.assign(I18N.fr,{th_aux:"OUT",plus_aux:"+ sortie",aux_bulk_total:"Sorties nécessaires :",hint_aux:"Mixes in-ear, wedges, FX et canaux ingénieur. Réordonne avec ↑↓ — la numérotation suit automatiquement. Coche ST pour la stéréo (compte pour 2 sorties).",hosp_fill:"→ Remplir pour {n} personnes (équipe)",hosp_fill_none:"Renseigne d'abord ton équipe en tournée (section 1) — les quantités seront calculées.",hosp_t_towels:"{n} serviettes propres",hosp_t_catering:"Repas chaud et sain pour {n} personnes",diet_rest:"Les {n} autres personnes : pas de régime particulier"});
 Object.assign(I18N.es,{th_aux:"OUT",plus_aux:"+ salida",aux_bulk_total:"Salidas necesarias:",hint_aux:"Mezclas in-ear, cuñas, FX y canales del técnico. Reordena con ↑↓ — la numeración se actualiza sola. Marca ST para estéreo (cuenta como 2 salidas).",hosp_fill:"→ Rellenar para {n} personas (equipo)",hosp_fill_none:"Rellena primero tu equipo de gira (sección 1) — así calculamos las cantidades.",hosp_t_towels:"{n} toallas limpias",hosp_t_catering:"Comida caliente y sana para {n} personas",diet_rest:"Las otras {n} personas: sin requisitos dietéticos"});
+/* FLEMMING-ronde: kleedkamer-inhoud, on-stage, afspraken, productie, versie, presskit */
+Object.assign(I18N.en,{ph_room_items:"Contents of this room (drinks, snacks…) — one per line",f_stagehosp:"On stage before showtime",sub_stagehosp:"On stage",sec_deal:"Agreements & safety",f_safety:"Safety & liability",sub_safety:"Safety & liability",f_media:"Photo, video & interviews",sub_media:"Photo, video & interviews",sec_prod:"Production & SFX",f_backdrop:"Backdrop / LED screen",sub_backdrop:"Backdrop / LED screen",f_sfx:"Special FX",sub_sfx:"Special FX",f_changeover:"Changeover / line check",sub_changeover:"Changeover",f_version:"Rider version",f_presskit:"Presskit / downloads (link)",presskit_word:"Presskit"});
+Object.assign(I18N.nl,{ph_room_items:"Inhoud van deze kamer (drankjes, snacks…) — één per regel",f_stagehosp:"On stage vóór showtime",sub_stagehosp:"On stage",sec_deal:"Afspraken & veiligheid",f_safety:"Veiligheid & aansprakelijkheid",sub_safety:"Veiligheid & aansprakelijkheid",f_media:"Foto, video & interviews",sub_media:"Foto, video & interviews",sec_prod:"Productie & SFX",f_backdrop:"Backdrop / LED-scherm",sub_backdrop:"Backdrop / LED-scherm",f_sfx:"Special FX",sub_sfx:"Special FX",f_changeover:"Changeover / line check",sub_changeover:"Changeover",f_version:"Rider-versie",f_presskit:"Presskit / downloads (link)",presskit_word:"Presskit"});
+Object.assign(I18N.de,{ph_room_items:"Inhalt dieses Raums (Getränke, Snacks…) — eins pro Zeile",f_stagehosp:"On stage vor Showtime",sub_stagehosp:"On stage",sec_deal:"Vereinbarungen & Sicherheit",f_safety:"Sicherheit & Haftung",sub_safety:"Sicherheit & Haftung",f_media:"Foto, Video & Interviews",sub_media:"Foto, Video & Interviews",sec_prod:"Produktion & SFX",f_backdrop:"Backdrop / LED-Wand",sub_backdrop:"Backdrop / LED-Wand",f_sfx:"Special FX",sub_sfx:"Special FX",f_changeover:"Changeover / Line-Check",sub_changeover:"Changeover",f_version:"Rider-Version",f_presskit:"Presskit / Downloads (Link)",presskit_word:"Presskit"});
+Object.assign(I18N.fr,{ph_room_items:"Contenu de cette loge (boissons, snacks…) — un par ligne",f_stagehosp:"On stage avant le show",sub_stagehosp:"On stage",sec_deal:"Accords & sécurité",f_safety:"Sécurité & responsabilité",sub_safety:"Sécurité & responsabilité",f_media:"Photo, vidéo & interviews",sub_media:"Photo, vidéo & interviews",sec_prod:"Production & SFX",f_backdrop:"Backdrop / écran LED",sub_backdrop:"Backdrop / écran LED",f_sfx:"Effets spéciaux",sub_sfx:"Effets spéciaux",f_changeover:"Changement de plateau / line check",sub_changeover:"Changement de plateau",f_version:"Version du rider",f_presskit:"Presskit / téléchargements (lien)",presskit_word:"Presskit"});
+Object.assign(I18N.es,{ph_room_items:"Contenido de este camerino (bebidas, snacks…) — uno por línea",f_stagehosp:"On stage antes del show",sub_stagehosp:"On stage",sec_deal:"Acuerdos y seguridad",f_safety:"Seguridad y responsabilidad",sub_safety:"Seguridad y responsabilidad",f_media:"Foto, vídeo y entrevistas",sub_media:"Foto, vídeo y entrevistas",sec_prod:"Producción y SFX",f_backdrop:"Backdrop / pantalla LED",sub_backdrop:"Backdrop / pantalla LED",f_sfx:"Efectos especiales",sub_sfx:"Efectos especiales",f_changeover:"Cambio de escenario / line check",sub_changeover:"Cambio",f_version:"Versión del rider",f_presskit:"Presskit / descargas (enlace)",presskit_word:"Presskit"});
 /* Multikabel/stagebox + subkop */
 Object.assign(I18N.en,{f_multi:"Multicore / stagebox (stage↔FOH)",sub_multi:"Multicore / stagebox"});
 Object.assign(I18N.nl,{f_multi:"Multikabel / stagebox (podium↔FOH)",sub_multi:"Multikabel / stagebox"});
@@ -1139,6 +1147,8 @@ function renderForm(){
   captureOpenState();
   if(!Array.isArray(S.auxes)||!S.auxes.length)S.auxes=[{n:"1",dest:"",type:"",st:"",notes:""}];
   if(!S.park||!Array.isArray(S.park.vehicles))S.park={vehicles:[{type:"",count:"",plate:"",height:""}],notes:""};
+  if(!S.prod)S.prod={backdrop:"",sfx:"",changeover:""};
+  if(!S.deal)S.deal={safety:"",media:""};
   if(!Array.isArray(S.hosp.rooms))S.hosp.rooms=[];
   renumberInputs();renumberAuxes();
   const scrollY=$("editor")?$("editor").scrollTop:0;
@@ -1147,6 +1157,8 @@ function renderForm(){
     ${field(L("f_bandname"),S.band.name,"band.name")}
     ${field(L("f_subtitle"),S.band.subtitle,"band.subtitle",{ph:L("subtitle_default")})}
     ${field(L("f_validuntil"),S.band.validUntil,"band.validUntil",{type:"date"})}
+    ${field(L("f_version"),S.band.version||"","band.version",{ph:"2026 · V1"})}
+    ${field(L("f_presskit"),S.band.presskit||"","band.presskit",{ph:"https://…"})}
     <label class="fld">${L("f_logo")}</label>
     <input type="file" accept="image/*" onchange="readImg(event,'band.logo')">
     <label class="fld">${L("f_accent")}</label>
@@ -1240,12 +1252,15 @@ function renderForm(){
     <div class="hint">${L("hint_calc")}</div>
     <label class="fld">${L("f_rooms")}</label>
     <div id="rep-rooms"></div>
-    <button class="add" onclick="addRow('hosp.rooms',{who:'',count:'',notes:''})">${L("plus_room")}</button>
+    <button class="add" onclick="addRow('hosp.rooms',{who:'',count:'',notes:'',items:''})">${L("plus_room")}</button>
     ${roomChips()}
     ${field(L("f_dressing"),S.hosp.dressing,"hosp.dressing",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('hosp.dressing','dressing')}
     ${field(L("f_towels"),S.hosp.towels,"hosp.towels")}
-    ${field(L("f_catering"),S.hosp.catering,"hosp.catering",{type:"textarea"})}
+    ${field(L("f_stagehosp"),S.hosp.stage||"","hosp.stage",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('hosp.stage','stagehosp')}
+    ${field(L("f_catering"),S.hosp.catering,"hosp.catering",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('hosp.catering','catering')}
     <label class="fld">${L("f_dietary")}</label>
     <div id="rep-dietary"></div>
     <button class="add" onclick="addRow('hosp.dietary','')">${L("plus_dietary")}</button>
@@ -1264,6 +1279,19 @@ function renderForm(){
     <button class="add" onclick="addRow('park.vehicles',{type:'',count:'',plate:'',height:''})">${L("plus_vehicle")}</button>
     ${field(L("f_parknotes"),S.park.notes,"park.notes",{type:"textarea",hint:L("hint_bullets")})}
     ${textChip('park.notes','park')}
+  `);
+  h+=section(10,L("sec_prod"),`
+    ${field(L("f_backdrop"),S.prod.backdrop,"prod.backdrop",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('prod.backdrop','backdrop')}
+    ${field(L("f_sfx"),S.prod.sfx,"prod.sfx",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('prod.sfx','sfx')}
+    ${field(L("f_changeover"),S.prod.changeover,"prod.changeover",{ph:"30 min incl. line check"})}
+  `);
+  h+=section(11,L("sec_deal"),`
+    ${field(L("f_safety"),S.deal.safety,"deal.safety",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('deal.safety','safety')}
+    ${field(L("f_media"),S.deal.media,"deal.media",{type:"textarea",hint:L("hint_bullets")})}
+    ${textChip('deal.media','media')}
   `);
   $("formMount").innerHTML=h;
   renderRepeats();
@@ -1313,10 +1341,11 @@ function renderRepeats(){
     <div class="repeat">
       <div class="row">
         <input type="text" placeholder="${L('ph_room_who')}" data-rep="hosp.rooms.${i}.who" value="${esc(c.who)}">
-        <input type="text" placeholder="#" style="flex:0 0 52px" data-rep="hosp.rooms.${i}.count" value="${esc(c.count)}">
+        <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 64px" data-rep="hosp.rooms.${i}.count" value="${esc(c.count)}">
         ${rowCtl('hosp.rooms',i)}
       </div>
       <input type="text" placeholder="${L('ph_room_notes')}" data-rep="hosp.rooms.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+      <textarea rows="3" placeholder="${L('ph_room_items')}" data-rep="hosp.rooms.${i}.items" style="margin-top:6px;width:100%">${esc(c.items||"")}</textarea>
     </div>`);
   mountRepeat("rep-veh",S.park.vehicles,(c,i)=>`
     <div class="repeat">
@@ -1384,10 +1413,22 @@ function travelTotal(){return S.travelParty.reduce((s,x)=>s+(parseInt(x.count,10
 const TEXTPRESETS={
   dressing:{en:"Clean, lockable dressing room (key to the band)\nHeating/AC, ventilation, running water\nLarge mirror with good light, sofa/chairs for the full party\nClothing rack + hangers, power sockets\nToilet & shower nearby, WiFi + password",
             nl:"Schone, afsluitbare kleedkamer (sleutel bij de band)\nVerwarming/airco, ventilatie, stromend water\nGrote spiegel met goed licht, bank/stoelen voor het hele gezelschap\nKledingrek + hangers, stopcontacten\nToilet & douche dichtbij, WiFi + wachtwoord"},
-  park:{en:"Load-in via dock/ramp preferred — please advise distance to stage\nAny height restriction? Let us know in advance\nCity-centre permit arranged by the venue if required\nSecure parking for overnight stays",
-        nl:"Laden/lossen bij voorkeur via laadperron — graag afstand tot podium doorgeven\nHoogtebeperking? Graag vooraf melden\nOntheffing binnenstad indien nodig geregeld door het huis\nBeveiligd parkeren bij overnachting"},
+  park:{en:"Load-in via dock/ramp preferred — please advise distance to stage\nAny height restriction? Let us know in advance\nCity-centre permit arranged by the venue if required\nSecure parking for overnight stays\nIf possible: EV charger or 32A CEE within 5 m of the parking spot",
+        nl:"Laden/lossen bij voorkeur via laadperron — graag afstand tot podium doorgeven\nHoogtebeperking? Graag vooraf melden\nOntheffing binnenstad indien nodig geregeld door het huis\nBeveiligd parkeren bij overnachting\nIndien mogelijk: laadpaal of 32A CEE binnen 5 m van de parkeerplek (EV)"},
   multi:{en:"Multicore/stagebox stage↔FOH by the house (min. 24/8 analog, or digital stagebox + CAT)\nIf we bring our own console: 1× CAT/ethernet run stage↔FOH",
          nl:"Multikabel/stagebox podium↔FOH door het huis (min. 24/8 analoog, of digitale stagebox + CAT)\nBij eigen tafel: 1× CAT/ethernet-lijn podium↔FOH"},
+  catering:{en:"On site before 4 pm: healthy lunch (sandwiches, salads) for the full party\nOn site before 9 pm: warm, healthy meal — menu in consultation with the tour manager\nOn site after 10 pm: a midnight snack is appreciated\nFinal numbers follow during advancing",
+            nl:"Vóór 16:00 op locatie: gezonde lunch (broodjes, beleg, salades) voor het hele gezelschap\nVóór 21:00 op locatie: warme, gezonde maaltijd — menu in overleg met de tourmanager\nNa 22:00 op locatie: een midnight snack wordt gewaardeerd\nDefinitieve aantallen volgen tijdens de advancing"},
+  stagehosp:{en:"8× small pre-washed towels (white/black)\n12× unopened bottles of still water, room temperature\nReady on stage no later than 15 minutes before showtime",
+             nl:"8× kleine voorgewassen handdoeken (wit/zwart)\n12× ongeopende flesjes water (zonder koolzuur), ongekoeld\nKlaar op het podium, uiterlijk 15 minuten voor showtime"},
+  safety:{en:"The promoter is responsible for order and safety during load-in/out and the show\nIf safety of artist, crew or audience cannot be guaranteed, the show may be stopped with full fee retained\nDamage to equipment caused by third parties is at the promoter's expense",
+          nl:"De opdrachtgever is verantwoordelijk voor orde en veiligheid tijdens op-/afbouw en de show\nAls de veiligheid van artiest, crew of publiek niet gewaarborgd kan worden, kan de show gestopt worden met behoud van gage\nSchade aan apparatuur door derden is voor rekening van de opdrachtgever"},
+  media:{en:"Photos only during the first 2 songs, unless agreed otherwise with the tour manager\nInterviews and recordings always in advance via management\nPublication of photo/video/audio only after approval by management",
+         nl:"Foto's alleen tijdens de eerste 2 nummers, tenzij anders afgesproken met de tourmanager\nInterviews en opnames altijd vooraf via management\nPublicatie van foto/video/audio uitsluitend na goedkeuring van management"},
+  backdrop:{en:"Backdrop min. 10×6 m (max. 14×8 m) on a backdrop truss\nIf an LED screen is present (min. 10×6 m) we can use it instead — to be agreed during advancing\nHouse operator runs the screen; visuals are supplied by us",
+            nl:"Backdrop min. 10×6 m (max. 14×8 m) aan een backdrop-truss\nBij aanwezig LED-scherm (min. 10×6 m) gebruiken we dat in plaats van de backdrop — af te stemmen tijdens de advancing\nLokale operator stuurt het scherm aan; visuals leveren wij aan"},
+  sfx:{en:"CO2 jets / confetti / stage flames in consultation — operated by our own crew from the stage (not from FOH, for safety)\nTimecode and trigger points available on request",
+       nl:"CO2-jets / confetti / stage flames in overleg — bediening door eigen crew vanaf het podium (niet vanaf FOH, i.v.m. veiligheid)\nTijdcode en trigger-points op aanvraag beschikbaar"},
   wireless:{en:"We bring our own wireless — see input list for counts. Frequencies in the licence-free range (823–832 MHz); we coordinate with house RF on the day.",
             nl:"Wij nemen eigen zenders mee — aantallen in de inputlijst. Frequenties in de vergunningsvrije band (823–832 MHz); we stemmen op de dag af met de huis-RF."},
   pa:{en:"Full-range PA, phase & time aligned, even coverage for the whole room (L-Acoustics / d&b / Adamson or equivalent). We respect a 103 dB LAeq (15 min) limit unless agreed otherwise.",
@@ -1429,7 +1470,7 @@ function downscaleDataURL(src,max,q,cb){try{
 /* ===================== Preview ===================== */
 function renderPreview(){
   document.documentElement.style.setProperty("--accent",S.band.accent||"#1a1a1a");
-  document.documentElement.style.setProperty("--docfoot",JSON.stringify(((S.band.name||"").trim()? (S.band.name.trim()+" · ") : "")+(S.band.subtitle||L("subtitle_default"))));
+  document.documentElement.style.setProperty("--docfoot",JSON.stringify(((S.band.name||"").trim()? (S.band.name.trim()+" · ") : "")+(S.band.subtitle||L("subtitle_default"))+(t(S.band.version)?(" · "+S.band.version.trim()):"")));
   let h="";
   /* cover */
   const shareU=shareToken?(location.origin+location.pathname+"?share="+shareToken):null;
@@ -1440,6 +1481,7 @@ function renderPreview(){
     <h1 class="doc-band">${esc(S.band.name||L("bandname_ph"))}</h1>
     <div class="doc-title">${esc(S.band.subtitle||L("subtitle_default"))}</div>
     ${S.band.validUntil?`<div class="doc-valid">${L("valid_until")} ${formatDate(S.band.validUntil)}</div>`:""}
+    ${t(S.band.version)?`<div class="doc-valid">${esc(S.band.version)}</div>`:""}
     ${coverContacts()}
     ${qrD?`<div class="doc-qr"><img src="${qrD}" alt="QR"><div class="doc-qr-lbl">${L("qr_caption")}</div></div>`:""}
     ${wmark()}
@@ -1452,6 +1494,7 @@ function renderPreview(){
   const tp=S.travelParty.filter(x=>x.label.trim());
   if(tp.length) gen+=`<h3 class="sub-h">${L("sub_travel")}</h3><ul>${tp.map(x=>`<li>${esc(x.label)}${x.count?` — ${esc(x.count)}`:""}</li>`).join("")}</ul>`;
   if(t(S.guests)) gen+=`<h3 class="sub-h">${L("sub_guests")}</h3><p>${esc(S.guests).replace(/\n/g,"<br>")}</p>`;
+  if(t(S.band.presskit)) gen+=`<p><strong>${L("presskit_word")}:</strong> <a href="${esc(S.band.presskit.trim())}" style="color:inherit">${esc(S.band.presskit.trim())}</a></p>`;
   /* stage plot */
   let plot="";
   if(S.plot&&S.plot.items.length) plot=plotPreviewHTML();
@@ -1499,10 +1542,18 @@ function renderPreview(){
   /* hospitality */
   let hp="";
   const rooms=(S.hosp.rooms||[]).filter(r=>r.who&&r.who.trim());
-  if(rooms.length) hp+=`<h3 class="sub-h">${L("sub_rooms")}</h3><ul>${rooms.map(r=>`<li>${esc(r.who)}${r.count?` — ${esc(r.count)} ${L("persons_word")}`:""}${r.notes?` (${esc(r.notes)})`:""}</li>`).join("")}</ul>`;
+  if(rooms.length){
+    hp+=`<h3 class="sub-h">${L("sub_rooms")}</h3>`;
+    const simple=rooms.filter(r=>!t(r.items));
+    if(simple.length) hp+=`<ul>${simple.map(r=>`<li>${esc(r.who)}${r.count?` — ${esc(r.count)} ${L("persons_word")}`:""}${r.notes?` (${esc(r.notes)})`:""}</li>`).join("")}</ul>`;
+    rooms.filter(r=>t(r.items)).forEach(r=>{
+      hp+=`<p style="margin:10px 0 2px"><strong>${esc(r.who)}</strong>${r.count?` — ${esc(r.count)} ${L("persons_word")}`:""}${r.notes?` · ${esc(r.notes)}`:""}</p>${bulletize(r.items)}`;
+    });
+  }
   if(t(S.hosp.dressing)) hp+=`<h3 class="sub-h">${L("sub_dressing")}</h3>${bulletize(S.hosp.dressing)}`;
   if(t(S.hosp.towels)) hp+=`<h3 class="sub-h">${L("sub_towels")}</h3><p>${esc(S.hosp.towels)}</p>`;
-  if(t(S.hosp.catering)) hp+=`<h3 class="sub-h">${L("sub_catering")}</h3><p>${esc(S.hosp.catering)}</p>`;
+  if(t(S.hosp.stage)) hp+=`<h3 class="sub-h">${L("sub_stagehosp")}</h3>${bulletize(S.hosp.stage)}`;
+  if(t(S.hosp.catering)) hp+=`<h3 class="sub-h">${L("sub_catering")}</h3>${bulletize(S.hosp.catering)}`;
   const diet=S.hosp.dietary.filter(d=>d&&d.trim());
   if(diet.length){
     let dl=diet.map(d=>`<li>${esc(d)}</li>`).join("");
@@ -1526,6 +1577,17 @@ function renderPreview(){
     pk+=`</tbody></table>`;
   }
   if(t(PK.notes)) pk+=bulletize(PK.notes);
+  /* production & SFX */
+  let pr="";
+  const PR=S.prod||{};
+  if(t(PR.backdrop)) pr+=`<h3 class="sub-h">${L("sub_backdrop")}</h3>${bulletize(PR.backdrop)}`;
+  if(t(PR.sfx)) pr+=`<h3 class="sub-h">${L("sub_sfx")}</h3>${bulletize(PR.sfx)}`;
+  if(t(PR.changeover)) pr+=`<h3 class="sub-h">${L("sub_changeover")}</h3><p>${esc(PR.changeover)}</p>`;
+  /* agreements & safety */
+  let dl2="";
+  const DL=S.deal||{};
+  if(t(DL.safety)) dl2+=`<h3 class="sub-h">${L("sub_safety")}</h3>${bulletize(DL.safety)}`;
+  if(t(DL.media)) dl2+=`<h3 class="sub-h">${L("sub_media")}</h3>${bulletize(DL.media)}`;
   /* ---- assemble: general → technical (plot, inputs, backline, other, lights) → hospitality ---- */
   if(gen) h+=pageBlock(L("sec_general"),gen);
   if(plot) h+=pageBlock(L("sec_stageplot"),plot);
@@ -1534,8 +1596,10 @@ function renderPreview(){
   if(bl) h+=pageBlock(L("sec_backline"),bl);
   if(tc) h+=pageBlock(L("sec_technical"),tc);
   if(li) h+=pageBlock(L("sec_lights"),li);
+  if(pr) h+=pageBlock(L("sec_prod"),pr);
   if(hp) h+=pageBlock(L("sec_hospitality"),hp);
   if(pk) h+=pageBlock(L("sec_park"),pk);
+  if(dl2) h+=pageBlock(L("sec_deal"),dl2);
   $("preview").innerHTML=h;
   saveLocal();
   if(typeof scheduleCloudSave==="function") scheduleCloudSave();
@@ -2099,7 +2163,7 @@ function addRoom(id){
   const e=ROOMS.find(x=>x.id===id);if(!e)return;
   const lab=e[S.lang]||e.en;
   if(S.hosp.rooms.some(r=>(r.who||"").trim()===lab))return;
-  S.hosp.rooms.push({who:lab,count:"",notes:""});
+  S.hosp.rooms.push({who:lab,count:"",notes:"",items:""});
   renderForm();renderPreview();
 }
 function roomChips(){
@@ -2307,7 +2371,7 @@ function _phone(){return "+31 6 "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99)+" 
 function loadExample(){
   /* Fixed flagship example — "Velvet Hours", matches the homepage showcase. Shows everything the builder can do. */
   const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; currentRiderId=null; shareToken=null;
-  S.band={name:"Velvet Hours", subtitle:"Technical & Hospitality Rider · Club tour 2026", validUntil:"2026-12-31", accent:"#1b1a17", logo:""};
+  S.band={name:"Velvet Hours", subtitle:"Technical & Hospitality Rider · Club tour 2026", validUntil:"2026-12-31", version:"2026 · V1", presskit:"", accent:"#1b1a17", logo:""};
   S.intro="Five-piece band — drums, bass, guitar, keys and vocals. We keep it simple and friendly: everything you need is below, and we're happy to talk anything through in advance. Let's make a great show day with your crew.";
   S.contacts=[
     {role:"Tour manager",name:"Robin Vance",email:"booking@velvethours.com",phone:"+31 6 12 34 56 78"},
@@ -2315,7 +2379,11 @@ function loadExample(){
   ];
   S.travelParty=[{label:"Band",count:"5"},{label:"Crew (TM + FOH)",count:"2"}];
   S.guests="10 guest spots per show — list follows on the day.";
-  S.hosp.rooms=[{who:"Band",count:"5",notes:""},{who:"Crew",count:"2",notes:"may be shared with band"}];
+  S.hosp.rooms=[
+    {who:"Band",count:"5",notes:"",items:"12× still water\n6× local beer\nCoffee & tea\nFresh fruit & nuts"},
+    {who:"Crew",count:"2",notes:"may be shared with band",items:""}
+  ];
+  S.hosp.stage="5× small towels\n7× unopened bottles of still water\nReady on stage 15 minutes before showtime";
   S.hosp.dressing="Clean, lockable dressing rooms (key to the band)\nMirror with good light, sofa/chairs, clothing rack + hangers\nPower sockets, WiFi + password";
   S.hosp.towels="7 clean towels";
   S.hosp.catering="Warm, healthy meal for 7 people — no fast food.";
@@ -2327,6 +2395,9 @@ function loadExample(){
   ];
   S.hosp.snacks="Fresh fruit\nMixed nuts\nChocolate";
   S.tech.soundcheck="45 min soundcheck + 15 min line check. Changeover 20 min.";
+  S.prod={backdrop:"",sfx:"",changeover:"20 min incl. line check"};
+  S.deal={safety:"The promoter is responsible for order and safety during load-in/out and the show\nDamage to equipment caused by third parties is at the promoter's expense",
+          media:"Photos only during the first 2 songs, unless agreed otherwise with the tour manager"};
   S.tech.crew=[{role:"Monitor tech (house)",count:"1"},{role:"Stagehand",count:"2"}];
   S.tech.stage="Stable stage, min. 8×6 m. Drum riser 3×2×0.4 m and keys riser 2×1×0.2 m (see stage plot).";
   S.tech.power="230V at marked positions.";
