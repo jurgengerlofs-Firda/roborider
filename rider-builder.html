@@ -132,6 +132,9 @@
   details.sec[open]>summary{padding-bottom:6px}
   details.sec[open]>summary .num{color:var(--clay)}
   .sec-body{padding:0 0 34px 40px}
+  .secinfo{flex:0 0 auto;width:21px;height:21px;border-radius:50%;border:1px solid var(--hair);background:none;color:var(--muted);font-family:var(--display);font-style:italic;font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
+  .secinfo:hover{border-color:var(--clay);color:var(--clay)}
+  .sechelp{background:var(--paper2);border-left:2px solid var(--clay);padding:11px 14px;margin:0 0 18px;font-size:13px;color:var(--soft);line-height:1.55}
   label.fld{display:block;margin:20px 0 7px;font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
   input[type=text],input[type=date],input[type=number],textarea,select{
     width:100%;border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:8px 2px;font-family:inherit;font-weight:300;font-size:15px;background:transparent;color:var(--ink)}
@@ -168,6 +171,9 @@
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
   .topbar .btn.procta{color:var(--clay);border:1px solid var(--clay);padding:7px 12px}
+  .topbar .btn.procta:hover{background:var(--clay);color:#fff}
+  .topbar .btn.proactive{background:var(--clay);color:#fff;border:1px solid var(--clay);padding:7px 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar .btn.proactive:hover{background:#875f45;color:#fff}
   .topbar .btn.procta:hover{background:var(--clay);color:#fff}
   body.free #preview .page{background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='300'%20height='185'%3E%3Ctext%20x='8'%20y='112'%20transform='rotate(-27%20150%2092)'%20font-family='Arial,sans-serif'%20font-size='22'%20font-weight='bold'%20fill='%231b1a17'%20fill-opacity='0.11'%3ERoboRider%20FREE%3C/text%3E%3C/svg%3E");background-repeat:repeat;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .wmark{display:none;margin-top:26px;border-top:1px solid var(--clay);padding-top:8px;font-family:var(--display);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--clay);text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -345,8 +351,8 @@
   <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
   <button class="btn" id="btnAI" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
   <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
-  <button class="btn" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
-  <button class="btn" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
+  <button class="btn ghost" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
+  <button class="btn ghost" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
@@ -694,7 +700,8 @@ const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/fe73b9c7-549
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
   const b=$("btnPro");
-  if(b){ b.textContent=PRO?("✓ "+L("pro_on")):("✦ "+L("pro_cta")); b.classList.toggle("procta",!PRO); }
+  if(b){ b.textContent=PRO?("✓ "+L("pro_on")):("✦ "+L("pro_cta"));
+    b.classList.toggle("procta",!PRO); b.classList.toggle("proactive",PRO); }
   document.body.classList.toggle("free",!PRO);
 }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
@@ -813,6 +820,31 @@ Object.assign(I18N.nl,{qr_caption:"Scan voor de actuele versie van deze rider"})
 Object.assign(I18N.de,{qr_caption:"Scan für die aktuelle Version dieses Riders"});
 Object.assign(I18N.fr,{qr_caption:"Scanne pour la version à jour de ce rider"});
 Object.assign(I18N.es,{qr_caption:"Escanea para la versión actual de este rider"});
+/* Korte uitleg per sectie (info-icoon). de/fr/es vallen terug op en. */
+Object.assign(I18N.en,{
+  help_1:"Band name, contacts and travelling party. The header of your rider: who you are, and who the venue calls with questions.",
+  help_2:"A top-down drawing of the stage: who stands where, with risers, monitors and power. Drag the elements into place.",
+  help_3:"Every signal that goes into the console. Per channel: the source (kick, vocal…), mic or DI, and 48V where needed.",
+  help_4:"The monitor mixes and outputs: how many wedge or in-ear mixes you need, and who they're for.",
+  help_5:"The amps, drums and stands on stage. State what you bring yourself and what you ask from the venue.",
+  help_6:"Other technical needs: soundcheck, local crew, stage size, power, FOH console, PA and wireless systems.",
+  help_7:"Your lighting wishes: fixtures/set, the lighting desk, and optionally a reference photo of a previous show.",
+  help_8:"Everything around the band beyond the sound: dressing room, catering with dietary needs, drinks and towels.",
+  help_9:"Parking and load-in: space for the van or cars, and a load-in spot close to the stage.",
+  help_10:"Production extras: backdrop or LED screen, special effects, and the changeover / line check.",
+  help_11:"Agreements and safety: liability, and agreements about photo, video and interviews."});
+Object.assign(I18N.nl,{
+  help_1:"Bandnaam, contactpersonen en reisgezelschap. De kop van je rider: wie zijn jullie, en wie belt de zaal bij vragen?",
+  help_2:"Een tekening van het podium van bovenaf: wie staat waar, met risers, monitors en stroom. Sleep de elementen op hun plek.",
+  help_3:"Alle signalen die de mengtafel in gaan. Per kanaal: de bron (kick, zang…), microfoon of DI, en 48V waar nodig.",
+  help_4:"De monitormixen en outputs: hoeveel wedge- of in-earmixen je nodig hebt, en voor wie ze zijn.",
+  help_5:"De versterkers, drums en standaards op het podium. Geef aan wat je zelf meeneemt en wat je van de zaal vraagt.",
+  help_6:"Overige techniek: soundcheck, lokale crew, podiummaten, stroom, FOH-tafel, PA en draadloze systemen.",
+  help_7:"Je lichtwensen: fixtures/set, de lichttafel, en eventueel een referentiefoto van een eerdere show.",
+  help_8:"Alles rond de band buiten het geluid: kleedkamer, catering met dieetwensen, drank en handdoeken.",
+  help_9:"Parkeren, laden en lossen: ruimte voor de bus of auto's, en een laadplek dicht bij het podium.",
+  help_10:"Productie-extra's: backdrop of LED-scherm, special effects, en de changeover / line check.",
+  help_11:"Afspraken en veiligheid: aansprakelijkheid, en afspraken over foto, video en interviews."});
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -906,16 +938,22 @@ async function refreshRiderList(){
     riderCount=(data&&data.length)||0;
     if(!data||!data.length){ box.innerHTML='<p class="hint" style="margin:0">'+esc(L("acct_empty"))+'</p>'; return data; }
     box.innerHTML=data.map(function(r){
-      const d=new Date(r.updated_at); const ds=isNaN(d.getTime())?"":d.toLocaleDateString();
-      return '<div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:13px">'
-        +'<span style="flex:1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.title||"—")+'</span>'
-        +'<span style="color:var(--muted);font-size:11px;flex:0 0 auto">'+ds+'</span>'
-        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudLoad(\''+r.id+'\')">'+esc(L("acct_load"))+'</button>'
-        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudDuplicate(\''+r.id+'\')">'+esc(L("acct_dup"))+'</button>'
-        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudRename(\''+r.id+'\')">'+esc(L("acct_rename"))+'</button>'
-        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudShare(\''+r.id+'\')">'+esc(L("acct_share"))+'</button>'
-        +'<button class="btn ghost" style="padding:5px 9px;font-size:11px;flex:0 0 auto" onclick="cloudDelete(\''+r.id+'\')">'+esc(L("acct_delete"))+'</button>'
-        +'</div>';
+      const d=new Date(r.updated_at);
+      const ds=isNaN(d.getTime())?"":d.toLocaleDateString(DATE_LOCALE[S.lang]||"en-GB",{day:"numeric",month:"short",year:"numeric"});
+      const title=esc(r.title&&r.title.trim()?r.title:L("acct_untitled"));
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--hair)">'
+        +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:9px">'
+          +'<span style="flex:1;font-family:var(--display);font-weight:500;font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+title+'</span>'
+          +'<span style="color:var(--muted);font-size:11px;flex:0 0 auto">'+ds+'</span>'
+        +'</div>'
+        +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+          +'<button class="btn primary" style="padding:6px 13px;font-size:11px" onclick="cloudLoad(\''+r.id+'\')">'+esc(L("acct_load"))+'</button>'
+          +'<button class="btn ghost" style="padding:6px 10px;font-size:11px" onclick="cloudRename(\''+r.id+'\')">'+esc(L("acct_rename"))+'</button>'
+          +'<button class="btn ghost" style="padding:6px 10px;font-size:11px" onclick="cloudDuplicate(\''+r.id+'\')">'+esc(L("acct_dup"))+'</button>'
+          +'<button class="btn ghost" style="padding:6px 10px;font-size:11px" onclick="cloudShare(\''+r.id+'\')">'+esc(L("acct_share"))+'</button>'
+          +'<button class="btn ghost" style="padding:6px 10px;font-size:11px;color:#a85a5a" onclick="cloudDelete(\''+r.id+'\')">'+esc(L("acct_delete"))+'</button>'
+        +'</div>'
+      +'</div>';
     }).join("");
     return data;
   }catch(e){ box.innerHTML=""; return null; }
@@ -1152,7 +1190,14 @@ function captureOpenState(){
 }
 function section(n,title,body){
   const open=openSecs.has(n)?"open":"";
-  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span>${title}<span class="chev">›</span></summary><div class="sec-body">${body}</div></details>`;
+  const hk="help_"+n, help=L(hk), hasHelp=(help && help!==hk);
+  const info=hasHelp?`<button class="secinfo" type="button" aria-label="?" title="?" onclick="toggleSecHelp(event,${n})">i</button>`:"";
+  const helpDiv=hasHelp?`<div class="sechelp" id="sechelp-${n}" hidden>${esc(help)}</div>`:"";
+  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span>${title}${info}<span class="chev">›</span></summary><div class="sec-body">${helpDiv}${body}</div></details>`;
+}
+function toggleSecHelp(e,n){ e.preventDefault(); e.stopPropagation();
+  const det=document.querySelector('details.sec[data-sec="'+n+'"]'); if(det&&!det.open)det.open=true;
+  const h=document.getElementById('sechelp-'+n); if(h)h.hidden=!h.hidden;
 }
 function renderForm(){
   captureOpenState();
