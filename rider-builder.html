@@ -870,6 +870,11 @@ Object.assign(I18N.nl,{
   help_11:"Afspraken en veiligheid: aansprakelijkheid, en afspraken over foto, video en interviews."});
 Object.assign(I18N.en,{pu_title:"Before you export",pu_body:"You're on the free plan, so your PDF carries a small RoboRider watermark. Go Pro (€29 once) to remove it and save unlimited riders.",pu_go:"Export anyway"});
 Object.assign(I18N.nl,{pu_title:"Voordat je exporteert",pu_body:"Je zit op het gratis plan, dus je PDF krijgt een klein RoboRider-watermerk. Word Pro (eenmalig €29) om het te verwijderen en onbeperkt riders op te slaan.",pu_go:"Toch exporteren"});
+Object.assign(I18N.en,{wiz_mon_both:"Both",wiz_t_both:"Mixed monitoring: some players on wedges, others on in-ears, all mixed from FOH."});
+Object.assign(I18N.nl,{wiz_mon_both:"Beide",wiz_t_both:"Gemengde monitoring: een deel op wedges, een deel op in-ears, alles gemixt vanaf FOH."});
+Object.assign(I18N.de,{wiz_mon_both:"Beides",wiz_t_both:"Gemischtes Monitoring: teils Wedges, teils In-Ears, alles vom FOH gemischt."});
+Object.assign(I18N.fr,{wiz_mon_both:"Les deux",wiz_t_both:"Retours mixtes : une partie en wedges, une partie en oreillettes, le tout mixé depuis la façade."});
+Object.assign(I18N.es,{wiz_mon_both:"Ambos",wiz_t_both:"Monitoreo mixto: parte en cuñas, parte en in-ears, todo mezclado desde FOH."});
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
@@ -2021,6 +2026,7 @@ function renderWizard(){
     <div class="wz-radios">
       <label><input type="radio" name="wzmon" value="wedges" checked>${L("wiz_mon_wedges")}</label>
       <label><input type="radio" name="wzmon" value="iem">${L("wiz_mon_iem")}</label>
+      <label><input type="radio" name="wzmon" value="both">${L("wiz_mon_both")}</label>
     </div>
     <label class="fld">${L("wiz_backline")}</label>
     <div class="wz-radios">
@@ -2067,7 +2073,7 @@ function wizardBuild(){
   if(on("leadvocal")){const n=qty("leadvocal");for(let i=1;i<=n;i++)tpRows.push(wlab("leadvocal")+(n>1?" "+i:""));}
   if(!tpRows.length)tpRows.push("Band");
   S.travelParty=tpRows.map(l=>({label:l,name:"",count:"1"}));
-  S.tech.monitors = wedges ? L("wiz_t_wedges") : L("wiz_t_iem");
+  S.tech.monitors = mon==="iem" ? L("wiz_t_iem") : (mon==="both" ? L("wiz_t_both") : L("wiz_t_wedges"));
   const bk=(document.querySelector('input[name=wzback]:checked')||{}).value||"own";
   S.backline = bk==="house" ? L("wiz_t_back_house") : L("wiz_t_back_own");
   S.tech.pa=L("wiz_t_pa"); S.tech.foh=L("wiz_t_foh"); S.tech.power=L("wiz_t_power"); S.tech.soundcheck=L("wiz_t_soundcheck");
