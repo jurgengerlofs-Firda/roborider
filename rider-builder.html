@@ -315,6 +315,10 @@
     table.grid thead{display:table-header-group}
     table.grid tr{page-break-inside:avoid;break-inside:avoid}
     h3.sub-h{page-break-after:avoid}
+    /* keep list items, drink columns and contact cells whole across page breaks */
+    .doc li,.drink-cols>div,.contact-grid>div{page-break-inside:avoid;break-inside:avoid}
+    .doc ul{page-break-inside:auto}
+    .doc p{orphans:2;widows:2}
     @page{size:A4;margin:16mm}
   }
 </style>
