@@ -60,6 +60,8 @@
   .btn.primary:hover{background:#000;color:var(--bg)}
   .btn.ghost{border:1px solid var(--hair);padding:10px 16px}
   .btn.ghost:hover{border-color:var(--ink)}
+  .topmenu{display:contents}
+  .topmenu-btn{display:none}
   .layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(380px,1.05fr);gap:0;height:calc(100vh - 69px)}
   .mobile-tabs{display:none}
   #secNav,#stepNav{display:none}
@@ -80,7 +82,15 @@
     body.stepmode #stepNav .btn{flex:1;padding:14px 10px;text-align:center}
   }
   @media(max-width:860px){
-    .topbar{position:static;padding:12px 16px;gap:8px 10px;row-gap:8px}
+    .topbar{position:relative;padding:12px 16px;gap:8px 10px;row-gap:8px;flex-wrap:nowrap}
+    .topmenu-btn{display:inline-flex;align-items:center;justify-content:center;letter-spacing:1px;line-height:1;padding:9px 12px}
+    .topmenu{display:none;position:absolute;top:calc(100% - 2px);right:12px;flex-direction:column;align-items:stretch;gap:4px;background:var(--bg);border:1px solid var(--hair);box-shadow:0 12px 34px rgba(0,0,0,.16);padding:8px;min-width:212px;z-index:60}
+    .topmenu.open{display:flex}
+    .topmenu .btn{width:100%;text-align:left;border:none;padding:12px 12px;font-size:12px}
+    .topmenu .btn.ghost{border:none}
+    .topmenu .btn:hover{background:var(--hair)}
+    .topmenu .langwrap{width:100%;justify-content:space-between;padding:8px 12px 10px}
+    .topmenu .langwrap select{padding:9px 8px;font-size:13px}
     .logo{font-size:16px;letter-spacing:3px}
     .layout{display:block;height:auto}
     .mobile-tabs{display:flex;position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--hair)}
@@ -179,8 +189,8 @@
   .wmark{display:none;margin-top:26px;border-top:1px solid var(--clay);padding-top:8px;font-family:var(--display);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--clay);text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .wmark a{color:var(--clay);text-decoration:none}
   body.free #preview .wmark{display:block}
-  .doc-qr{position:absolute;left:22px;bottom:22px;right:auto;margin:0;text-align:left;line-height:0;z-index:6;background:#fff;padding:5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .doc-qr img{width:52px;height:52px;image-rendering:pixelated;display:block}
+  .doc-qr{align-self:flex-end;margin:44px 0 0 auto;line-height:0;background:#fff;padding:5px;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .doc-qr img{width:56px;height:56px;image-rendering:pixelated;display:block}
   .doc-qr-lbl{display:none}
   .onboard{display:flex;align-items:flex-start;gap:10px;background:#f6f1e9;border:1px solid #e3d6bf;border-left:3px solid var(--clay);padding:11px 13px;margin-bottom:18px;font-size:12.5px;color:var(--soft);line-height:1.5}
   .onboard button{margin-left:auto;flex:0 0 auto;border:none;background:none;font-size:16px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
@@ -193,7 +203,8 @@
   .swatch{width:24px;height:24px;border-radius:0;border:1px solid var(--hair);cursor:pointer}
   .preview-wrap{overflow-y:auto;background:var(--paper2);padding:30px}
   .page{background:#fff;max-width:760px;margin:0 auto 26px;padding:62px 58px;box-shadow:var(--shadow);min-height:200px;color:var(--ink)}
-  .doc-cover{padding:64px 58px;position:relative}
+  .doc-cover{padding:64px 58px;position:relative;display:flex;flex-direction:column;min-height:72vh}
+  .cover-head{display:block}
   .doc-logo-img{max-height:80px;max-width:55%;margin:0 0 26px;display:block;object-fit:contain}
   .doc-band{font-family:var(--display);font-size:66px;font-weight:300;letter-spacing:4px;line-height:1;margin:0;color:var(--accent);text-transform:uppercase}
   .doc-title{font-family:var(--display);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--soft);margin:24px 0 0;font-weight:400;border-top:1px solid var(--ink);padding-top:14px}
@@ -324,6 +335,8 @@
     .preview-wrap{display:block!important;padding:0;background:#fff;overflow:visible}
     .page{box-shadow:none;margin:0;max-width:100%;padding:0;page-break-after:always;page-break-inside:auto}
     .page:last-child{page-break-after:auto}
+    .doc-cover{min-height:calc(297mm - 34mm);padding:0}
+    .doc-qr img{width:64px;height:64px}
     /* long input list: never split a row, repeat the header on each printed page */
     table.grid{page-break-inside:auto}
     table.grid thead{display:table-header-group}
@@ -344,26 +357,29 @@
   <span id="tagline" style="color:var(--muted);font-size:12px"></span>
   <div class="spacer"></div>
   <span id="saveStatus" class="save-ind"></span>
-  <div class="langwrap">
-    <span id="langLabel"></span>
-    <select id="langSel" onchange="setLang(this.value)">
-      <option value="en">English</option>
-      <option value="nl">Nederlands</option>
-      <option value="de">Deutsch</option>
-      <option value="fr">Français</option>
-      <option value="es">Español</option>
-    </select>
-  </div>
-  <button class="btn ghost" id="btnNew" onclick="newDoc()"></button>
-  <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
-  <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
-  <button class="btn" id="btnAI" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
   <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
   <button class="btn ghost" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
   <button class="btn ghost" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
-  <button class="btn" id="btnOpen" onclick="importJSON()"></button>
-  <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   <button class="btn primary" id="btnPdf" onclick="exportPDF()"></button>
+  <button class="btn ghost topmenu-btn" id="topMenuBtn" onclick="toggleTopMenu(event)" title="More" aria-label="More">•••</button>
+  <div id="topMenu" class="topmenu" onclick="if(event.target.closest('button')&&event.target.id!=='topMenuBtn')closeTopMenu()">
+    <div class="langwrap">
+      <span id="langLabel"></span>
+      <select id="langSel" onchange="setLang(this.value)">
+        <option value="en">English</option>
+        <option value="nl">Nederlands</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+    <button class="btn ghost" id="btnNew" onclick="newDoc()"></button>
+    <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
+    <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
+    <button class="btn" id="btnAI" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
+    <button class="btn" id="btnOpen" onclick="importJSON()"></button>
+    <button class="btn" id="btnSave" onclick="exportJSON()"></button>
+  </div>
 </div>
 <div id="sharedBar" style="display:none;background:var(--ink);color:var(--bg);padding:10px 16px;font-family:var(--display);font-size:12px;letter-spacing:.4px;text-align:center">
   <span id="sharedBarTxt" style="opacity:.75"></span>
@@ -1581,6 +1597,11 @@ function downscaleDataURL(src,max,q,cb){try{
   img.onerror=()=>cb(src);img.src=src;
 }catch(e){cb(src);}}
 
+/* ===================== Top menu (mobile overflow) ===================== */
+function toggleTopMenu(e){if(e){e.stopPropagation();}var m=document.getElementById("topMenu");if(m)m.classList.toggle("open");}
+function closeTopMenu(){var m=document.getElementById("topMenu");if(m)m.classList.remove("open");}
+document.addEventListener("click",function(e){var m=document.getElementById("topMenu");if(!m||!m.classList.contains("open"))return;var b=document.getElementById("topMenuBtn");if(m.contains(e.target)||e.target===b)return;m.classList.remove("open");});
+
 /* ===================== Preview ===================== */
 function renderPreview(){
   document.documentElement.style.setProperty("--accent",S.band.accent||"#1a1a1a");
@@ -1590,6 +1611,7 @@ function renderPreview(){
   const shareU=shareToken?(location.origin+location.pathname+"?share="+shareToken):null;
   const qrD=shareU?qrDataURL(shareU):null;
   h+=`<div class="page doc-cover">
+    <div class="cover-head">
     <div class="cover-accent"></div>
     ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}" style="${logoStyle()}">`:""}
     <h1 class="doc-band">${esc(S.band.name||L("bandname_ph"))}</h1>
@@ -1597,6 +1619,7 @@ function renderPreview(){
     ${S.band.validUntil?`<div class="doc-valid">${L("valid_until")} ${formatDate(S.band.validUntil)}</div>`:""}
     ${t(S.band.version)?`<div class="doc-valid">${esc(S.band.version)}</div>`:""}
     ${coverContacts()}
+    </div>
     ${qrD?`<div class="doc-qr"><img src="${qrD}" alt="QR"><div class="doc-qr-lbl">${L("qr_caption")}</div></div>`:""}
     ${wmark()}
   </div>`;
