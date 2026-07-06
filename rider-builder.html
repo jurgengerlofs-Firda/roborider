@@ -2082,17 +2082,31 @@ function auxPresetChips(){
 /* Common microphones / DI for the input list */
 const MICS=[
   /* zang — dynamisch */
-  "SM58","Beta 58A","e835","e935","e945","OM5","OM7","M80","M88","V7","D5","ND76","KSM8",
+  "SM58","Beta 58A","SM58S","565SD","e835","e845","e935","e945","OM2","OM5","OM6","OM7",
+  "M80","M81","M88 TG","TG V70","V7","D5","D7","ND76","ND86","RE20","RE320","MB85","R102",
   /* zang — condensator */
-  "Beta 87A","KSM9","KMS105","e865","DPA 2028",
-  /* gitaar/snare/instrument */
-  "SM57","Beta 57A","e906","e609","i5","M201","MD421","MD441","RE20",
-  /* drums */
-  "Beta 52A","D112","D6","e602","e901","Beta 91A","Beta 98A","e904","e604","D2","D4",
-  /* overheads/condensator */
-  "SM81","KM184","C414","C451","e914","NT5","DPA 4099","SM7B",
-  /* DI */
-  "Active DI","Passive DI","Stereo DI","Radial J48","Radial JDI","Radial ProDI","BSS AR133"
+  "Beta 87A","Beta 87C","KSM8","KSM9","KMS 104","KMS 105","e865","e965","C535","DPA 2028",
+  "d:facto 4018","SR40V","MTP 940 CM",
+  /* snare / gitaarcab / algemeen instrument — dynamisch */
+  "SM57","Beta 57A","e606","e609","e906","i5","MD421","MD441","M201","ATM650","AE6100","MTP 440 DM",
+  /* kick & bas */
+  "Beta 52A","Beta 91A","D6","D112","e602","e901","e902","ATM250","Kick",
+  /* toms */
+  "e604","e904","D2","D4","ATM230","Beta 98A","604",
+  /* overheads, hi-hat & akoestisch — condensator */
+  "SM81","KM184","KM185","C414","C451","C214","e914","AT4041","ATM450","KSM137","Beta 181",
+  "NT5","M5","sE8","LCT 040","Pencil condenser",
+  /* clip-on / blazers / strijkers */
+  "e908","ATM350","DPA 4099","DPA 4061","SD Systems","Beta 98A/S",
+  /* lint (ribbon) */
+  "R121","M160",
+  /* broadcast / spoken word */
+  "SM7B",
+  /* DI-boxen */
+  "Active DI","Passive DI","Stereo DI","Radial J48","Radial JDI","Radial ProDI","Radial ProD2",
+  "BSS AR133","Countryman Type 85","Klark Teknik DI","LD Systems DI","the t.bone DI",
+  /* generiek */
+  "Mic","DI","Condenser","Ribbon","Clip-on"
 ];
 /* Custom suggestion dropdown for the Mic/DI field.
    Replaces <datalist>, which renders/scrolls badly on iOS Safari. */
