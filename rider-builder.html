@@ -1167,7 +1167,7 @@ function applySteps(){
   const total=secs.length;
   if(curStep>total-1)curStep=total-1;
   if(curStep<0)curStep=0;
-  const titleOf=function(i){const sm=secs[i].querySelector("summary");return sm?sm.textContent.replace(/^\s*\d+\s*/,"").replace("›","").trim():("Sectie "+(i+1));};
+  const titleOf=function(i){const t=secs[i].querySelector(".sectitle");if(t)return t.textContent.trim();const sm=secs[i].querySelector("summary");return sm?sm.textContent.replace(/^\s*\d+\s*/,"").replace("›","").trim():("Sectie "+(i+1));};
   if(nav){
     const pct=Math.round(((curStep+1)/total)*100);
     const chips=secs.map(function(s,i){
@@ -1227,7 +1227,7 @@ function section(n,title,body){
   const hk="help_"+n, help=L(hk), hasHelp=(help && help!==hk);
   const info=hasHelp?`<button class="secinfo" type="button" aria-label="?" title="?" onclick="toggleSecHelp(event,${n})">i</button>`:"";
   const helpDiv=hasHelp?`<div class="sechelp" id="sechelp-${n}" hidden>${esc(help)}</div>`:"";
-  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span>${title}${info}<span class="chev">›</span></summary><div class="sec-body">${helpDiv}${body}</div></details>`;
+  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span><span class="sectitle">${title}</span>${info}<span class="chev">›</span></summary><div class="sec-body">${helpDiv}${body}</div></details>`;
 }
 function toggleSecHelp(e,n){ e.preventDefault(); e.stopPropagation();
   const det=document.querySelector('details.sec[data-sec="'+n+'"]'); if(det&&!det.open)det.open=true;
