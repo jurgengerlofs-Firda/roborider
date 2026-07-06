@@ -717,6 +717,7 @@ function updateProUI(){
   document.body.classList.toggle("free",!PRO);
 }
 /* One-time Pro upsell shown just before export (free users only) */
+let _upsellJustShown=false;
 function exportPDF(){
   var seen=false; try{seen=localStorage.getItem("rr_pdf_upsell")==="1";}catch(e){}
   if(PRO||seen){ window.print(); return; }
@@ -726,7 +727,7 @@ function exportPDF(){
 }
 function _upsellSeen(){try{localStorage.setItem("rr_pdf_upsell","1");}catch(e){}}
 function closePdfUpsell(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); }
-function pdfExportAnyway(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); setTimeout(function(){window.print();},180); }
+function pdfExportAnyway(){ _upsellSeen(); _upsellJustShown=true; $("pdfUpsell").classList.remove("open"); setTimeout(function(){window.print();},180); }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
 function openProModal(){
   $("proTitle").textContent="RoboRider Pro";
@@ -2624,6 +2625,7 @@ function loadExample(){
 const FB_EMAIL="jurgen.gerlofs@gmail.com";
 function maybeOfferFeedback(){
   try{
+    if(_upsellJustShown){ _upsellJustShown=false; return; }  // don't stack with the pre-export upsell
     if(localStorage.getItem("rr_fb"))return;
     if(document.body.classList.contains("shared"))return;
     const filled=(S.band.name||"").trim()||S.inputs.filter(r=>r.input&&r.input.trim()).length>2;
