@@ -1168,9 +1168,12 @@ function applySteps(){
       const c=i===curStep?"on":(i<curStep?"done":"");
       return '<button class="secchip '+c+'" onclick="goStep('+i+')" aria-label="Sectie '+(i+1)+'">'+(i+1)+'</button>';
     }).join("");
+    const asec=secs[curStep]; const an=asec?asec.getAttribute("data-sec"):null;
+    const ahelp=an?L("help_"+an):""; const hasAHelp=ahelp&&ahelp!==("help_"+an);
+    const infoBtn=hasAHelp?' <button class="secinfo" type="button" aria-label="?" onclick="toggleSecHelp(event,'+an+')">i</button>':'';
     nav.innerHTML='<div class="stepbar"><span style="width:'+pct+'%"></span></div>'
       +'<div class="stepcount">'+esc(L("step_count").replace("{n}",curStep+1).replace("{t}",total))+'</div>'
-      +'<div class="steptitle">'+esc(titleOf(curStep))+'</div>'
+      +'<div class="steptitle">'+esc(titleOf(curStep))+infoBtn+'</div>'
       +'<div class="stepchips">'+chips+'</div>';
   }
   secs.forEach(function(s,i){ const a=i===curStep; s.classList.toggle("step-active",a); if(a)s.open=true; });
