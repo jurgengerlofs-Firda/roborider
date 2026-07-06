@@ -311,7 +311,7 @@
     .rotate-tip{display:none}
   }
   @media print{
-    .topbar,.editor,.ai-box,.mobile-tabs{display:none!important}
+    .topbar,.editor,.ai-box,.mobile-tabs,.modal-bg{display:none!important}
     .layout{display:block;height:auto}
     .preview-wrap{display:block!important;padding:0;background:#fff;overflow:visible}
     .page{box-shadow:none;margin:0;max-width:100%;padding:0;page-break-after:always;page-break-inside:auto}
@@ -355,7 +355,7 @@
   <button class="btn ghost" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
   <button class="btn" id="btnOpen" onclick="importJSON()"></button>
   <button class="btn" id="btnSave" onclick="exportJSON()"></button>
-  <button class="btn primary" id="btnPdf" onclick="window.print()"></button>
+  <button class="btn primary" id="btnPdf" onclick="exportPDF()"></button>
 </div>
 <div id="sharedBar" style="display:none;background:var(--ink);color:var(--bg);padding:10px 16px;font-family:var(--display);font-size:12px;letter-spacing:.4px;text-align:center">
   <span id="sharedBarTxt" style="opacity:.75"></span>
@@ -448,6 +448,18 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
       </div>
       <p id="proMsg" class="hint" style="margin-top:8px"></p>
       <div id="proManageWrap" style="margin-top:16px;display:none"><button class="btn ghost" id="proRemoveBtn" onclick="deactivatePro();closeProModal();"></button></div>
+    </div>
+  </div>
+</div>
+
+<!-- One-time Pro upsell, shown before export for free users -->
+<div class="modal-bg" id="pdfUpsell">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3 id="puTitle"></h3><span class="spacer"></span><button class="btn ghost" onclick="closePdfUpsell()">✕</button></div>
+    <div style="padding:24px">
+      <p id="puBody" style="font-size:13.5px;color:var(--soft);margin:0 0 20px;line-height:1.6"></p>
+      <button class="btn primary" style="width:100%" id="puGo" onclick="pdfExportAnyway()"></button>
+      <button class="btn ghost" style="width:100%;margin-top:8px;border:1px solid var(--clay);color:var(--clay)" id="puPro" onclick="closePdfUpsell();openProModal()"></button>
     </div>
   </div>
 </div>
@@ -704,6 +716,17 @@ function updateProUI(){
     b.classList.toggle("procta",!PRO); b.classList.toggle("proactive",PRO); }
   document.body.classList.toggle("free",!PRO);
 }
+/* One-time Pro upsell shown just before export (free users only) */
+function exportPDF(){
+  var seen=false; try{seen=localStorage.getItem("rr_pdf_upsell")==="1";}catch(e){}
+  if(PRO||seen){ window.print(); return; }
+  $("puTitle").textContent=L("pu_title"); $("puBody").textContent=L("pu_body");
+  $("puGo").textContent=L("pu_go"); $("puPro").textContent=L("pro_cta");
+  $("pdfUpsell").classList.add("open");
+}
+function _upsellSeen(){try{localStorage.setItem("rr_pdf_upsell","1");}catch(e){}}
+function closePdfUpsell(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); }
+function pdfExportAnyway(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); setTimeout(function(){window.print();},180); }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
 function openProModal(){
   $("proTitle").textContent="RoboRider Pro";
@@ -845,6 +868,8 @@ Object.assign(I18N.nl,{
   help_9:"Parkeren, laden en lossen: ruimte voor de bus of auto's, en een laadplek dicht bij het podium.",
   help_10:"Productie-extra's: backdrop of LED-scherm, special effects, en de changeover / line check.",
   help_11:"Afspraken en veiligheid: aansprakelijkheid, en afspraken over foto, video en interviews."});
+Object.assign(I18N.en,{pu_title:"Before you export",pu_body:"You're on the free plan, so your PDF carries a small RoboRider watermark. Go Pro (€29 once) to remove it and save unlimited riders.",pu_go:"Export anyway"});
+Object.assign(I18N.nl,{pu_title:"Voordat je exporteert",pu_body:"Je zit op het gratis plan, dus je PDF krijgt een klein RoboRider-watermerk. Word Pro (eenmalig €29) om het te verwijderen en onbeperkt riders op te slaan.",pu_go:"Toch exporteren"});
 
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
