@@ -386,7 +386,7 @@
     <button class="btn ghost" id="btnNew" onclick="newDoc()"></button>
     <button class="btn ghost" id="btnExample" onclick="loadExample()"></button>
     <button class="btn" id="btnTranslate" onclick="translateRider()" title="Translate own text to selected language">🌐 <span id="btnTranslateLbl"></span></button>
-    <button class="btn" id="btnAI" onclick="promptAIKey()" title="Set OpenAI API key for live AI">✦ AI <span id="aiKeyState" style="font-size:11px;color:var(--muted)"></span></button>
+    <button class="btn" id="btnAI" onclick="polishRider()" title="Make your wording clean and professional">✦ <span id="btnAILbl"></span></button>
     <button class="btn" id="btnOpen" onclick="importJSON()"></button>
     <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   </div>
@@ -565,7 +565,7 @@ var qrcode=(function(){var P=function(x,w){var g=236,l=17,n=x,s=O[w],t=null,r=0,
 const I18N = {
   en:{
     tagline:"Rider Builder · demo", lang_label:"Language",
-    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
+    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_polish:"Polish", ai_need:"AI isn't set up yet.", ai_gate:"You've used your free AI actions. Upgrade to Pro for unlimited polish and translation.", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
     pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Unlock Pro — €29 once", pro_or:"or", pro_key_lbl:"Already bought Pro? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
@@ -620,7 +620,7 @@ const I18N = {
   },
   nl:{
     tagline:"Rider Builder · demo", lang_label:"Taal",
-    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
+    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_polish:"Oppoetsen", ai_need:"AI is nog niet ingesteld.", ai_gate:"Je hebt je gratis AI-acties gebruikt. Upgrade naar Pro voor onbeperkt oppoetsen en vertalen.", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
     pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Pro ontgrendelen — eenmalig €29", pro_or:"of", pro_key_lbl:"Pro al gekocht? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
@@ -802,6 +802,13 @@ async function proActivate(){
    Until you do, the Account button stays hidden and the app behaves exactly as before. */
 const SUPABASE_URL = "https://pjrwxylxgjipgxyimmdj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_nE4gTwS14iIIiOeZRZhxAA_ASBNu2gd";
+/* ── Hosted AI (Supabase Edge Function) ───────────────────────────────
+   Powers "Polish" (professionalise wording) and "Translate" for everyone,
+   without users needing their own key. After deploying the 'ai' function
+   (see roborider-ai-setup.md), flip AI_ENABLED to true. */
+const AI_ENDPOINT = SUPABASE_URL + "/functions/v1/ai";
+const AI_ENABLED = false;   /* set true once the 'ai' Edge Function is live */
+const AI_FREE_TRIES = 2;    /* free Polish/Translate actions before Pro is required */
 let sb=null, user=null, currentRiderId=null, riderCount=0, shareToken=null;
 let sharedMode = /[?&]share=/.test(location.search);  // viewing a shared rider (read-only)
 try{
@@ -1158,7 +1165,9 @@ function applyChrome(){
   $("btnSave").textContent=L("btn_save");
   $("btnPdf").textContent=L("btn_pdf");
   $("btnTranslateLbl").textContent=L("btn_translate");
+  if($("btnAILbl"))$("btnAILbl").textContent=L("btn_polish");
   updateAIBadge();
+  updateAIUI();
   renderWizard();
   if($("saveStatus"))$("saveStatus").textContent="✓ "+L("saved");
   initOnboard();
@@ -2516,25 +2525,63 @@ async function runAIModel(raw){
     runAIHeuristic();
   }
 }
+/* ===== Hosted AI (Supabase Edge Function) — Polish + Translate ===== */
+function aiConfigured(){ return AI_ENABLED || !!AI_KEY; }
+function updateAIUI(){ var show=aiConfigured(); ["btnAI","btnTranslate"].forEach(function(id){var e=$(id); if(e)e.style.display=show?"":"none";}); }
+function aiUsed(){ try{return parseInt(localStorage.getItem("rr_ai_used")||"0",10)||0;}catch(e){return 0;} }
+function aiMarkUsed(){ try{localStorage.setItem("rr_ai_used",String(aiUsed()+1));}catch(e){} }
+function aiGateOK(){
+  if(!AI_ENABLED) return true;           /* bring-your-own-key path isn't gated */
+  if(PRO) return true;
+  if(aiUsed() < AI_FREE_TRIES) return true;
+  alert(L("ai_gate")); openProModal(); return false;
+}
+async function aiCall(action,extra){
+  const res=await fetch(AI_ENDPOINT,{method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+SUPABASE_ANON_KEY,"apikey":SUPABASE_ANON_KEY},
+    body:JSON.stringify(Object.assign({action:action},extra))});
+  if(!res.ok){ let m="API "+res.status; try{const e=await res.json(); if(e&&e.error)m=e.error;}catch(_){ } throw new Error(m); }
+  const j=await res.json();
+  if(!PRO) aiMarkUsed();
+  return (j&&j.result!==undefined)?j.result:j;
+}
+function applyRiderText(obj){
+  if(!obj||typeof obj!=="object")return;
+  if(obj.intro!==undefined)S.intro=obj.intro;
+  if(obj.guests!==undefined)S.guests=obj.guests;
+  if(obj.band&&obj.band.subtitle)S.band.subtitle=obj.band.subtitle;
+  if(obj.hosp)Object.assign(S.hosp,obj.hosp);
+  if(obj.tech)Object.assign(S.tech,obj.tech);
+  if(obj.lights)Object.assign(S.lights,obj.lights);
+  if(obj.backline!==undefined)S.backline=obj.backline;
+}
+function riderTextPayload(){ return {intro:S.intro,guests:S.guests,hosp:S.hosp,tech:S.tech,lights:S.lights,backline:S.backline,band:{subtitle:S.band.subtitle}}; }
 async function translateRider(){
   const target=$("langSel").value;
-  if(!AI_KEY){alert("Translation of your own text needs an API key (top-right ✦ AI). Section labels already follow the Language selector.");return;}
-  const btn=$("btnTranslate");const old=btn.textContent;btn.textContent="⏳";
-  const payload={intro:S.intro,guests:S.guests,hosp:S.hosp,tech:S.tech,lights:S.lights,backline:S.backline,band:{subtitle:S.band.subtitle}};
+  if(!aiConfigured()){ alert(L("ai_need")); return; }
+  if(!aiGateOK()) return;
+  const btn=$("btnTranslate");const old=btn?btn.textContent:"";if(btn)btn.textContent="⏳";
+  const payload=riderTextPayload();
   try{
-    const obj=await callOpenAI(
-      "Translate ALL human-readable string values in this rider JSON to the target language code '"+target+"'. Keep keys, structure, numbers, gear/brand names and channel input names unchanged. Return the same JSON shape.",
-      JSON.stringify(payload));
-    if(obj.intro!==undefined)S.intro=obj.intro;
-    if(obj.guests!==undefined)S.guests=obj.guests;
-    if(obj.band&&obj.band.subtitle)S.band.subtitle=obj.band.subtitle;
-    if(obj.hosp)Object.assign(S.hosp,obj.hosp);
-    if(obj.tech)Object.assign(S.tech,obj.tech);
-    if(obj.lights)Object.assign(S.lights,obj.lights);
-    if(obj.backline!==undefined)S.backline=obj.backline;
-    renderForm();renderPreview();
+    let obj;
+    if(AI_ENABLED){ obj=await aiCall("translate",{target:target,payload:payload}); }
+    else { obj=await callOpenAI("Translate ALL human-readable string values in this rider JSON to the target language code '"+target+"'. Keep keys, structure, numbers, gear/brand names and channel input names unchanged. Return the same JSON shape.", JSON.stringify(payload)); }
+    applyRiderText(obj); renderForm(); renderPreview();
   }catch(e){alert("Translation failed: "+e.message);}
-  btn.textContent=old;
+  if(btn)btn.textContent=old;
+}
+async function polishRider(){
+  if(!aiConfigured()){ alert(L("ai_need")); return; }
+  if(!aiGateOK()) return;
+  const btn=$("btnAI");const old=btn?btn.textContent:"";if(btn)btn.textContent="⏳";
+  const payload=riderTextPayload();
+  try{
+    let obj;
+    if(AI_ENABLED){ obj=await aiCall("polish",{lang:S.lang,payload:payload}); }
+    else { obj=await callOpenAI("Rewrite the human-readable string values in this rider JSON so they read clearly and professionally, in the SAME language as the input. Keep keys, structure, numbers, gear/brand names and channel input names unchanged. Do not invent facts. Return the same JSON shape.", JSON.stringify(payload)); }
+    applyRiderText(obj); renderForm(); renderPreview();
+  }catch(e){alert("Polish failed: "+e.message);}
+  if(btn)btn.textContent=old;
 }
 function runAIHeuristic(){
   const raw=$("aiInput").value;
