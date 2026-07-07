@@ -211,7 +211,7 @@
   .chips-lbl{font-family:var(--display);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-right:3px}
   .chip{font-family:var(--display);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 13px;font-weight:400;color:var(--soft);cursor:pointer}
   .chip:hover{border-color:var(--ink);color:var(--ink)}
-  .color-presets{display:flex;gap:7px;margin-top:8px}
+  .color-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
   .swatch{width:24px;height:24px;border-radius:0;border:1px solid var(--hair);cursor:pointer}
   .preview-wrap{overflow-y:auto;background:var(--paper2);padding:30px}
   .page{background:#fff;max-width:760px;margin:0 auto 26px;padding:62px 58px;box-shadow:var(--shadow);min-height:200px;color:var(--ink)}
@@ -238,6 +238,14 @@
   table.grid td:first-child{color:var(--clay)}
   table.grid tbody tr:nth-child(even) td{background:#faf8f3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .cover-accent{width:46px;height:3px;background:var(--clay);margin:0 0 26px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* Front-page photo cover (Pro): full-bleed image with an automatic dark scrim + light text */
+  .doc-cover.has-cover{background-size:cover;background-position:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .doc-cover.has-cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,11,.45) 0%,rgba(14,13,11,.30) 38%,rgba(14,13,11,.80) 100%);z-index:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .doc-cover.has-cover .cover-head,.doc-cover.has-cover .doc-qr,.doc-cover.has-cover .wmark{position:relative;z-index:1}
+  .doc-cover.has-cover .doc-band{color:#fff}
+  .doc-cover.has-cover .doc-title{color:rgba(255,255,255,.9);border-top-color:rgba(255,255,255,.55)}
+  .doc-cover.has-cover .doc-valid,.doc-cover.has-cover .contact,.doc-cover.has-cover .contact strong{color:#fff}
+  .doc-cover.has-cover .cover-accent{background:#fff}
   #preview .page:not(.doc-cover)::after{content:var(--docfoot,"");display:block;margin-top:26px;border-top:1px solid var(--hair);padding-top:8px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
   .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 26px;border:none;border-top:1px solid var(--ink);border-radius:0;overflow:visible;margin-bottom:16px;padding-top:14px}
   .contact-grid .c{padding:0;border:none}
@@ -587,7 +595,7 @@ const I18N = {
     hint_bullets:"One item per line = clean bullets", hint_48v:"Mark 48V with 'X'. Empty rows are hidden.",
     hint_stageplot:"Upload your existing stage plot as an image. (Drag-and-drop plot editor in the full version.)",
     /* editor field labels */
-    f_bandname:"Band / artist name", f_subtitle:"Subtitle", f_validuntil:"Valid until", f_logo:"Logo (image)",
+    f_bandname:"Band / artist name", f_subtitle:"Subtitle", f_validuntil:"Valid until", f_logo:"Logo (image)", f_cover:"Cover photo (Pro)", hint_cover:"Full-page photo behind the front page only — text stays readable with an automatic dark overlay.", btn_cover_remove:"× Remove cover photo", cover_pro:"Cover photo is a Pro feature — upgrade",
     f_accent:"Accent colour", f_intro:"Introduction text (optional)", f_contacts:"Contacts", f_travel:"Travelling party", f_guests:"Guest list",
     f_dressing:"Dressing room requirements", f_towels:"Towels", f_catering:"Catering / meal", f_dietary:"Dietary requirements",
     f_buyout:"Buy-out (per person)", f_drinks:"Drinks & refreshments", f_snacks:"Snacks / extra",
@@ -641,7 +649,7 @@ const I18N = {
     qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst",
     hint_bullets:"Eén item per regel = nette bullets", hint_48v:"Vink 48V aan met 'X'. Lege rijen worden niet getoond.",
     hint_stageplot:"Upload je bestaande stageplot als afbeelding. (Drag-and-drop plot-editor komt in de volledige versie.)",
-    f_bandname:"Bandnaam / artiest", f_subtitle:"Ondertitel", f_validuntil:"Geldig tot", f_logo:"Logo (afbeelding)",
+    f_bandname:"Bandnaam / artiest", f_subtitle:"Ondertitel", f_validuntil:"Geldig tot", f_logo:"Logo (afbeelding)", f_cover:"Coverfoto (Pro)", hint_cover:"Paginavullende foto, alleen achter de voorpagina — tekst blijft leesbaar door een automatische donkere waas.", btn_cover_remove:"× Coverfoto verwijderen", cover_pro:"Coverfoto is een Pro-functie — upgrade",
     f_accent:"Accentkleur", f_intro:"Introductietekst (optioneel)", f_contacts:"Contacten", f_travel:"Reisgezelschap", f_guests:"Gastenlijst",
     f_dressing:"Kleedkamer-eisen", f_towels:"Handdoeken", f_catering:"Catering / maaltijd", f_dietary:"Dieetwensen",
     f_buyout:"Buy-out (per persoon)", f_drinks:"Drank & versnaperingen", f_snacks:"Snacks / extra",
@@ -723,7 +731,7 @@ const DATE_LOCALE={en:"en-GB",nl:"nl-NL",de:"de-DE",fr:"fr-FR",es:"es-ES"};
 /* ===================== State ===================== */
 const blank = () => ({
   lang:"en",
-  band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:"",logoSize:"m",logoPos:"left"},
+  band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:"",logoSize:"m",logoPos:"left",cover:""},
   intro:"",
   contacts:[{role:"Tour manager",name:"",email:"",phone:""}],
   travelParty:[{label:"",name:"",count:"1"}],
@@ -764,7 +772,7 @@ function exportPDF(){
 function _upsellSeen(){try{localStorage.setItem("rr_pdf_upsell","1");}catch(e){}}
 function closePdfUpsell(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); }
 function pdfExportAnyway(){ _upsellSeen(); _upsellJustShown=true; $("pdfUpsell").classList.remove("open"); setTimeout(function(){window.print();},180); }
-function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();renderPreview();}
+function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();try{renderForm();}catch(e){}renderPreview();}
 function openProModal(){
   $("proTitle").textContent="RoboRider Pro";
   const needLogin = !!sb && !user && !PRO;
@@ -791,7 +799,7 @@ async function proActivate(){
   try{
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
-    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
     else{$("proMsg").textContent=L("pro_bad");}
   }catch(err){$("proMsg").textContent=L("pro_err");}
   $("proActBtn").disabled=false;
@@ -1309,10 +1317,16 @@ function renderForm(){
       </select>
       <button class="chip" onclick="setPath('band.logo','');renderForm();renderPreview()">${L("btn_logo_remove")}</button>
     </div>`:""}
+    <label class="fld">${L("f_cover")}</label>
+    ${PRO?`<input type="file" accept="image/*" onchange="readImg(event,'band.cover')">
+    ${S.band.cover?`<button class="chip" onclick="setPath('band.cover','');renderForm();renderPreview()">${L("btn_cover_remove")}</button>`:``}
+    <div class="hint">${L("hint_cover")}</div>`
+    :`<button class="chip" onclick="openProModal()">✦ ${L("cover_pro")}</button>
+    <div class="hint">${L("hint_cover")}</div>`}
     <label class="fld">${L("f_accent")}</label>
     <input type="color" data-path="band.accent" value="${S.band.accent}" style="width:46px;height:34px;padding:2px">
     <div class="color-presets">
-      ${["#1a1a1a","#6d28d9","#0f766e","#b91c1c","#1d4ed8"].map(c=>`<div class="swatch" style="background:${c}" onclick="setPath('band.accent','${c}');sync()"></div>`).join("")}
+      ${["#1b1a17","#9a7257","#3f4b5b","#1f3a5f","#0f766e","#24503a","#5b5f2a","#9a7d2e","#a65a2a","#a12b2b","#6e1f2e","#5b2a5f","#8e2a6b","#6d28d9"].map(c=>`<div class="swatch" style="background:${c}" title="${c}" onclick="setPath('band.accent','${c}');sync()"></div>`).join("")}
     </div>
     ${field(L("f_intro"),S.intro,"intro",{type:"textarea"})}
     <label class="fld">${L("f_contacts")}</label>
@@ -1633,7 +1647,8 @@ function renderPreview(){
   /* cover */
   const shareU=shareToken?(location.origin+location.pathname+"?share="+shareToken):null;
   const qrD=shareU?qrDataURL(shareU):null;
-  h+=`<div class="page doc-cover">
+  const hasCover=!!(S.band.cover&&PRO);
+  h+=`<div class="page doc-cover${hasCover?" has-cover":""}"${hasCover?` style="background-image:url('${S.band.cover}')"`:""}>
     <div class="cover-head">
     <div class="cover-accent"></div>
     ${S.band.logo?`<img class="doc-logo-img" src="${S.band.logo}" style="${logoStyle()}">`:""}
