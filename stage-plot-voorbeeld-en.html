@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage plot example (band, duo, trio) | RoboRider</title>
+<meta name="description" content="A clear stage plot example for a band, duo and trio: who stands where, which symbols to use and how to make your own stage plot fast.">
+<link rel="canonical" href="https://roborider.nl/stage-plot-voorbeeld-en.html">
+<link rel="alternate" hreflang="nl" href="https://roborider.nl/stage-plot-voorbeeld.html">
+<link rel="alternate" hreflang="en" href="https://roborider.nl/stage-plot-voorbeeld-en.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stage plot example (band, duo, trio)">
+<meta property="og:description" content="See what a good stage plot looks like — with examples for a band, duo and trio, and the symbols you use.">
+<meta property="og:url" content="https://roborider.nl/stage-plot-voorbeeld-en.html">
+<meta property="og:image" content="https://roborider.nl/roborider-og.png">
+<link rel="icon" type="image/svg+xml" href="roborider-favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Stage plot example","inLanguage":"en","author":{"@type":"Organization","name":"RoboRider"},"publisher":{"@type":"Organization","name":"RoboRider"},"mainEntityOfPage":"https://roborider.nl/stage-plot-voorbeeld-en.html","image":"https://roborider.nl/roborider-og.png"}</script>
+<style>
+  :root{--ink:#1b1a17;--soft:#56544d;--muted:#a39d92;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#fff;--clay:#9a7257;--font:'Inter',-apple-system,sans-serif;--display:'Jost',-apple-system,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--clay)}
+  nav{border-bottom:1px solid var(--hair)}
+  nav .w{max-width:740px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:10px}
+  .logo{font-family:var(--display);font-weight:300;letter-spacing:5px;text-transform:lowercase;font-size:17px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+  .logomark{width:26px;height:26px}
+  nav .sp{flex:1}
+  nav a.cta{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--ink);padding:9px 14px}
+  article{max-width:740px;margin:0 auto;padding:54px 24px 30px}
+  .crumb{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+  h1{font-family:var(--display);font-weight:300;font-size:42px;line-height:1.12;letter-spacing:.3px;margin:0 0 14px}
+  .lead{font-size:18px;color:var(--soft);margin:0 0 10px}
+  article h2{font-family:var(--display);font-weight:400;font-size:25px;margin:40px 0 10px}
+  article h3{font-family:var(--display);font-weight:400;font-size:18px;margin:26px 0 6px}
+  article p,article li{font-size:16px;color:var(--soft)}
+  article ul{padding-left:20px}
+  article li{margin-bottom:7px}
+  .plot{background:var(--card);border:1px solid var(--hair);margin:26px 0;padding:8px}
+  .plot svg{display:block;width:100%;height:auto}
+  .plot .cap{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;padding:8px 0 4px}
+  .ctabox{background:var(--card);border:1px solid var(--hair);border-top:2px solid var(--clay);padding:28px 26px;margin:40px 0;text-align:center}
+  .ctabox h3{font-family:var(--display);font-weight:300;font-size:24px;margin:0 0 10px;color:var(--ink)}
+  .ctabox p{margin:0 0 18px}
+  .btn{display:inline-block;background:var(--ink);color:var(--bg);font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:14px 26px;text-decoration:none}
+  footer{border-top:1px solid var(--hair);margin-top:40px}
+  footer .w{max-width:740px;margin:0 auto;padding:30px 24px;font-family:var(--display);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<nav><div class="w">
+  <a class="logo" href="index.html"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="#1b1a17" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="#c7c8cc" stroke="#1b1a17" stroke-width="0.7"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="#1b1a17" stroke-width="2.8"/><rect x="11" y="45.6" width="42" height="2.4" fill="#1b1a17"/><rect x="17" y="24" width="11" height="9" fill="#1b1a17"/><rect x="36" y="24" width="11" height="9" fill="#1b1a17"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg>roborider</a>
+  <span class="sp"></span>
+  <a class="cta" href="rider-builder.html">Build your rider</a>
+</div></nav>
+
+<article>
+  <div class="crumb">Guide · Stage plot example</div>
+  <h1>Stage plot example</h1>
+  <p class="lead">A stage plot is a top-down view of the stage: who stands where, and where the monitors, amps and power points go. Below you'll see a clear example for a four-piece band — plus a duo and trio variant, and the symbols you use.</p>
+
+  <p>The trap is making your stage plot too complicated. An engineer wants to see the stage at a glance: it's a floor plan, not a work of art. Simple boxes with a label do exactly what they need to.</p>
+
+  <h2>Stage plot example: four-piece band</h2>
+  <p>Take a band with drums, bass, guitar and vocals. Drums sit centre-back (often on a riser), bass beside them, the guitarist stage left, and the singer front-centre. Monitor wedges sit up front, aimed at the people who need them.</p>
+
+  <div class="plot">
+    <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stage plot example four-piece band">
+      <rect x="8" y="8" width="504" height="284" fill="none" stroke="#ded9ce"/>
+      <text x="260" y="26" text-anchor="middle" font-family="Jost,sans-serif" font-size="11" letter-spacing="2" fill="#a39d92">BACK (backline)</text>
+      <rect x="205" y="40" width="110" height="60" fill="#f3f1ec" stroke="#1b1a17"/>
+      <text x="260" y="75" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1b1a17">Drums</text>
+      <rect x="355" y="60" width="90" height="44" fill="#f3f1ec" stroke="#1b1a17"/>
+      <text x="400" y="87" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1b1a17">Bass</text>
+      <rect x="70" y="130" width="90" height="44" fill="#f3f1ec" stroke="#1b1a17"/>
+      <text x="115" y="157" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1b1a17">Guitar</text>
+      <circle cx="260" cy="200" r="20" fill="#9a7257"/>
+      <text x="260" y="238" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1b1a17">Vocal</text>
+      <polygon points="150,268 200,268 185,248 165,248" fill="#fff" stroke="#1b1a17"/>
+      <polygon points="320,268 370,268 355,248 335,248" fill="#fff" stroke="#1b1a17"/>
+      <text x="175" y="284" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" letter-spacing="1" fill="#a39d92">WEDGE</text>
+      <text x="345" y="284" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" letter-spacing="1" fill="#a39d92">WEDGE</text>
+      <text x="260" y="262" text-anchor="middle" font-family="Jost,sans-serif" font-size="11" letter-spacing="2" fill="#a39d92">FRONT (audience)</text>
+    </svg>
+    <div class="cap">Four-piece band — top-down view</div>
+  </div>
+
+  <p>Add a short note on the monitoring you need ("4 wedges" or "in-ears for vocals and guitar") and where the power should be. The venue needs no more than that to set you up.</p>
+
+  <h2>Which symbols do you use?</h2>
+  <p>There's no official standard, so keep it recognisable and label everything:</p>
+  <ul>
+    <li><strong>Boxes</strong> for gear and musicians (drums, amps, keys) — with a label on them.</li>
+    <li><strong>A circle</strong> for a vocal or instrument position / mic up front.</li>
+    <li><strong>A triangle or trapezoid</strong> for a monitor wedge, point facing the musician.</li>
+    <li><strong>"DI" or "48V"</strong> as a text label where relevant.</li>
+    <li>Clearly mark <strong>front</strong> (audience) and <strong>back</strong>, so the orientation reads right.</li>
+  </ul>
+
+  <div class="ctabox">
+    <h3>Drag your stage plot together</h3>
+    <p>With RoboRider you drag drums, amps, mics and monitors into place, with clean labels and dimensions — and it lands automatically in your rider PDF. Free to try.</p>
+    <a class="btn" href="rider-builder.html">Make your stage plot →</a>
+  </div>
+
+  <h2>Stage plot example: duo and trio</h2>
+  <p>For a duo or trio the plot is a lot calmer, but it's still useful — precisely because small line-ups often bring their own gear and cover double roles. An acoustic duo might place two vocal positions up front, each with a wedge, plus a DI for the acoustic guitar. A trio with drums, bass and guitar/vocals puts drums centre-back, bass and guitarist to the left and right in front, and two wedges up front.</p>
+  <p>The rule stays the same: show who stands where, where the monitors are and what power and DIs are needed. Simple and readable always beats pretty and busy.</p>
+
+  <h2>From example to your own stage plot</h2>
+  <p>Use the example above as a starting point and adapt it to your line-up. Draw it by hand if you like, but a tool keeps it tidy and lets you adjust it per venue — a bigger stage, an extra musician, a different monitor setup. In the builder you drag everything into place and your stage plot lands straight in your rider.</p>
+
+  <p>Read next: <a href="stage-plot-maken-en.html">How to make a stage plot →</a></p>
+  <p>Read next: <a href="rider-voorbeeld-en.html">See a technical rider example →</a></p>
+</article>
+
+<footer><div class="w">RoboRider · <a href="index.html">Home</a> · <a href="rider-builder.html">Build your rider</a></div></footer>
+<script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
+</body>
+</html>

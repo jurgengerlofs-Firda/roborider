@@ -22,4 +22,8 @@
   <url><loc>https://roborider.nl/di-box-en.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://roborider.nl/backline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://roborider.nl/backline-en.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://roborider.nl/rider-voorbeeld.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://roborider.nl/rider-voorbeeld-en.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://roborider.nl/stage-plot-voorbeeld.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://roborider.nl/stage-plot-voorbeeld-en.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
