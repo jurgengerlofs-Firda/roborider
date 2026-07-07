@@ -355,7 +355,7 @@
     .preview-wrap{display:block!important;padding:0;background:#fff;overflow:visible}
     .page{box-shadow:none;margin:0;max-width:100%;padding:0;page-break-after:always;page-break-inside:auto}
     .page:last-child{page-break-after:auto}
-    .doc-cover{min-height:calc(297mm - 34mm);padding:0}
+    .doc-cover{height:calc(297mm - 36mm);min-height:0;max-height:calc(297mm - 36mm);padding:0;overflow:hidden;box-sizing:border-box;page-break-after:always;page-break-inside:avoid;break-inside:avoid}
     .doc-qr img{width:64px;height:64px}
     /* long input list: never split a row, repeat the header on each printed page */
     table.grid{page-break-inside:auto}
