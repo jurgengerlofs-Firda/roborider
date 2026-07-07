@@ -119,15 +119,20 @@
     .palette{padding:10px 14px}
   }
   .editor{overflow-y:auto;padding:40px 38px 70px;border-right:1px solid var(--hair)}
-  .ai-box{background:none;border:none;border-top:2px solid var(--clay);padding:18px 0 0;margin:0 0 44px}
+  .ai-box{background:var(--card);border:1px solid var(--hair);border-top:3px solid var(--clay);padding:0;margin:0 0 40px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wiz-head{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--hair)}
+  .wiz-badge{width:34px;height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;background:var(--clay);color:#fff;font-size:15px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wiz-htext{line-height:1.15}
+  .wiz-sub2{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--clay);margin-top:3px}
+  .wiz-body{padding:16px 20px 20px}
   .ai-box h3{margin:6px 0 8px;font-size:26px;font-family:var(--display);font-weight:300;letter-spacing:.3px;line-height:1.2}
   .ai-box p{margin:0 0 16px;color:var(--soft);font-size:13px;font-weight:300;line-height:1.6;max-width:48ch}
   .ai-box textarea{width:100%;min-height:64px;border:none;border-bottom:1px solid var(--ink);border-radius:0;padding:8px 0;font-family:inherit;font-size:14px;font-weight:300;resize:vertical;background:transparent;color:var(--ink)}
   .ai-box textarea:focus{outline:none}
   .ai-box .btn{background:none;border:1px solid var(--ink);color:var(--ink);padding:10px 18px}
   .ai-box .btn:hover{background:var(--ink);color:var(--bg)}
-  .wiz-kick{font-family:var(--display);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--clay);font-weight:400}
-  .wiz-desc{margin:8px 0 4px;color:var(--soft);font-size:13px;font-weight:300;line-height:1.6}
+  .wiz-kick{font-family:var(--display);font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);font-weight:400}
+  .wiz-desc{margin:0 0 14px;color:var(--soft);font-size:13.5px;font-weight:300;line-height:1.6}
   .wz-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px;margin:4px 0 2px}
   .wzrow{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:13px;font-weight:300;cursor:pointer}
   .wzrow input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;accent-color:var(--ink);cursor:pointer}
@@ -177,9 +182,9 @@
   .calcrow select{flex:0 0 auto;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:12px;color:var(--ink)}
   .calcrow .chip{flex:0 0 auto}
   @media(max-width:640px){
-    #preview .page{overflow-x:auto}
-    #preview table.grid{min-width:540px;font-size:10.5px}
-    #preview table.grid th,#preview table.grid td{padding:4px 5px}
+    #preview .page{overflow-x:hidden}
+    #preview table.grid{width:100%;min-width:0;table-layout:fixed;font-size:9px}
+    #preview table.grid th,#preview table.grid td{padding:3px 4px;word-break:break-word;overflow-wrap:anywhere}
   }
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
@@ -566,7 +571,7 @@ const I18N = {
     ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com +31 6 12 34 56 78'",
     ai_btn:"Auto-fill",
     ai_empty:"Paste some text first.", ai_recognized:"Recognized: ", ai_check:". Check and complete.", ai_none:"Nothing recognized automatically — fill in manually.",
-    wiz_title:"Quick start", wiz_desc:"Answer a few questions — we'll build the input list, stage plot and a technical starting point you can fine-tune.",
+    wiz_title:"Quick start", wiz_generator:"Auto-generator", wiz_desc:"Answer a few questions and we'll build your input list, stage plot and a technical starting point — then fine-tune anything in the sections below.",
     wiz_name:"Band / artist name", wiz_members:"Who's on stage?", wiz_monitoring:"Monitoring", wiz_mon_wedges:"Wedges", wiz_mon_iem:"In-ears",
     wiz_backline:"Backline", wiz_back_own:"We bring our own", wiz_back_house:"From the house", wiz_build:"Build my rider", wiz_other_ph:"Other instrument (e.g. cello, sax, harp)…",
     wiz_t_wedges:"Wedge monitors as per the input list; mixes from FOH.", wiz_t_iem:"In-ear monitoring; we bring our own packs, mixed from FOH.",
@@ -1270,6 +1275,7 @@ function renderForm(){
   if(!Array.isArray(S.hosp.rooms))S.hosp.rooms=[];
   renumberInputs();renumberAuxes();
   const scrollY=$("editor")?$("editor").scrollTop:0;
+  const winY=(window.pageYOffset||document.documentElement.scrollTop||0);
   let h="";
   h+=section(1,L("sec_general"),`
     ${field(L("f_bandname"),S.band.name,"band.name")}
@@ -1428,6 +1434,7 @@ function renderForm(){
   bindInputs();
   if($("editor"))$("editor").scrollTop=scrollY;
   applySteps();
+  if(isStepMode()){ try{ window.scrollTo(0,winY); requestAnimationFrame(function(){window.scrollTo(0,winY);}); }catch(e){} }
 }
 
 function renderRepeats(){
@@ -2051,7 +2058,14 @@ function renderWizard(){
     return `<label class="wzrow"><input type="checkbox" id="wz-${it.k}"${it.def?" checked":""}><span>${lab}</span>${q}</label>`;
   }).join("");
   m.innerHTML=`
-    <div class="wiz-kick">✦ ${L("wiz_title")}</div>
+    <div class="wiz-head">
+      <div class="wiz-badge">✦</div>
+      <div class="wiz-htext">
+        <div class="wiz-kick">${L("wiz_title")}</div>
+        <div class="wiz-sub2">${L("wiz_generator")}</div>
+      </div>
+    </div>
+    <div class="wiz-body">
     <p class="wiz-desc">${L("wiz_desc")}</p>
     <label class="fld">${L("wiz_name")}</label>
     <input type="text" id="wz-name" placeholder="${L("bandname_ph")}">
@@ -2069,7 +2083,8 @@ function renderWizard(){
       <label><input type="radio" name="wzback" value="own" checked>${L("wiz_back_own")}</label>
       <label><input type="radio" name="wzback" value="house">${L("wiz_back_house")}</label>
     </div>
-    <button class="btn primary" style="margin-top:14px;width:100%" onclick="wizardBuild()">${L("wiz_build")}</button>`;
+    <button class="btn primary" style="margin-top:16px;width:100%" onclick="wizardBuild()">${L("wiz_build")}</button>
+    </div>`;
 }
 function wizardBuild(){
   const lang=S.lang; S=blank(); S.lang=lang; selPlot=null;
