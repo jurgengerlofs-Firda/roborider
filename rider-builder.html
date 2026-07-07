@@ -91,7 +91,11 @@
     .topmenu .btn:hover{background:var(--hair)}
     .topmenu .langwrap{width:100%;justify-content:space-between;padding:8px 12px 10px}
     .topmenu .langwrap select{padding:9px 8px;font-size:13px}
+    .topmenu #btnPro{padding:12px}
+    .topbar .save-ind{display:none}
     .logo{font-size:16px;letter-spacing:3px}
+    .repeat .row>input,.repeat .row>select,.repeat .row>textarea{flex:1 1 auto;min-width:0}
+    .repeat .row>input[type=text]:first-of-type{flex:2 1 0}
     .layout{display:block;height:auto}
     .mobile-tabs{display:flex;position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--hair)}
     .mobile-tabs button{flex:1;border:none;background:none;padding:14px 0;font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
@@ -357,12 +361,10 @@
   <span id="tagline" style="color:var(--muted);font-size:12px"></span>
   <div class="spacer"></div>
   <span id="saveStatus" class="save-ind"></span>
-  <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
-  <button class="btn ghost" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
-  <button class="btn ghost" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
-  <button class="btn primary" id="btnPdf" onclick="exportPDF()"></button>
-  <button class="btn ghost topmenu-btn" id="topMenuBtn" onclick="toggleTopMenu(event)" title="More" aria-label="More">•••</button>
   <div id="topMenu" class="topmenu" onclick="if(event.target.closest('button')&&event.target.id!=='topMenuBtn')closeTopMenu()">
+    <button class="btn" id="btnPro" onclick="openProModal()" title="RoboRider Pro"></button>
+    <button class="btn ghost" id="btnAccount" onclick="openAcctModal()" title="Account" style="display:none"></button>
+    <button class="btn ghost" id="btnCloudSave" onclick="cloudSaveQuick()" title="Save to account" style="display:none"></button>
     <div class="langwrap">
       <span id="langLabel"></span>
       <select id="langSel" onchange="setLang(this.value)">
@@ -380,6 +382,8 @@
     <button class="btn" id="btnOpen" onclick="importJSON()"></button>
     <button class="btn" id="btnSave" onclick="exportJSON()"></button>
   </div>
+  <button class="btn primary" id="btnPdf" onclick="exportPDF()"></button>
+  <button class="btn ghost topmenu-btn" id="topMenuBtn" onclick="toggleTopMenu(event)" title="More" aria-label="More">•••</button>
 </div>
 <div id="sharedBar" style="display:none;background:var(--ink);color:var(--bg);padding:10px 16px;font-family:var(--display);font-size:12px;letter-spacing:.4px;text-align:center">
   <span id="sharedBarTxt" style="opacity:.75"></span>
