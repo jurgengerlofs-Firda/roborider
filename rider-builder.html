@@ -762,16 +762,28 @@ function updateProUI(){
 }
 /* One-time Pro upsell shown just before export (free users only) */
 let _upsellJustShown=false;
+/* Clean the document title before printing: the browser's print header (if left on)
+   and the default PDF filename then read "[Band] — Technical & Hospitality Rider". */
+function printRider(){
+  var prev=document.title;
+  var nm=(S.band.name||"").trim();
+  var sub=(S.band.subtitle||"").trim()||(typeof L==="function"?L("subtitle_default"):"Technical & Hospitality Rider");
+  document.title=(nm?nm+" — ":"")+sub;
+  var restore=function(){ document.title=prev; };
+  try{ window.addEventListener("afterprint",function h(){ restore(); window.removeEventListener("afterprint",h); }); }catch(e){}
+  window.print();
+  setTimeout(restore,4000);
+}
 function exportPDF(){
   var seen=false; try{seen=localStorage.getItem("rr_pdf_upsell")==="1";}catch(e){}
-  if(PRO||seen){ window.print(); return; }
+  if(PRO||seen){ printRider(); return; }
   $("puTitle").textContent=L("pu_title"); $("puBody").textContent=L("pu_body");
   $("puGo").textContent=L("pu_go"); $("puPro").textContent=L("pro_cta");
   $("pdfUpsell").classList.add("open");
 }
 function _upsellSeen(){try{localStorage.setItem("rr_pdf_upsell","1");}catch(e){}}
 function closePdfUpsell(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); }
-function pdfExportAnyway(){ _upsellSeen(); _upsellJustShown=true; $("pdfUpsell").classList.remove("open"); setTimeout(function(){window.print();},180); }
+function pdfExportAnyway(){ _upsellSeen(); _upsellJustShown=true; $("pdfUpsell").classList.remove("open"); setTimeout(printRider,180); }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();try{renderForm();}catch(e){}renderPreview();}
 function openProModal(){
   $("proTitle").textContent="RoboRider Pro";
