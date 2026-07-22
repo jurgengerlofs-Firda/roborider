@@ -213,6 +213,9 @@
   .chip:hover{border-color:var(--ink);color:var(--ink)}
   .color-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
   .swatch{width:24px;height:24px;border-radius:0;border:1px solid var(--hair);cursor:pointer}
+  .essbadge{display:inline-block;margin-left:9px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay);border:1px solid var(--clay);padding:2px 6px;vertical-align:middle;white-space:nowrap}
+  .secchip.ess{position:relative}
+  .secchip.ess::after{content:"";position:absolute;top:-2px;right:-2px;width:6px;height:6px;border-radius:50%;background:var(--clay)}
   .preview-wrap{overflow-y:auto;background:var(--paper2);padding:30px}
   .page{background:#fff;max-width:760px;margin:0 auto 26px;padding:62px 58px;box-shadow:var(--shadow);min-height:200px;color:var(--ink)}
   .doc-cover{padding:64px 58px;position:relative;display:flex;flex-direction:column;min-height:72vh}
@@ -591,7 +594,7 @@ const I18N = {
     wiz_t_foh:"FOH at front of house, centred, not under a balcony. Any decent digital console (24+ channels).",
     wiz_t_power:"230V at marked positions.", wiz_t_soundcheck:"Allow ~45–60 min setup and 20–30 min changeover.",
     plus_contact:"+ add contact", plus_role:"+ add role", plus_dietary:"+ dietary need", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ channel",
-    qa_presets:"Quick add:", qa_renumber:"↺ Renumber", qa_std:"+ Standard text",
+    qa_presets:"Quick add:", qa_renumber:"↺ Renumber", qa_std:"+ Standard text", sec_essential:"Essential",
     hint_bullets:"One item per line = clean bullets", hint_48v:"Mark 48V with 'X'. Empty rows are hidden.",
     hint_stageplot:"Upload your existing stage plot as an image. (Drag-and-drop plot editor in the full version.)",
     /* editor field labels */
@@ -646,7 +649,7 @@ const I18N = {
     wiz_t_foh:"FOH front-of-house, gecentreerd, niet onder een balkon. Een degelijke digitale tafel (24+ kanalen).",
     wiz_t_power:"230V op gemarkeerde posities.", wiz_t_soundcheck:"Reken op ~45–60 min opbouw en 20–30 min changeover.",
     plus_contact:"+ contact toevoegen", plus_role:"+ rol toevoegen", plus_dietary:"+ dieetwens", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ kanaal",
-    qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst",
+    qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst", sec_essential:"Essentieel",
     hint_bullets:"Eén item per regel = nette bullets", hint_48v:"Vink 48V aan met 'X'. Lege rijen worden niet getoond.",
     hint_stageplot:"Upload je bestaande stageplot als afbeelding. (Drag-and-drop plot-editor komt in de volledige versie.)",
     f_bandname:"Bandnaam / artiest", f_subtitle:"Ondertitel", f_validuntil:"Geldig tot", f_logo:"Logo (afbeelding)", f_cover:"Coverfoto (Pro)", hint_cover:"Paginavullende foto, alleen achter de voorpagina — tekst blijft leesbaar door een automatische donkere waas.", btn_cover_remove:"× Coverfoto verwijderen", cover_pro:"Coverfoto is een Pro-functie — upgrade", f_coverpos:"Fotopositie (omhoog/omlaag)",
@@ -1237,14 +1240,14 @@ function applySteps(){
     const pct=Math.round(((curStep+1)/total)*100);
     const chips=secs.map(function(s,i){
       const c=i===curStep?"on":(i<curStep?"done":"");
-      return '<button class="secchip '+c+'" onclick="goStep('+i+')" aria-label="Sectie '+(i+1)+'">'+(i+1)+'</button>';
+      return '<button class="secchip '+c+(s.getAttribute("data-ess")?" ess":"")+'" onclick="goStep('+i+')" aria-label="Sectie '+(i+1)+'">'+(i+1)+'</button>';
     }).join("");
     const asec=secs[curStep]; const an=asec?asec.getAttribute("data-sec"):null;
     const ahelp=an?L("help_"+an):""; const hasAHelp=ahelp&&ahelp!==("help_"+an);
     const infoBtn=hasAHelp?' <button class="secinfo" type="button" aria-label="?" onclick="toggleSecHelp(event,'+an+')">i</button>':'';
     nav.innerHTML='<div class="stepbar"><span style="width:'+pct+'%"></span></div>'
       +'<div class="stepcount">'+esc(L("step_count").replace("{n}",curStep+1).replace("{t}",total))+'</div>'
-      +'<div class="steptitle">'+esc(titleOf(curStep))+infoBtn+'</div>'
+      +'<div class="steptitle">'+esc(titleOf(curStep))+(secs[curStep]&&secs[curStep].getAttribute("data-ess")?'<span class="essbadge">'+esc(L("sec_essential"))+'</span>':'')+infoBtn+'</div>'
       +'<div class="stepchips">'+chips+'</div>';
   }
   secs.forEach(function(s,i){ const a=i===curStep; s.classList.toggle("step-active",a); if(a)s.open=true; });
@@ -1287,12 +1290,15 @@ function captureOpenState(){
   if(!els.length)return;
   els.forEach(d=>{const n=+d.dataset.sec;if(d.open)openSecs.add(n);else openSecs.delete(n);});
 }
+const ESSENTIAL_SECS=[1,2,3,5,8]; /* General/contacts, Stage plot, Input list, Backline, Hospitality */
 function section(n,title,body){
   const open=openSecs.has(n)?"open":"";
   const hk="help_"+n, help=L(hk), hasHelp=(help && help!==hk);
   const info=hasHelp?`<button class="secinfo" type="button" aria-label="?" title="?" onclick="toggleSecHelp(event,${n})">i</button>`:"";
   const helpDiv=hasHelp?`<div class="sechelp" id="sechelp-${n}" hidden>${esc(help)}</div>`:"";
-  return `<details class="sec" data-sec="${n}" ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span><span class="sectitle">${title}</span>${info}<span class="chev">›</span></summary><div class="sec-body">${helpDiv}${body}</div></details>`;
+  const ess=ESSENTIAL_SECS.indexOf(n)>=0;
+  const essBadge=ess?`<span class="essbadge">${L("sec_essential")}</span>`:"";
+  return `<details class="sec${ess?" is-ess":""}" data-sec="${n}"${ess?' data-ess="1"':''} ${open}><summary><span class="num">${String(n).padStart(2,"0")}</span><span class="sectitle">${title}</span>${essBadge}${info}<span class="chev">›</span></summary><div class="sec-body">${helpDiv}${body}</div></details>`;
 }
 function toggleSecHelp(e,n){ e.preventDefault(); e.stopPropagation();
   const det=document.querySelector('details.sec[data-sec="'+n+'"]'); if(det&&!det.open)det.open=true;
