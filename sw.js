@@ -1,5 +1,5 @@
 /* RoboRider service worker — bump CACHE version on every deploy to push updates */
-const CACHE = 'roborider-v53';
+const CACHE = 'roborider-v72';
 
 /* App shell precached so the tool opens instantly and works offline */
 const SHELL = [
@@ -19,6 +19,14 @@ const SHELL = [
   'hospitality-rider-en.html',
   'rider-sturen.html',
   'rider-sturen-en.html',
+  'microfoon-kiezen.html',
+  'microfoon-kiezen-en.html',
+  'monitoring-podium.html',
+  'monitoring-podium-en.html',
+  'di-box.html',
+  'di-box-en.html',
+  'backline.html',
+  'backline-en.html',
   'privacy.html',
   'terms.html',
   'manifest.webmanifest',

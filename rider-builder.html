@@ -33,9 +33,9 @@
 <style>
   :root{
     --accent:#1b1a17;
-    --bg:#f3f1ec; --panel:#ffffff; --paper2:#eceae3; --line:#e6e2d9; --hair:#ded9ce;
+    --bg:#f3f1ec; --paper2:#eceae3; --line:#e6e2d9; --hair:#ded9ce;
     --ink:#1b1a17; --soft:#56544d; --muted:#6b665d;
-    --brand:#1b1a17; --brand-d:#000000; --clay:#9a7257; --pop:#9a7257;
+    --brand:#1b1a17; --brand-d:#000000; --clay:#9a7257; --clay-text:#89654d; --pop:#9a7257;
     --radius:2px; --shadow:0 24px 50px -28px rgba(27,26,23,.30);
     --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --display:'Jost','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -64,12 +64,25 @@
   .topmenu-btn{display:none}
   .layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(380px,1.05fr);gap:0;height:calc(100vh - 69px)}
   .mobile-tabs{display:none}
+  /* Desktop topbar triage (2026-09-14): keep only Pro + language always visible next to Export PDF;
+     the occasional actions (account, new, example, translate, polish, open, save) move behind
+     the same "···" overflow already used on mobile, instead of sitting in the bar as 9 equal-weight
+     buttons. Adjust the id list below if you want to promote/demote something. */
+  @media(min-width:861px){
+    .topmenu-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 10px}
+    #btnNew,#btnExample,#btnTranslate,#btnAI,#btnOpen,#btnSave{display:none}
+    /* Account/Save-to-account are deliberately left out of this hide/reveal pair — their own
+       inline style (set by updateAccountUI(), based on login state) stays the only thing
+       controlling whether they show at all; once logged in they're common enough to keep inline. */
+    #topMenu.open{position:absolute;top:calc(100% - 2px);right:16px;display:flex;flex-direction:column;align-items:stretch;gap:4px;background:var(--bg);border:1px solid var(--hair);box-shadow:0 12px 34px rgba(0,0,0,.16);padding:8px;min-width:220px;z-index:60}
+    #topMenu.open #btnNew,#topMenu.open #btnExample,#topMenu.open #btnTranslate,#topMenu.open #btnAI,#topMenu.open #btnOpen,#topMenu.open #btnSave{display:flex;width:100%;text-align:left;padding:12px}
+  }
   #secNav,#stepNav{display:none}
   @media(max-width:820px){
     body.stepmode #secNav{display:block;position:sticky;top:43px;z-index:20;background:var(--bg);padding:12px 0 13px;border-bottom:1px solid var(--hair);margin:0 0 18px}
     body.stepmode .stepbar{height:3px;background:var(--hair);overflow:hidden;margin-bottom:13px}
     body.stepmode .stepbar>span{display:block;height:100%;background:var(--clay)}
-    body.stepmode .stepcount{font-family:var(--display);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--clay);font-weight:500}
+    body.stepmode .stepcount{font-family:var(--display);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--clay-text);font-weight:500}
     body.stepmode .steptitle{display:block;font-family:var(--display);font-size:21px;font-weight:400;color:var(--ink);margin:3px 0 12px}
     body.stepmode .stepchips{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch}
     body.stepmode .stepchips .secchip{flex:0 0 auto;width:31px;height:31px;display:flex;align-items:center;justify-content:center;border:1px solid var(--hair);background:none;border-radius:50%;font-family:var(--display);font-size:12px;color:var(--soft);cursor:pointer;padding:0}
@@ -123,7 +136,7 @@
   .wiz-head{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--hair)}
   .wiz-badge{width:34px;height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;background:var(--clay);color:#fff;font-size:15px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .wiz-htext{line-height:1.15}
-  .wiz-sub2{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--clay);margin-top:3px}
+  .wiz-sub2{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--clay-text);margin-top:3px}
   .wiz-body{padding:16px 20px 20px}
   .ai-box h3{margin:6px 0 8px;font-size:26px;font-family:var(--display);font-weight:300;letter-spacing:.3px;line-height:1.2}
   .ai-box p{margin:0 0 16px;color:var(--soft);font-size:13px;font-weight:300;line-height:1.6;max-width:48ch}
@@ -156,12 +169,15 @@
   .sechelp{background:var(--paper2);border-left:2px solid var(--clay);padding:11px 14px;margin:0 0 18px;font-size:13px;color:var(--soft);line-height:1.55}
   label.fld{display:block;margin:20px 0 7px;font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
   input[type=text],input[type=date],input[type=number],textarea,select{
-    width:100%;border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:8px 2px;font-family:inherit;font-weight:300;font-size:15px;background:transparent;color:var(--ink)}
-  input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:none;border-bottom-color:var(--ink)}
+    width:100%;border:1px solid var(--hair);border-radius:0;padding:8px;font-family:inherit;font-weight:300;font-size:15px;background:var(--paper2);color:var(--ink)}
+  input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);background:#fff}
   textarea{resize:vertical;min-height:60px;line-height:1.55}
   .row{display:flex;gap:8px}
   .row>*{flex:1}
   .repeat{border:none;border-bottom:1px solid var(--hair);border-radius:0;padding:6px 0 10px;margin-top:6px;background:none}
+  .rep-header{margin-top:14px}
+  .rep-header .row{margin-bottom:4px}
+  .rep-header span{font-family:var(--display);font-size:9.5px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
   .repeat .row{margin-bottom:6px}
   .mini{border:none;background:none;border:1px solid var(--hair);border-radius:0;width:30px;height:34px;font-size:15px;color:var(--muted);flex:0 0 30px}
   .rowctl{display:flex;gap:4px;flex:0 0 auto}
@@ -192,14 +208,14 @@
   .add:hover{border-color:var(--ink);color:var(--ink)}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   .save-ind{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:color .2s}
-  .topbar .btn.procta{color:var(--clay);border:1px solid var(--clay);padding:7px 12px}
+  .topbar .btn.procta{color:var(--clay-text);border:1px solid var(--clay);padding:7px 12px}
   .topbar .btn.procta:hover{background:var(--clay);color:#fff}
   .topbar .btn.proactive{background:var(--clay);color:#fff;border:1px solid var(--clay);padding:7px 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .topbar .btn.proactive:hover{background:#875f45;color:#fff}
   .topbar .btn.procta:hover{background:var(--clay);color:#fff}
   body.free #preview .page{background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='300'%20height='185'%3E%3Ctext%20x='8'%20y='112'%20transform='rotate(-27%20150%2092)'%20font-family='Arial,sans-serif'%20font-size='22'%20font-weight='bold'%20fill='%231b1a17'%20fill-opacity='0.11'%3ERoboRider%20FREE%3C/text%3E%3C/svg%3E");background-repeat:repeat;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .wmark{display:none;margin-top:26px;border-top:1px solid var(--clay);padding-top:8px;font-family:var(--display);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--clay);text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .wmark a{color:var(--clay);text-decoration:none}
+  .wmark{display:none;margin-top:26px;border-top:1px solid var(--clay);padding-top:8px;font-family:var(--display);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--clay-text);text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wmark a{color:var(--clay-text);text-decoration:none}
   body.free #preview .wmark{display:block}
   .doc-qr{align-self:flex-end;margin:44px 0 0 auto;line-height:0;background:#fff;padding:5px;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .doc-qr img{width:56px;height:56px;image-rendering:pixelated;display:block}
@@ -213,7 +229,7 @@
   .chip:hover{border-color:var(--ink);color:var(--ink)}
   .color-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
   .swatch{width:24px;height:24px;border-radius:0;border:1px solid var(--hair);cursor:pointer}
-  .essbadge{display:inline-block;margin-left:9px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay);border:1px solid var(--clay);padding:2px 6px;vertical-align:middle;white-space:nowrap}
+  .essbadge{display:inline-block;margin-left:9px;font-family:var(--display);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay-text);border:1px solid var(--clay);padding:2px 6px;vertical-align:middle;white-space:nowrap}
   .secchip.ess{position:relative}
   .secchip.ess::after{content:"";position:absolute;top:-2px;right:-2px;width:6px;height:6px;border-radius:50%;background:var(--clay)}
   .preview-wrap{overflow-y:auto;background:var(--paper2);padding:30px}
@@ -293,6 +309,8 @@
   .pl-el:hover .pl-ctl,.pl-el.sel .pl-ctl{display:block}
   .pl-del{right:-9px;background:var(--ink)}
   .pl-rot{left:-9px;background:var(--clay)}
+  .pl-rotval{position:absolute;top:-34px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-family:var(--display);font-size:11px;letter-spacing:.5px;padding:3px 7px;border-radius:2px;white-space:nowrap;display:none;pointer-events:none;z-index:7}
+  .pl-rotval.show{display:block}
   .pl-resize{position:absolute;right:-7px;bottom:-7px;width:15px;height:15px;background:#fff;border:2px solid var(--clay);
     border-radius:0;cursor:nwse-resize;display:none;z-index:6}
   .pl-el:hover .pl-resize,.pl-el.sel .pl-resize{display:block}
@@ -315,10 +333,13 @@
   #stagecanvas{transform-origin:0 0}
   .plot-list{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;border-top:1px solid var(--hair);max-height:90px;overflow:auto}
   .plot-list:empty{display:none}
-  .plot-list .pli{display:flex;align-items:center;gap:6px;border:1px solid var(--hair);background:#fff;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--soft);white-space:nowrap}
+  .plot-list .pli{display:flex;align-items:center;gap:6px;border:1px solid var(--hair);border-radius:0;background:#fff;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer;color:var(--soft);white-space:nowrap}
+  .plot-list .pli:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
   .plot-list .pli.on{border-color:var(--clay);color:var(--ink);box-shadow:inset 0 0 0 1px var(--clay)}
   .plot-list .pli b{font-weight:500}
   .plot-tools{display:flex;justify-content:center;gap:14px;padding:10px 12px;border-top:1px solid var(--hair);background:var(--bg);flex-wrap:wrap}
+  .pt-editing{flex:0 0 100%;text-align:center;font-family:var(--display);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--soft);margin-bottom:2px}
+  .pt-editing:empty{display:none}
   .plot-tools[hidden]{display:none}
   .plot-tools .pt-group{display:flex;gap:6px}
   .plot-tools button{width:46px;height:46px;border:1px solid var(--hair);background:#fff;font-size:18px;color:var(--ink);border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -446,9 +467,9 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
     <div class="plot-bar">
       <div class="plot-hint" id="plotHint"></div>
       <div class="plot-zoom">
-        <button type="button" onclick="plotZoomBy(-0.25)" aria-label="Zoom out">−</button>
+        <button type="button" id="plotZoomOut" onclick="plotZoomBy(-0.25)">−</button>
         <button type="button" id="plotZoomLbl" onclick="plotZoomReset()">100%</button>
-        <button type="button" onclick="plotZoomBy(0.25)" aria-label="Zoom in">+</button>
+        <button type="button" id="plotZoomIn" onclick="plotZoomBy(0.25)">+</button>
       </div>
     </div>
     <div class="rotate-tip" id="rotateTip"></div>
@@ -459,21 +480,22 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
     </div>
     <div class="plot-list" id="plotList"></div>
     <div class="plot-tools" id="plotTools" hidden>
+      <div class="pt-editing" id="ptEditing"></div>
       <div class="pt-group">
-        <button type="button" onclick="plotNudge(-1,0)" aria-label="Move left">◀</button>
-        <button type="button" onclick="plotNudge(0,-1)" aria-label="Move up">▲</button>
-        <button type="button" onclick="plotNudge(0,1)" aria-label="Move down">▼</button>
-        <button type="button" onclick="plotNudge(1,0)" aria-label="Move right">▶</button>
+        <button type="button" id="ptLeft" onclick="plotNudge(-1,0)">◀</button>
+        <button type="button" id="ptUp" onclick="plotNudge(0,-1)">▲</button>
+        <button type="button" id="ptDown" onclick="plotNudge(0,1)">▼</button>
+        <button type="button" id="ptRight" onclick="plotNudge(1,0)">▶</button>
       </div>
       <div class="pt-group">
-        <button type="button" onclick="plotSize(-1)" aria-label="Smaller">－</button>
-        <button type="button" onclick="plotSize(1)" aria-label="Bigger">＋</button>
-        <button type="button" onclick="plotRotateSel()" aria-label="Rotate">↻</button>
+        <button type="button" id="ptSmaller" onclick="plotSize(-1)">－</button>
+        <button type="button" id="ptBigger" onclick="plotSize(1)">＋</button>
+        <button type="button" id="ptRotate" onclick="plotRotateSel()">↻</button>
       </div>
       <div class="pt-group">
-        <button type="button" onclick="plotDuplicateSel()" aria-label="Duplicate">⧉</button>
-        <button type="button" onclick="plotEditLabelSel()" aria-label="Edit label">✎</button>
-        <button type="button" class="pt-del" onclick="plotDeleteSel()" aria-label="Delete">🗑</button>
+        <button type="button" id="ptDuplicate" onclick="plotDuplicateSel()">⧉</button>
+        <button type="button" id="ptEditLabel" onclick="plotEditLabelSel()">✎</button>
+        <button type="button" class="pt-del" id="ptDelete" onclick="plotDeleteSel()">🗑</button>
       </div>
     </div>
   </div>
@@ -576,10 +598,11 @@ var qrcode=(function(){var P=function(x,w){var g=236,l=17,n=x,s=O[w],t=null,r=0,
 const I18N = {
   en:{
     tagline:"Rider Builder · demo", lang_label:"Language",
-    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_polish:"Polish", ai_need:"AI isn't set up yet.", ai_gate:"You've used your free AI actions. Upgrade to Pro for unlimited polish and translation.", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
+    btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_polish:"Polish", ai_need:"AI isn't set up yet.", ai_gate:"You've used your free AI actions. Upgrade to Pro for unlimited polish and translation.", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", saving:"Saving…", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
     pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Unlock Pro — €29 once", pro_or:"or", pro_key_lbl:"Already bought Pro? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
     confirm_new:"Start a new, empty rider? Unsaved changes will be cleared. (Use Save first to keep them.)",
+    confirm_example:"Load the example rider? Your current rider will be replaced and any unsaved changes will be lost. (Use Save first to keep them.)",
     ai_title:"✨ Paste your old rider or describe your setup",
     ai_desc:"Demo: this version uses smart text recognition (names, contacts, counts, dietary needs, amounts, input list). The full AI version with a language model plugs in here.",
     ai_ph:"Paste text from your existing rider, or type e.g.: '4-piece band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com +31 6 12 34 56 78'",
@@ -596,7 +619,7 @@ const I18N = {
     plus_contact:"+ add contact", plus_role:"+ add role", plus_dietary:"+ dietary need", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ channel",
     qa_presets:"Quick add:", qa_renumber:"↺ Renumber", qa_std:"+ Standard text", sec_essential:"Essential",
     hint_bullets:"One item per line = clean bullets", hint_48v:"Mark 48V with 'X'. Empty rows are hidden.",
-    hint_stageplot:"Upload your existing stage plot as an image. (Drag-and-drop plot editor in the full version.)",
+    hint_stageplot:"Upload your existing stage plot as an image, or use the drag-and-drop editor below to draw one from scratch.",
     /* editor field labels */
     f_bandname:"Band / artist name", f_subtitle:"Subtitle", f_validuntil:"Valid until", f_logo:"Logo (image)", f_cover:"Cover photo (Pro)", hint_cover:"Full-page photo behind the front page only — text stays readable with an automatic dark overlay.", btn_cover_remove:"× Remove cover photo", cover_pro:"Cover photo is a Pro feature — upgrade", f_coverpos:"Photo position (up/down)",
     f_accent:"Accent colour", f_intro:"Introduction text (optional)", f_contacts:"Contacts", f_travel:"Travelling party", f_guests:"Guest list",
@@ -631,10 +654,11 @@ const I18N = {
   },
   nl:{
     tagline:"Rider Builder · demo", lang_label:"Taal",
-    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_polish:"Oppoetsen", ai_need:"AI is nog niet ingesteld.", ai_gate:"Je hebt je gratis AI-acties gebruikt. Upgrade naar Pro voor onbeperkt oppoetsen en vertalen.", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
+    btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_polish:"Oppoetsen", ai_need:"AI is nog niet ingesteld.", ai_gate:"Je hebt je gratis AI-acties gebruikt. Upgrade naar Pro voor onbeperkt oppoetsen en vertalen.", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", saving:"Opslaan…", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
     pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Pro ontgrendelen — eenmalig €29", pro_or:"of", pro_key_lbl:"Pro al gekocht? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
     confirm_new:"Nieuwe, lege rider beginnen? Niet-opgeslagen wijzigingen worden gewist. (Gebruik eerst Opslaan om ze te bewaren.)",
+    confirm_example:"Voorbeeldrider laden? Je huidige rider wordt vervangen en niet-opgeslagen wijzigingen gaan verloren. (Gebruik eerst Opslaan om ze te bewaren.)",
     ai_title:"✨ Plak je oude rider of beschrijf je setup",
     ai_desc:"Demo: deze versie gebruikt slimme tekstherkenning (namen, contacten, aantallen, dieetwensen, bedragen, inputlijst). De volledige AI-versie met taalmodel plugt hier in.",
     ai_ph:"Plak hier tekst uit je bestaande rider, of typ bijv.: '4-koppige band, drummer type 1 diabetes, buy-out €25, travel party 8, contact Alex booking@example.com 06 12 34 56 78'",
@@ -651,7 +675,7 @@ const I18N = {
     plus_contact:"+ contact toevoegen", plus_role:"+ rol toevoegen", plus_dietary:"+ dieetwens", plus_item:"+ item", plus_crew:"+ crew", plus_channel:"+ kanaal",
     qa_presets:"Snel toevoegen:", qa_renumber:"↺ Hernummeren", qa_std:"+ Standaardtekst", sec_essential:"Essentieel",
     hint_bullets:"Eén item per regel = nette bullets", hint_48v:"Vink 48V aan met 'X'. Lege rijen worden niet getoond.",
-    hint_stageplot:"Upload je bestaande stageplot als afbeelding. (Drag-and-drop plot-editor komt in de volledige versie.)",
+    hint_stageplot:"Upload je bestaande stageplot als afbeelding, of gebruik de drag-and-drop-editor hieronder om er zelf een te tekenen.",
     f_bandname:"Bandnaam / artiest", f_subtitle:"Ondertitel", f_validuntil:"Geldig tot", f_logo:"Logo (afbeelding)", f_cover:"Coverfoto (Pro)", hint_cover:"Paginavullende foto, alleen achter de voorpagina — tekst blijft leesbaar door een automatische donkere waas.", btn_cover_remove:"× Coverfoto verwijderen", cover_pro:"Coverfoto is een Pro-functie — upgrade", f_coverpos:"Fotopositie (omhoog/omlaag)",
     f_accent:"Accentkleur", f_intro:"Introductietekst (optioneel)", f_contacts:"Contacten", f_travel:"Reisgezelschap", f_guests:"Gastenlijst",
     f_dressing:"Kleedkamer-eisen", f_towels:"Handdoeken", f_catering:"Catering / maaltijd", f_dietary:"Dieetwensen",
@@ -756,6 +780,12 @@ let S = blank();
 /* ===================== Pro / subscription (Lemon Squeezy) ===================== */
 /* After you create your Lemon Squeezy product, paste its checkout link below. */
 const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/fe73b9c7-5498-4c4c-8cb6-8c2104fc57f4";
+/* Optional extra check on top of "is this a valid Lemon Squeezy key at all": your store's numeric ID, so a valid
+   key from someone else's LS store can't activate Pro here. Find yours in the LS dashboard (Settings → General —
+   it's in the URL/API, e.g. app.lemonsqueezy.com/settings/general shows it, or check the "store_id" field in a
+   validate response for a key you know is genuine). Leave empty to skip this check (today's behavior: any valid
+   LS key from any store works — see roborider-audit-2026-09-09.md for why this is worth closing before a marketing push). */
+const LS_STORE_ID = "415513";
 let PRO=false; try{PRO=!!localStorage.getItem("rr_pro");}catch(e){}
 function updateProUI(){
   const b=$("btnPro");
@@ -814,7 +844,8 @@ async function proActivate(){
   try{
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
-    if(j&&j.valid){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    const storeOk = !LS_STORE_ID || String((j&&j.meta&&j.meta.store_id)||"")===LS_STORE_ID;
+    if(j&&j.valid&&storeOk){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
     else{$("proMsg").textContent=L("pro_bad");}
   }catch(err){$("proMsg").textContent=L("pro_err");}
   $("proActBtn").disabled=false;
@@ -834,6 +865,7 @@ const AI_ENABLED = false;   /* set true once the 'ai' Edge Function is live */
 const AI_FREE_TRIES = 2;    /* free Polish/Translate actions before Pro is required */
 let sb=null, user=null, currentRiderId=null, riderCount=0, shareToken=null;
 let sharedMode = /[?&]share=/.test(location.search);  // viewing a shared rider (read-only)
+let demoMode = new URLSearchParams(location.search).get("demo")==="1";  // viewing the ?demo=1 sample rider (read-only, same reasoning as sharedMode — never overwrite the visitor's own autosave just because they looked at the demo, switched language, etc.)
 try{
   if(window.supabase && SUPABASE_URL.indexOf("REPLACE")<0){
     sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -841,11 +873,11 @@ try{
 }catch(e){}
 function genToken(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 
-Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account.", step_prev:"Back", step_next:"Next", step_preview:"Preview", step_count:"Step {n} / {t}", free_limit:"The free plan includes 1 saved rider. Upgrade to Pro for unlimited riders (and no watermark)." });
-Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account.", step_prev:"Terug", step_next:"Volgende", step_preview:"Voorbeeld", step_count:"Stap {n} / {t}", free_limit:"Het gratis plan bevat 1 opgeslagen rider. Upgrade naar Pro voor onbeperkt riders (en geen watermerk)." });
-Object.assign(I18N.de,{"tagline": "Rider Builder · Demo", "lang_label": "Sprache", "btn_new": "Neu", "btn_example": "Beispiel laden", "btn_open": "Öffnen…", "btn_save": "Speichern (.json)", "btn_pdf": "⬇ PDF exportieren", "btn_translate": "Übersetzen", "btn_edit": "Bearbeiten", "btn_preview": "Vorschau", "saved": "Gespeichert", "onboard": "Neu hier? Beginne unten mit dem Schnellstart oder tippe auf „Beispiel laden“, um eines anzusehen.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Auf RoboRider Pro upgraden?\n\nOK = zur Kasse\nAbbrechen = ich habe bereits einen Lizenzschlüssel", "pro_enter": "Füge deinen RoboRider-Pro-Lizenzschlüssel ein:", "pro_ok": "Pro aktiviert — Wasserzeichen entfernt. Danke!", "pro_bad": "Dieser Lizenzschlüssel ist ungültig. Bitte prüfen und erneut versuchen.", "pro_err": "Der Lizenzserver ist nicht erreichbar. Bitte erneut versuchen.", "pro_manage": "RoboRider Pro ist in diesem Browser aktiv. Entfernen?", "pro_soon": "Die Kasse ist noch nicht eingerichtet — füge zuerst deinen Lemon-Squeezy-Link in den Code ein.", "pro_cta": "Auf Pro upgraden", "pro_status_free": "Du nutzt den kostenlosen Plan. Exportierte PDFs tragen ein kleines RoboRider-Wasserzeichen.", "pro_status_on": "RoboRider Pro ist in diesem Browser aktiv — kein Wasserzeichen. Danke für deine Unterstützung!", "pro_sub_btn": "Pro freischalten — einmalig 29 €", "pro_or": "oder", "pro_key_lbl": "Pro schon gekauft? Lizenzschlüssel einfügen", "pro_act": "Aktivieren", "pro_remove": "Pro aus diesem Browser entfernen", "confirm_new": "Einen neuen, leeren Rider starten? Nicht gespeicherte Änderungen gehen verloren. (Nutze vorher „Speichern“.)", "ai_title": "✨ Füge deinen alten Rider ein oder beschreibe dein Setup", "ai_desc": "Demo: Diese Version nutzt intelligente Texterkennung (Namen, Kontakte, Anzahl, Diätwünsche, Beträge, Inputliste). Die vollständige KI-Version mit Sprachmodell wird hier eingebunden.", "ai_ph": "Füge Text aus deinem bestehenden Rider ein oder tippe z. B.: „4-köpfige Band, Drummer Typ-1-Diabetes, Buy-out 25 €, Reisegruppe 8, Kontakt Alex booking@example.com +31 6 12 34 56 78“", "ai_btn": "Automatisch ausfüllen", "ai_empty": "Füge zuerst etwas Text ein.", "ai_recognized": "Erkannt: ", "ai_check": ". Bitte prüfen und ergänzen.", "ai_none": "Nichts automatisch erkannt — bitte manuell ausfüllen.", "wiz_title": "Schnellstart", "wiz_desc": "Beantworte ein paar Fragen — wir erstellen die Inputliste, den Bühnenplan und einen technischen Ausgangspunkt, den du verfeinern kannst.", "wiz_name": "Band / Künstlername", "wiz_members": "Wer steht auf der Bühne?", "wiz_monitoring": "Monitoring", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "In-Ears", "wiz_backline": "Backline", "wiz_back_own": "Wir bringen unsere eigene mit", "wiz_back_house": "Vom Haus", "wiz_build": "Meinen Rider erstellen", "wiz_other_ph": "Anderes Instrument (z. B. Cello, Sax, Harfe)…", "wiz_t_wedges": "Wedge-Monitore gemäß Inputliste; Mixe vom FOH.", "wiz_t_iem": "In-Ear-Monitoring; eigene Packs, gemischt vom FOH.", "wiz_t_back_own": "Wir bringen unsere eigene Backline mit.", "wiz_t_back_house": "Backline vom Haus erbeten — Details im Vorfeld.", "wiz_t_pa": "Full-Range-PA, phasen- und zeitkorrekt, gleichmäßige Abdeckung im ganzen Raum (L-Acoustics, d&b, Adamson o. Ä.).", "wiz_t_foh": "FOH im Saal, zentriert, nicht unter einem Balkon. Jedes ordentliche Digitalpult (24+ Kanäle).", "wiz_t_power": "230V an markierten Positionen.", "wiz_t_soundcheck": "Ca. 45–60 Min. Aufbau und 20–30 Min. Umbau einplanen.", "plus_contact": "+ Kontakt", "plus_role": "+ Rolle", "plus_dietary": "+ Diätwunsch", "plus_item": "+ Position", "plus_crew": "+ Crew", "plus_channel": "+ Kanal", "qa_presets": "Schnell hinzufügen:", "qa_renumber": "↺ Neu nummerieren", "qa_std": "+ Standardtext", "hint_bullets": "Eine Position pro Zeile = saubere Aufzählung", "hint_48v": "48V mit „X“ markieren. Leere Zeilen werden ausgeblendet.", "hint_stageplot": "Lade deinen bestehenden Bühnenplan als Bild hoch. (Drag-and-drop-Editor in der Vollversion.)", "f_bandname": "Band / Künstlername", "f_subtitle": "Untertitel", "f_validuntil": "Gültig bis", "f_logo": "Logo (Bild)", "f_accent": "Akzentfarbe", "f_intro": "Einleitungstext (optional)", "f_contacts": "Kontakte", "f_travel": "Reisegruppe", "f_guests": "Gästeliste", "f_dressing": "Anforderungen Garderobe", "f_towels": "Handtücher", "f_catering": "Catering / Mahlzeit", "f_dietary": "Diätwünsche", "f_buyout": "Buy-out (pro Person)", "f_drinks": "Getränke & Erfrischungen", "f_snacks": "Snacks / Extra", "f_soundcheck": "Soundcheck / Umbau", "f_crew": "Lokale Crew", "f_stage": "Bühne & Risers", "f_power": "Strom", "f_foh": "FOH / Pult", "f_monitors": "Monitore / In-Ears", "f_pa": "PA-Anlage", "f_wireless": "Funk / Frequenzen", "f_fixtures": "Scheinwerfer / Set", "f_lconsole": "Lichtpult", "f_notes": "Anmerkungen", "f_backline": "Backline", "f_stageplot": "Bühnenplan-Bild", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Gültig bis", "bandname_ph": "BANDNAME", "sec_general": "Allgemein", "sec_hospitality": "Hospitality", "sec_technical": "Technischer Rider", "sec_lights": "Licht", "sec_backline": "Backline", "sec_inputlist": "Inputliste", "sec_stageplot": "Bühnenplan", "sub_intro": "Einführung", "sub_contact": "Kontakt", "sub_travel": "Reisegruppe", "sub_guests": "Gästeliste", "sub_dressing": "Garderobe", "sub_towels": "Handtücher", "sub_catering": "Catering", "sub_dietary": "Diätwünsche", "buyout_word": "Buy-out", "per_person": "pro Person", "sub_drinks": "Getränke & Erfrischungen", "sub_snacks": "Snacks", "sub_soundcheck": "Soundcheck & Umbau", "sub_crew": "Lokale Crew", "sub_stage": "Bühne & Risers", "sub_power": "Strom", "sub_foh": "FOH", "sub_monitors": "Monitore", "sub_pa": "PA", "sub_wireless": "Funk", "sub_console": "Lichtpult", "th_ch": "Kan.", "th_input": "Eingang", "th_micdi": "Mik./DI", "th_48v": "48V", "th_stand": "Stativ", "th_position": "Position", "th_notes": "Notizen", "plot_open": "✎ Bühnenplan zeichnen", "plot_title": "Bühnenplan-Editor", "plot_done": "Fertig", "plot_clear": "Leeren", "plot_audience": "PUBLIKUM / BÜHNENVORDERKANTE", "plot_has": "Gezeichneter Bühnenplan aktiv ✓", "plot_hint": "Klicke ein Element an, um es hinzuzufügen, dann ziehen zum Positionieren. Eckpunkt ziehen zum Skalieren, ↻ zum Drehen, × zum Löschen.", "plot_or_upload": "…oder lade stattdessen ein Bühnenplan-Bild hoch", "plot_add": "Element hinzufügen", "plot_rotate": "↻ Drehe dein Telefon für mehr Platz", "plot_riser_dims": "Riser-Maße (B×T×H), z. B. 2×1×0,4 m:", "hint_guests": "Ein Name oder eine Rolle pro Zeile.", "hint_micdi": "Tipp: Tippe auf das Mik./DI-Feld für gängige Vorschläge.", "wl_mic_lbl": "Funkmikrofon", "wl_iem_lbl": "In-Ears (IEM)", "wl_band_lbl": "Frequenzband", "wl_mic": "Funkmikrofon", "wl_iem": "IEM", "wl_band": "Band", "wl_free": "anmeldefrei", "f_lightphoto": "Referenzfoto (frühere Show)", "hint_lightphoto": "Optional — hilft dem Haus, den Look zu treffen.", "f_console_own": "Lichtpult gestellt von", "console_own_bring": "Wir bringen es selbst mit", "console_own_house": "Vom Haus gestellt", "pt_drums": "Schlagzeug", "pt_keys": "Keys", "pt_bass": "Bass", "pt_guitar": "Gitarre", "pt_vocal": "Gesang/Lead", "pt_riser": "Riser", "pt_monitor": "Monitor", "pt_amp": "Amp", "pt_di": "DI-Box", "pt_power": "Strom 230V", "pt_mic": "Mikro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Hocker", "pt_mstand": "Notenständer", "pt_laptop": "Laptop", "pt_text": "Textlabel", "acct_btn_out": "Anmelden", "acct_btn_in": "Konto", "acct_title": "Dein Konto", "acct_intro": "Melde dich nur mit deiner E-Mail an — wir senden dir einen Einmal-Link. Kein Passwort nötig.", "acct_email": "E-Mail-Adresse", "acct_send": "Link senden", "acct_sent": "Sieh in deiner E-Mail nach dem Anmelde-Link.", "acct_need_email": "Gib zuerst deine E-Mail ein.", "acct_err": "Etwas ist schiefgelaufen. Bitte erneut versuchen.", "acct_who": "Angemeldet als {email}.", "acct_lang": "Bevorzugte Sprache", "acct_save_lbl": "Aktuellen Rider in deinem Konto speichern", "acct_save_btn": "Speichern", "acct_saved": "In deinem Konto gespeichert.", "acct_load": "Öffnen", "acct_rename": "Umbenennen", "acct_delete": "Löschen", "acct_empty": "Noch keine gespeicherten Rider.", "acct_logout": "Abmelden", "acct_untitled": "Unbenannter Rider", "acct_rename_q": "Neuer Name für diesen Rider:", "acct_delete_q": "Diesen Rider löschen? Das kann nicht rückgängig gemacht werden.", "acct_cloud_save": "Speichern", "acct_share": "Teilen", "acct_dup": "Duplizieren", "acct_copy_suffix": "(Kopie)", "acct_duplicated": "Dupliziert.", "acct_share_copied": "Teilen-Link in die Zwischenablage kopiert.", "acct_share_prompt": "Kopiere diesen Teilen-Link:", "shared_banner": "Geteilter Rider · schreibgeschützte Ansicht", "shared_cta": "Erstelle deinen eigenen kostenlos auf roborider.nl", "pro_login_hint": "Melde dich zuerst an, damit Pro auf jedem Gerät mit deinem Konto verknüpft bleibt.", "pro_login_btn": "Anmelden, um Pro zu aktivieren", "pro_need_login": "Bitte zuerst anmelden — dann wird deine Pro-Lizenz mit deinem Konto verknüpft.", "step_prev": "Zurück", "step_next": "Weiter", "step_preview": "Vorschau", "step_count": "Schritt {n} / {t}", "free_limit": "Der kostenlose Plan umfasst 1 gespeicherten Rider. Upgrade auf Pro für unbegrenzte Rider (und kein Wasserzeichen)."});
-Object.assign(I18N.fr,{"tagline": "Rider Builder · démo", "lang_label": "Langue", "btn_new": "Nouveau", "btn_example": "Charger un exemple", "btn_open": "Ouvrir…", "btn_save": "Enregistrer (.json)", "btn_pdf": "⬇ Exporter en PDF", "btn_translate": "Traduire", "btn_edit": "Éditer", "btn_preview": "Aperçu", "saved": "Enregistré", "onboard": "Nouveau ici ? Commence par le Démarrage rapide ci-dessous, ou touche « Charger un exemple » pour en explorer un.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Passer à RoboRider Pro ?\n\nOK = aller au paiement\nAnnuler = j'ai déjà une clé de licence", "pro_enter": "Colle ta clé de licence RoboRider Pro :", "pro_ok": "Pro activé — filigrane supprimé. Merci !", "pro_bad": "Cette clé de licence n'est pas valide. Vérifie-la et réessaie.", "pro_err": "Impossible de joindre le serveur de licences. Réessaie.", "pro_manage": "RoboRider Pro est actif sur ce navigateur. Le retirer ?", "pro_soon": "Le paiement n'est pas encore configuré — colle d'abord ton lien Lemon Squeezy dans le code.", "pro_cta": "Passer à Pro", "pro_status_free": "Tu es sur le plan gratuit. Les PDF exportés portent un petit filigrane RoboRider.", "pro_status_on": "RoboRider Pro est actif sur ce navigateur — sans filigrane. Merci de ton soutien !", "pro_sub_btn": "Débloquer Pro — 29 € une fois", "pro_or": "ou", "pro_key_lbl": "Déjà acheté Pro ? Colle ta clé de licence", "pro_act": "Activer", "pro_remove": "Retirer Pro de ce navigateur", "confirm_new": "Démarrer un nouveau rider vide ? Les modifications non enregistrées seront effacées. (Utilise Enregistrer d'abord.)", "ai_title": "✨ Colle ton ancien rider ou décris ta configuration", "ai_desc": "Démo : cette version utilise une reconnaissance de texte intelligente (noms, contacts, nombres, régimes, montants, liste des entrées). La version IA complète avec modèle de langage se branche ici.", "ai_ph": "Colle le texte de ton rider existant, ou tape p. ex. : « groupe de 4, batteur diabète type 1, buy-out 25 €, équipe 8, contact Alex booking@example.com +31 6 12 34 56 78 »", "ai_btn": "Remplissage auto", "ai_empty": "Colle d'abord du texte.", "ai_recognized": "Reconnu : ", "ai_check": ". Vérifie et complète.", "ai_none": "Rien reconnu automatiquement — remplis manuellement.", "wiz_title": "Démarrage rapide", "wiz_desc": "Réponds à quelques questions — on crée la liste des entrées, le plan de scène et un point de départ technique à affiner.", "wiz_name": "Nom du groupe / artiste", "wiz_members": "Qui est sur scène ?", "wiz_monitoring": "Retours", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "Oreillettes", "wiz_backline": "Backline", "wiz_back_own": "On apporte la nôtre", "wiz_back_house": "Fournie par la salle", "wiz_build": "Créer mon rider", "wiz_other_ph": "Autre instrument (p. ex. violoncelle, sax, harpe)…", "wiz_t_wedges": "Wedges selon la liste des entrées ; mixes depuis la façade.", "wiz_t_iem": "Retours intra-auriculaires ; on apporte nos packs, mixés depuis la façade.", "wiz_t_back_own": "On apporte notre propre backline.", "wiz_t_back_house": "Backline demandée à la salle — détails à l'avance.", "wiz_t_pa": "Système façade large bande, calé en phase et en temps, couverture homogène de la salle (L-Acoustics, d&b, Adamson ou équivalent).", "wiz_t_foh": "Façade dans la salle, centrée, pas sous un balcon. Toute bonne console numérique (24+ canaux).", "wiz_t_power": "230V aux positions indiquées.", "wiz_t_soundcheck": "Prévoir ~45–60 min d'installation et 20–30 min de changement de plateau.", "plus_contact": "+ contact", "plus_role": "+ rôle", "plus_dietary": "+ régime", "plus_item": "+ élément", "plus_crew": "+ équipe", "plus_channel": "+ canal", "qa_presets": "Ajout rapide :", "qa_renumber": "↺ Renuméroter", "qa_std": "+ Texte standard", "hint_bullets": "Un élément par ligne = puces nettes", "hint_48v": "Marque le 48V par « X ». Les lignes vides sont masquées.", "hint_stageplot": "Téléverse ton plan de scène existant en image. (Éditeur glisser-déposer dans la version complète.)", "f_bandname": "Nom du groupe / artiste", "f_subtitle": "Sous-titre", "f_validuntil": "Valable jusqu'au", "f_logo": "Logo (image)", "f_accent": "Couleur d'accent", "f_intro": "Texte d'introduction (facultatif)", "f_contacts": "Contacts", "f_travel": "Équipe en tournée", "f_guests": "Liste d'invités", "f_dressing": "Exigences loge", "f_towels": "Serviettes", "f_catering": "Catering / repas", "f_dietary": "Régimes alimentaires", "f_buyout": "Buy-out (par personne)", "f_drinks": "Boissons & rafraîchissements", "f_snacks": "En-cas / extra", "f_soundcheck": "Balance / changement de plateau", "f_crew": "Équipe locale", "f_stage": "Scène & praticables", "f_power": "Alimentation", "f_foh": "Façade / console", "f_monitors": "Retours / oreillettes", "f_pa": "Système son", "f_wireless": "HF / fréquences", "f_fixtures": "Projecteurs / set", "f_lconsole": "Console lumière", "f_notes": "Notes", "f_backline": "Backline", "f_stageplot": "Image du plan de scène", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Valable jusqu'au", "bandname_ph": "NOM DU GROUPE", "sec_general": "Général", "sec_hospitality": "Hospitality", "sec_technical": "Rider technique", "sec_lights": "Lumière", "sec_backline": "Backline", "sec_inputlist": "Liste des entrées", "sec_stageplot": "Plan de scène", "sub_intro": "Introduction", "sub_contact": "Contact", "sub_travel": "Équipe en tournée", "sub_guests": "Liste d'invités", "sub_dressing": "Loge", "sub_towels": "Serviettes", "sub_catering": "Catering", "sub_dietary": "Régimes alimentaires", "buyout_word": "Buy-out", "per_person": "par personne", "sub_drinks": "Boissons & rafraîchissements", "sub_snacks": "En-cas", "sub_soundcheck": "Balance & changement de plateau", "sub_crew": "Équipe locale", "sub_stage": "Scène & praticables", "sub_power": "Alimentation", "sub_foh": "Façade", "sub_monitors": "Retours", "sub_pa": "Son", "sub_wireless": "HF", "sub_console": "Console lumière", "th_ch": "CH", "th_input": "Entrée", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Pied", "th_position": "Position", "th_notes": "Notes", "plot_open": "✎ Dessiner le plan de scène", "plot_title": "Éditeur de plan de scène", "plot_done": "Terminé", "plot_clear": "Effacer", "plot_audience": "PUBLIC / DEVANT DE SCÈNE", "plot_has": "Plan de scène dessiné actif ✓", "plot_hint": "Clique sur un élément pour l'ajouter, puis glisse pour le placer. Glisse la poignée d'angle pour redimensionner, ↻ pour pivoter, × pour supprimer.", "plot_or_upload": "…ou téléverse plutôt une image du plan de scène", "plot_add": "Ajouter un élément", "plot_rotate": "↻ Tourne ton téléphone pour plus de place", "plot_riser_dims": "Dimensions du praticable (l×p×h), p. ex. 2×1×0,4 m :", "hint_guests": "Un nom ou un rôle par ligne.", "hint_micdi": "Astuce : touche le champ micro/DI pour des suggestions courantes.", "wl_mic_lbl": "Micro HF", "wl_iem_lbl": "Oreillettes (IEM)", "wl_band_lbl": "Bande de fréquence", "wl_mic": "Micro HF", "wl_iem": "IEM", "wl_band": "Bande", "wl_free": "sans licence", "f_lightphoto": "Photo de référence (show précédent)", "hint_lightphoto": "Facultatif — aide la salle à reproduire l'ambiance.", "f_console_own": "Console lumière fournie par", "console_own_bring": "On apporte la nôtre", "console_own_house": "Fournie par la salle", "pt_drums": "Batterie", "pt_keys": "Claviers", "pt_bass": "Basse", "pt_guitar": "Guitare", "pt_vocal": "Chant/Lead", "pt_riser": "Praticable", "pt_monitor": "Retour", "pt_amp": "Ampli", "pt_di": "Boîte DI", "pt_power": "Alim. 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Tabouret", "pt_mstand": "Pupitre", "pt_laptop": "Ordi portable", "pt_text": "Étiquette texte", "acct_btn_out": "Se connecter", "acct_btn_in": "Compte", "acct_title": "Ton compte", "acct_intro": "Connecte-toi avec juste ton e-mail — on t'envoie un lien à usage unique. Pas de mot de passe.", "acct_email": "Adresse e-mail", "acct_send": "Envoyer le lien", "acct_sent": "Regarde dans ta boîte mail pour le lien de connexion.", "acct_need_email": "Saisis d'abord ton e-mail.", "acct_err": "Une erreur est survenue. Réessaie.", "acct_who": "Connecté en tant que {email}.", "acct_lang": "Langue préférée", "acct_save_lbl": "Enregistrer le rider actuel dans ton compte", "acct_save_btn": "Enregistrer", "acct_saved": "Enregistré dans ton compte.", "acct_load": "Ouvrir", "acct_rename": "Renommer", "acct_delete": "Supprimer", "acct_empty": "Aucun rider enregistré pour l'instant.", "acct_logout": "Se déconnecter", "acct_untitled": "Rider sans titre", "acct_rename_q": "Nouveau nom pour ce rider :", "acct_delete_q": "Supprimer ce rider ? C'est irréversible.", "acct_cloud_save": "Enregistrer", "acct_share": "Partager", "acct_dup": "Dupliquer", "acct_copy_suffix": "(copie)", "acct_duplicated": "Dupliqué.", "acct_share_copied": "Lien de partage copié dans le presse-papiers.", "acct_share_prompt": "Copie ce lien de partage :", "shared_banner": "Rider partagé · lecture seule", "shared_cta": "Crée le tien gratuitement sur roborider.nl", "pro_login_hint": "Connecte-toi d'abord pour que Pro reste lié à ton compte sur chaque appareil.", "pro_login_btn": "Se connecter pour activer Pro", "pro_need_login": "Connecte-toi d'abord — ta licence Pro sera alors liée à ton compte.", "step_prev": "Retour", "step_next": "Suivant", "step_preview": "Aperçu", "step_count": "Étape {n} / {t}", "free_limit": "Le plan gratuit inclut 1 rider enregistré. Passe à Pro pour des riders illimités (et sans filigrane)."});
-Object.assign(I18N.es,{"tagline": "Rider Builder · demo", "lang_label": "Idioma", "btn_new": "Nuevo", "btn_example": "Cargar ejemplo", "btn_open": "Abrir…", "btn_save": "Guardar (.json)", "btn_pdf": "⬇ Exportar PDF", "btn_translate": "Traducir", "btn_edit": "Editar", "btn_preview": "Vista previa", "saved": "Guardado", "onboard": "¿Nuevo por aquí? Empieza con el Inicio rápido abajo, o toca «Cargar ejemplo» para explorar uno.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "¿Pasar a RoboRider Pro?\n\nOK = ir al pago\nCancelar = ya tengo una clave de licencia", "pro_enter": "Pega tu clave de licencia de RoboRider Pro:", "pro_ok": "Pro activado — marca de agua eliminada. ¡Gracias!", "pro_bad": "Esa clave de licencia no es válida. Compruébala e inténtalo de nuevo.", "pro_err": "No se pudo contactar con el servidor de licencias. Inténtalo de nuevo.", "pro_manage": "RoboRider Pro está activo en este navegador. ¿Quitarlo?", "pro_soon": "El pago aún no está configurado — pega primero tu enlace de Lemon Squeezy en el código.", "pro_cta": "Pasar a Pro", "pro_status_free": "Estás en el plan gratuito. Los PDF exportados llevan una pequeña marca de agua de RoboRider.", "pro_status_on": "RoboRider Pro está activo en este navegador — sin marca de agua. ¡Gracias por tu apoyo!", "pro_sub_btn": "Desbloquear Pro — 29 € una vez", "pro_or": "o", "pro_key_lbl": "¿Ya compraste Pro? Pega tu clave de licencia", "pro_act": "Activar", "pro_remove": "Quitar Pro de este navegador", "confirm_new": "¿Empezar un rider nuevo y vacío? Se borrarán los cambios sin guardar. (Usa Guardar primero.)", "ai_title": "✨ Pega tu rider antiguo o describe tu setup", "ai_desc": "Demo: esta versión usa reconocimiento de texto inteligente (nombres, contactos, cantidades, dietas, importes, lista de entradas). La versión IA completa con modelo de lenguaje se conecta aquí.", "ai_ph": "Pega texto de tu rider actual, o escribe p. ej.: «banda de 4, baterista diabetes tipo 1, buy-out 25 €, equipo 8, contacto Alex booking@example.com +31 6 12 34 56 78»", "ai_btn": "Autocompletar", "ai_empty": "Pega algo de texto primero.", "ai_recognized": "Reconocido: ", "ai_check": ". Revisa y completa.", "ai_none": "No se reconoció nada automáticamente — rellénalo manualmente.", "wiz_title": "Inicio rápido", "wiz_desc": "Responde unas preguntas — creamos la lista de entradas, el plano de escenario y un punto de partida técnico que podrás ajustar.", "wiz_name": "Nombre de banda / artista", "wiz_members": "¿Quién está en el escenario?", "wiz_monitoring": "Monitoreo", "wiz_mon_wedges": "Cuñas", "wiz_mon_iem": "In-ears", "wiz_backline": "Backline", "wiz_back_own": "Llevamos el nuestro", "wiz_back_house": "De la sala", "wiz_build": "Crear mi rider", "wiz_other_ph": "Otro instrumento (p. ej. cello, sax, arpa)…", "wiz_t_wedges": "Monitores de cuña según la lista de entradas; mezclas desde FOH.", "wiz_t_iem": "Monitoreo in-ear; llevamos nuestros packs, mezclados desde FOH.", "wiz_t_back_own": "Llevamos nuestro propio backline.", "wiz_t_back_house": "Backline solicitado a la sala — detalles por adelantado.", "wiz_t_pa": "PA de rango completo, alineada en fase y tiempo, cobertura uniforme de toda la sala (L-Acoustics, d&b, Adamson o equivalente).", "wiz_t_foh": "FOH en la sala, centrado, no bajo un balcón. Cualquier consola digital decente (24+ canales).", "wiz_t_power": "230V en las posiciones marcadas.", "wiz_t_soundcheck": "Prevé ~45–60 min de montaje y 20–30 min de cambio.", "plus_contact": "+ contacto", "plus_role": "+ rol", "plus_dietary": "+ dieta", "plus_item": "+ elemento", "plus_crew": "+ equipo", "plus_channel": "+ canal", "qa_presets": "Añadir rápido:", "qa_renumber": "↺ Renumerar", "qa_std": "+ Texto estándar", "hint_bullets": "Un elemento por línea = viñetas limpias", "hint_48v": "Marca el 48V con «X». Las filas vacías se ocultan.", "hint_stageplot": "Sube tu plano de escenario existente como imagen. (Editor de arrastrar y soltar en la versión completa.)", "f_bandname": "Nombre de banda / artista", "f_subtitle": "Subtítulo", "f_validuntil": "Válido hasta", "f_logo": "Logo (imagen)", "f_accent": "Color de acento", "f_intro": "Texto de introducción (opcional)", "f_contacts": "Contactos", "f_travel": "Equipo de gira", "f_guests": "Lista de invitados", "f_dressing": "Requisitos de camerino", "f_towels": "Toallas", "f_catering": "Catering / comida", "f_dietary": "Requisitos dietéticos", "f_buyout": "Buy-out (por persona)", "f_drinks": "Bebidas y refrigerios", "f_snacks": "Snacks / extra", "f_soundcheck": "Prueba de sonido / cambio", "f_crew": "Equipo local", "f_stage": "Escenario y tarimas", "f_power": "Corriente", "f_foh": "FOH / consola", "f_monitors": "Monitores / in-ears", "f_pa": "Sistema PA", "f_wireless": "Inalámbrico / frecuencias", "f_fixtures": "Focos / set", "f_lconsole": "Mesa de luces", "f_notes": "Notas", "f_backline": "Backline", "f_stageplot": "Imagen del plano", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Válido hasta", "bandname_ph": "NOMBRE DE BANDA", "sec_general": "General", "sec_hospitality": "Hospitality", "sec_technical": "Rider técnico", "sec_lights": "Iluminación", "sec_backline": "Backline", "sec_inputlist": "Lista de entradas", "sec_stageplot": "Plano de escenario", "sub_intro": "Introducción", "sub_contact": "Contacto", "sub_travel": "Equipo de gira", "sub_guests": "Lista de invitados", "sub_dressing": "Camerino", "sub_towels": "Toallas", "sub_catering": "Catering", "sub_dietary": "Requisitos dietéticos", "buyout_word": "Buy-out", "per_person": "por persona", "sub_drinks": "Bebidas y refrigerios", "sub_snacks": "Snacks", "sub_soundcheck": "Prueba de sonido y cambio", "sub_crew": "Equipo local", "sub_stage": "Escenario y tarimas", "sub_power": "Corriente", "sub_foh": "FOH", "sub_monitors": "Monitores", "sub_pa": "PA", "sub_wireless": "Inalámbrico", "sub_console": "Mesa de luces", "th_ch": "CH", "th_input": "Entrada", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Soporte", "th_position": "Posición", "th_notes": "Notas", "plot_open": "✎ Dibujar plano de escenario", "plot_title": "Editor de plano", "plot_done": "Listo", "plot_clear": "Borrar", "plot_audience": "PÚBLICO / FRENTE DEL ESCENARIO", "plot_has": "Plano de escenario dibujado activo ✓", "plot_hint": "Haz clic en un elemento para añadirlo y arrástralo para colocarlo. Arrastra la esquina para redimensionar, ↻ para girar, × para eliminar.", "plot_or_upload": "…o sube una imagen del plano en su lugar", "plot_add": "Añadir elemento", "plot_rotate": "↻ Gira el teléfono para más espacio", "plot_riser_dims": "Dimensiones de la tarima (an×prof×al), p. ej. 2×1×0,4 m:", "hint_guests": "Un nombre o rol por línea.", "hint_micdi": "Consejo: toca el campo micro/DI para ver sugerencias comunes.", "wl_mic_lbl": "Micro inalámbrico", "wl_iem_lbl": "In-ears (IEM)", "wl_band_lbl": "Banda de frecuencia", "wl_mic": "Micro inalámbrico", "wl_iem": "IEM", "wl_band": "Banda", "wl_free": "sin licencia", "f_lightphoto": "Foto de referencia (show anterior)", "hint_lightphoto": "Opcional — ayuda a la sala a igualar el look.", "f_console_own": "Mesa de luces aportada por", "console_own_bring": "La llevamos nosotros", "console_own_house": "Aportada por la sala", "pt_drums": "Batería", "pt_keys": "Teclados", "pt_bass": "Bajo", "pt_guitar": "Guitarra", "pt_vocal": "Voz/Lead", "pt_riser": "Tarima", "pt_monitor": "Monitor", "pt_amp": "Ampli", "pt_di": "Caja DI", "pt_power": "Corriente 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Banqueta", "pt_mstand": "Atril", "pt_laptop": "Portátil", "pt_text": "Etiqueta texto", "acct_btn_out": "Iniciar sesión", "acct_btn_in": "Cuenta", "acct_title": "Tu cuenta", "acct_intro": "Inicia sesión solo con tu correo — te enviamos un enlace de un solo uso. Sin contraseña.", "acct_email": "Correo electrónico", "acct_send": "Enviar enlace", "acct_sent": "Revisa tu correo para el enlace de acceso.", "acct_need_email": "Introduce primero tu correo.", "acct_err": "Algo salió mal. Inténtalo de nuevo.", "acct_who": "Conectado como {email}.", "acct_lang": "Idioma preferido", "acct_save_lbl": "Guardar el rider actual en tu cuenta", "acct_save_btn": "Guardar", "acct_saved": "Guardado en tu cuenta.", "acct_load": "Abrir", "acct_rename": "Renombrar", "acct_delete": "Eliminar", "acct_empty": "Aún no hay riders guardados.", "acct_logout": "Cerrar sesión", "acct_untitled": "Rider sin título", "acct_rename_q": "Nuevo nombre para este rider:", "acct_delete_q": "¿Eliminar este rider? No se puede deshacer.", "acct_cloud_save": "Guardar", "acct_share": "Compartir", "acct_dup": "Duplicar", "acct_copy_suffix": "(copia)", "acct_duplicated": "Duplicado.", "acct_share_copied": "Enlace para compartir copiado al portapapeles.", "acct_share_prompt": "Copia este enlace para compartir:", "shared_banner": "Rider compartido · solo lectura", "shared_cta": "Crea el tuyo gratis en roborider.nl", "pro_login_hint": "Inicia sesión primero para que Pro quede vinculado a tu cuenta en todos los dispositivos.", "pro_login_btn": "Inicia sesión para activar Pro", "pro_need_login": "Inicia sesión primero — así tu licencia Pro se vincula a tu cuenta.", "step_prev": "Atrás", "step_next": "Siguiente", "step_preview": "Vista previa", "step_count": "Paso {n} / {t}", "free_limit": "El plan gratuito incluye 1 rider guardado. Pasa a Pro para riders ilimitados (y sin marca de agua)."});
+Object.assign(I18N.en,{ acct_btn_out:"Log in", acct_btn_in:"Account", acct_title:"Your account", acct_intro:"Log in with just your email — we'll send you a one-time link. No password needed.", acct_email:"Email address", acct_send:"Send link", acct_sent:"Check your email for the login link.", acct_need_email:"Enter your email first.", acct_err:"Something went wrong. Please try again.", acct_who:"Logged in as {email}.", acct_lang:"Preferred language", acct_save_lbl:"Save current rider to your account", acct_save_btn:"Save", acct_saved:"Saved to your account.", acct_load:"Open", acct_rename:"Rename", acct_delete:"Delete", acct_empty:"No saved riders yet.", acct_logout:"Log out", acct_untitled:"Untitled rider", acct_rename_q:"New name for this rider:", acct_delete_q:"Delete this rider? This can't be undone.", acct_cloud_save:"Save", acct_share:"Share", acct_dup:"Duplicate", acct_copy_suffix:"(copy)", acct_duplicated:"Duplicated.", acct_share_copied:"Share link copied to clipboard.", acct_share_prompt:"Copy this share link:", shared_banner:"Shared rider · read-only view", shared_cta:"Make your own free at roborider.nl", pro_login_hint:"Log in first so Pro stays linked to your account on every device.", pro_login_btn:"Log in to activate Pro", pro_need_login:"Please log in first — then your Pro license links to your account.", step_prev:"Back", step_next:"Next", step_preview:"Preview", step_count:"Step {n} / {t}",aria_step:"Section", free_limit:"The free plan includes 1 saved rider. Upgrade to Pro for unlimited riders (and no watermark)." });
+Object.assign(I18N.nl,{ acct_btn_out:"Inloggen", acct_btn_in:"Account", acct_title:"Je account", acct_intro:"Log in met alleen je e-mailadres — je krijgt een eenmalige link. Geen wachtwoord nodig.", acct_email:"E-mailadres", acct_send:"Stuur link", acct_sent:"Check je e-mail voor de inloglink.", acct_need_email:"Vul eerst je e-mailadres in.", acct_err:"Er ging iets mis. Probeer het opnieuw.", acct_who:"Ingelogd als {email}.", acct_lang:"Voorkeurstaal", acct_save_lbl:"Huidige rider opslaan in je account", acct_save_btn:"Opslaan", acct_saved:"Opgeslagen in je account.", acct_load:"Openen", acct_rename:"Hernoemen", acct_delete:"Verwijderen", acct_empty:"Nog geen opgeslagen riders.", acct_logout:"Uitloggen", acct_untitled:"Naamloze rider", acct_rename_q:"Nieuwe naam voor deze rider:", acct_delete_q:"Deze rider verwijderen? Dit kan niet ongedaan worden.", acct_cloud_save:"Opslaan", acct_share:"Delen", acct_dup:"Dupliceren", acct_copy_suffix:"(kopie)", acct_duplicated:"Gedupliceerd.", acct_share_copied:"Deel-link gekopieerd naar klembord.", acct_share_prompt:"Kopieer deze deel-link:", shared_banner:"Gedeelde rider · alleen-lezen", shared_cta:"Maak gratis je eigen rider op roborider.nl", pro_login_hint:"Log eerst in, zodat Pro op elk apparaat aan je account gekoppeld blijft.", pro_login_btn:"Log in om Pro te activeren", pro_need_login:"Log eerst in — dan koppelt je Pro-licentie aan je account.", step_prev:"Terug", step_next:"Volgende", step_preview:"Voorbeeld", step_count:"Stap {n} / {t}",aria_step:"Sectie", free_limit:"Het gratis plan bevat 1 opgeslagen rider. Upgrade naar Pro voor onbeperkt riders (en geen watermerk)." });
+Object.assign(I18N.de,{"tagline": "Rider Builder · Demo", "lang_label": "Sprache", "btn_new": "Neu", "btn_example": "Beispiel laden", "btn_open": "Öffnen…", "btn_save": "Speichern (.json)", "btn_pdf": "⬇ PDF exportieren", "btn_translate": "Übersetzen", "btn_edit": "Bearbeiten", "btn_preview": "Vorschau", "saved": "Gespeichert", "saving": "Speichert…", "onboard": "Neu hier? Beginne unten mit dem Schnellstart oder tippe auf „Beispiel laden“, um eines anzusehen.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Auf RoboRider Pro upgraden?\n\nOK = zur Kasse\nAbbrechen = ich habe bereits einen Lizenzschlüssel", "pro_enter": "Füge deinen RoboRider-Pro-Lizenzschlüssel ein:", "pro_ok": "Pro aktiviert — Wasserzeichen entfernt. Danke!", "pro_bad": "Dieser Lizenzschlüssel ist ungültig. Bitte prüfen und erneut versuchen.", "pro_err": "Der Lizenzserver ist nicht erreichbar. Bitte erneut versuchen.", "pro_manage": "RoboRider Pro ist in diesem Browser aktiv. Entfernen?", "pro_soon": "Die Kasse ist noch nicht eingerichtet — füge zuerst deinen Lemon-Squeezy-Link in den Code ein.", "pro_cta": "Auf Pro upgraden", "pro_status_free": "Du nutzt den kostenlosen Plan. Exportierte PDFs tragen ein kleines RoboRider-Wasserzeichen.", "pro_status_on": "RoboRider Pro ist in diesem Browser aktiv — kein Wasserzeichen. Danke für deine Unterstützung!", "pro_sub_btn": "Pro freischalten — einmalig 29 €", "pro_or": "oder", "pro_key_lbl": "Pro schon gekauft? Lizenzschlüssel einfügen", "pro_act": "Aktivieren", "pro_remove": "Pro aus diesem Browser entfernen", "confirm_new": "Einen neuen, leeren Rider starten? Nicht gespeicherte Änderungen gehen verloren. (Nutze vorher „Speichern“.)", "confirm_example": "Beispiel-Rider laden? Dein aktueller Rider wird ersetzt und nicht gespeicherte Änderungen gehen verloren. (Nutze vorher „Speichern“.)", "ai_title": "✨ Füge deinen alten Rider ein oder beschreibe dein Setup", "ai_desc": "Demo: Diese Version nutzt intelligente Texterkennung (Namen, Kontakte, Anzahl, Diätwünsche, Beträge, Inputliste). Die vollständige KI-Version mit Sprachmodell wird hier eingebunden.", "ai_ph": "Füge Text aus deinem bestehenden Rider ein oder tippe z. B.: „4-köpfige Band, Drummer Typ-1-Diabetes, Buy-out 25 €, Reisegruppe 8, Kontakt Alex booking@example.com +31 6 12 34 56 78“", "ai_btn": "Automatisch ausfüllen", "ai_empty": "Füge zuerst etwas Text ein.", "ai_recognized": "Erkannt: ", "ai_check": ". Bitte prüfen und ergänzen.", "ai_none": "Nichts automatisch erkannt — bitte manuell ausfüllen.", "wiz_title": "Schnellstart", "wiz_desc": "Beantworte ein paar Fragen — wir erstellen die Inputliste, den Bühnenplan und einen technischen Ausgangspunkt, den du verfeinern kannst.", "wiz_name": "Band / Künstlername", "wiz_members": "Wer steht auf der Bühne?", "wiz_monitoring": "Monitoring", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "In-Ears", "wiz_backline": "Backline", "wiz_back_own": "Wir bringen unsere eigene mit", "wiz_back_house": "Vom Haus", "wiz_build": "Meinen Rider erstellen", "wiz_other_ph": "Anderes Instrument (z. B. Cello, Sax, Harfe)…", "wiz_t_wedges": "Wedge-Monitore gemäß Inputliste; Mixe vom FOH.", "wiz_t_iem": "In-Ear-Monitoring; eigene Packs, gemischt vom FOH.", "wiz_t_back_own": "Wir bringen unsere eigene Backline mit.", "wiz_t_back_house": "Backline vom Haus erbeten — Details im Vorfeld.", "wiz_t_pa": "Full-Range-PA, phasen- und zeitkorrekt, gleichmäßige Abdeckung im ganzen Raum (L-Acoustics, d&b, Adamson o. Ä.).", "wiz_t_foh": "FOH im Saal, zentriert, nicht unter einem Balkon. Jedes ordentliche Digitalpult (24+ Kanäle).", "wiz_t_power": "230V an markierten Positionen.", "wiz_t_soundcheck": "Ca. 45–60 Min. Aufbau und 20–30 Min. Umbau einplanen.", "plus_contact": "+ Kontakt", "plus_role": "+ Rolle", "plus_dietary": "+ Diätwunsch", "plus_item": "+ Position", "plus_crew": "+ Crew", "plus_channel": "+ Kanal", "qa_presets": "Schnell hinzufügen:", "qa_renumber": "↺ Neu nummerieren", "qa_std": "+ Standardtext", "hint_bullets": "Eine Position pro Zeile = saubere Aufzählung", "hint_48v": "48V mit „X“ markieren. Leere Zeilen werden ausgeblendet.", "hint_stageplot": "Lade deinen bestehenden Bühnenplan als Bild hoch, oder nutze den Drag-and-Drop-Editor unten, um selbst einen zu zeichnen.", "f_bandname": "Band / Künstlername", "f_subtitle": "Untertitel", "f_validuntil": "Gültig bis", "f_logo": "Logo (Bild)", "f_accent": "Akzentfarbe", "f_intro": "Einleitungstext (optional)", "f_contacts": "Kontakte", "f_travel": "Reisegruppe", "f_guests": "Gästeliste", "f_dressing": "Anforderungen Garderobe", "f_towels": "Handtücher", "f_catering": "Catering / Mahlzeit", "f_dietary": "Diätwünsche", "f_buyout": "Buy-out (pro Person)", "f_drinks": "Getränke & Erfrischungen", "f_snacks": "Snacks / Extra", "f_soundcheck": "Soundcheck / Umbau", "f_crew": "Lokale Crew", "f_stage": "Bühne & Risers", "f_power": "Strom", "f_foh": "FOH / Pult", "f_monitors": "Monitore / In-Ears", "f_pa": "PA-Anlage", "f_wireless": "Funk / Frequenzen", "f_fixtures": "Scheinwerfer / Set", "f_lconsole": "Lichtpult", "f_notes": "Anmerkungen", "f_backline": "Backline", "f_stageplot": "Bühnenplan-Bild", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Gültig bis", "bandname_ph": "BANDNAME", "sec_general": "Allgemein", "sec_hospitality": "Hospitality", "sec_technical": "Technischer Rider", "sec_lights": "Licht", "sec_backline": "Backline", "sec_inputlist": "Inputliste", "sec_stageplot": "Bühnenplan", "sub_intro": "Einführung", "sub_contact": "Kontakt", "sub_travel": "Reisegruppe", "sub_guests": "Gästeliste", "sub_dressing": "Garderobe", "sub_towels": "Handtücher", "sub_catering": "Catering", "sub_dietary": "Diätwünsche", "buyout_word": "Buy-out", "per_person": "pro Person", "sub_drinks": "Getränke & Erfrischungen", "sub_snacks": "Snacks", "sub_soundcheck": "Soundcheck & Umbau", "sub_crew": "Lokale Crew", "sub_stage": "Bühne & Risers", "sub_power": "Strom", "sub_foh": "FOH", "sub_monitors": "Monitore", "sub_pa": "PA", "sub_wireless": "Funk", "sub_console": "Lichtpult", "th_ch": "Kan.", "th_input": "Eingang", "th_micdi": "Mik./DI", "th_48v": "48V", "th_stand": "Stativ", "th_position": "Position", "th_notes": "Notizen", "plot_open": "✎ Bühnenplan zeichnen", "plot_title": "Bühnenplan-Editor", "plot_done": "Fertig", "plot_clear": "Leeren", "plot_audience": "PUBLIKUM / BÜHNENVORDERKANTE", "plot_has": "Gezeichneter Bühnenplan aktiv ✓", "plot_hint": "Klicke ein Element an, um es hinzuzufügen, dann ziehen zum Positionieren. Eckpunkt ziehen zum Skalieren, ↻ zum Drehen, × zum Löschen.", "plot_or_upload": "…oder lade stattdessen ein Bühnenplan-Bild hoch", "plot_add": "Element hinzufügen", "plot_rotate": "↻ Drehe dein Telefon für mehr Platz", "plot_riser_dims": "Riser-Maße (B×T×H), z. B. 2×1×0,4 m:", "hint_guests": "Ein Name oder eine Rolle pro Zeile.", "hint_micdi": "Tipp: Tippe auf das Mik./DI-Feld für gängige Vorschläge.", "wl_mic_lbl": "Funkmikrofon", "wl_iem_lbl": "In-Ears (IEM)", "wl_band_lbl": "Frequenzband", "wl_mic": "Funkmikrofon", "wl_iem": "IEM", "wl_band": "Band", "wl_free": "anmeldefrei", "f_lightphoto": "Referenzfoto (frühere Show)", "hint_lightphoto": "Optional — hilft dem Haus, den Look zu treffen.", "f_console_own": "Lichtpult gestellt von", "console_own_bring": "Wir bringen es selbst mit", "console_own_house": "Vom Haus gestellt", "pt_drums": "Schlagzeug", "pt_keys": "Keys", "pt_bass": "Bass", "pt_guitar": "Gitarre", "pt_vocal": "Gesang/Lead", "pt_riser": "Riser", "pt_monitor": "Monitor", "pt_amp": "Amp", "pt_di": "DI-Box", "pt_power": "Strom 230V", "pt_mic": "Mikro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Hocker", "pt_mstand": "Notenständer", "pt_laptop": "Laptop", "pt_text": "Textlabel", "acct_btn_out": "Anmelden", "acct_btn_in": "Konto", "acct_title": "Dein Konto", "acct_intro": "Melde dich nur mit deiner E-Mail an — wir senden dir einen Einmal-Link. Kein Passwort nötig.", "acct_email": "E-Mail-Adresse", "acct_send": "Link senden", "acct_sent": "Sieh in deiner E-Mail nach dem Anmelde-Link.", "acct_need_email": "Gib zuerst deine E-Mail ein.", "acct_err": "Etwas ist schiefgelaufen. Bitte erneut versuchen.", "acct_who": "Angemeldet als {email}.", "acct_lang": "Bevorzugte Sprache", "acct_save_lbl": "Aktuellen Rider in deinem Konto speichern", "acct_save_btn": "Speichern", "acct_saved": "In deinem Konto gespeichert.", "acct_load": "Öffnen", "acct_rename": "Umbenennen", "acct_delete": "Löschen", "acct_empty": "Noch keine gespeicherten Rider.", "acct_logout": "Abmelden", "acct_untitled": "Unbenannter Rider", "acct_rename_q": "Neuer Name für diesen Rider:", "acct_delete_q": "Diesen Rider löschen? Das kann nicht rückgängig gemacht werden.", "acct_cloud_save": "Speichern", "acct_share": "Teilen", "acct_dup": "Duplizieren", "acct_copy_suffix": "(Kopie)", "acct_duplicated": "Dupliziert.", "acct_share_copied": "Teilen-Link in die Zwischenablage kopiert.", "acct_share_prompt": "Kopiere diesen Teilen-Link:", "shared_banner": "Geteilter Rider · schreibgeschützte Ansicht", "shared_cta": "Erstelle deinen eigenen kostenlos auf roborider.nl", "pro_login_hint": "Melde dich zuerst an, damit Pro auf jedem Gerät mit deinem Konto verknüpft bleibt.", "pro_login_btn": "Anmelden, um Pro zu aktivieren", "pro_need_login": "Bitte zuerst anmelden — dann wird deine Pro-Lizenz mit deinem Konto verknüpft.", "step_prev": "Zurück", "step_next": "Weiter", "step_preview": "Vorschau", "step_count": "Schritt {n} / {t}", "aria_step": "Abschnitt", "free_limit": "Der kostenlose Plan umfasst 1 gespeicherten Rider. Upgrade auf Pro für unbegrenzte Rider (und kein Wasserzeichen)."});
+Object.assign(I18N.fr,{"tagline": "Rider Builder · démo", "lang_label": "Langue", "btn_new": "Nouveau", "btn_example": "Charger un exemple", "btn_open": "Ouvrir…", "btn_save": "Enregistrer (.json)", "btn_pdf": "⬇ Exporter en PDF", "btn_translate": "Traduire", "btn_edit": "Éditer", "btn_preview": "Aperçu", "saved": "Enregistré", "saving": "Enregistrement…", "onboard": "Nouveau ici ? Commence par le Démarrage rapide ci-dessous, ou touche « Charger un exemple » pour en explorer un.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "Passer à RoboRider Pro ?\n\nOK = aller au paiement\nAnnuler = j'ai déjà une clé de licence", "pro_enter": "Colle ta clé de licence RoboRider Pro :", "pro_ok": "Pro activé — filigrane supprimé. Merci !", "pro_bad": "Cette clé de licence n'est pas valide. Vérifie-la et réessaie.", "pro_err": "Impossible de joindre le serveur de licences. Réessaie.", "pro_manage": "RoboRider Pro est actif sur ce navigateur. Le retirer ?", "pro_soon": "Le paiement n'est pas encore configuré — colle d'abord ton lien Lemon Squeezy dans le code.", "pro_cta": "Passer à Pro", "pro_status_free": "Tu es sur le plan gratuit. Les PDF exportés portent un petit filigrane RoboRider.", "pro_status_on": "RoboRider Pro est actif sur ce navigateur — sans filigrane. Merci de ton soutien !", "pro_sub_btn": "Débloquer Pro — 29 € une fois", "pro_or": "ou", "pro_key_lbl": "Déjà acheté Pro ? Colle ta clé de licence", "pro_act": "Activer", "pro_remove": "Retirer Pro de ce navigateur", "confirm_new": "Démarrer un nouveau rider vide ? Les modifications non enregistrées seront effacées. (Utilise Enregistrer d'abord.)", "confirm_example": "Charger le rider d'exemple ? Ton rider actuel sera remplacé et les modifications non enregistrées seront perdues. (Utilise Enregistrer d'abord.)", "ai_title": "✨ Colle ton ancien rider ou décris ta configuration", "ai_desc": "Démo : cette version utilise une reconnaissance de texte intelligente (noms, contacts, nombres, régimes, montants, liste des entrées). La version IA complète avec modèle de langage se branche ici.", "ai_ph": "Colle le texte de ton rider existant, ou tape p. ex. : « groupe de 4, batteur diabète type 1, buy-out 25 €, équipe 8, contact Alex booking@example.com +31 6 12 34 56 78 »", "ai_btn": "Remplissage auto", "ai_empty": "Colle d'abord du texte.", "ai_recognized": "Reconnu : ", "ai_check": ". Vérifie et complète.", "ai_none": "Rien reconnu automatiquement — remplis manuellement.", "wiz_title": "Démarrage rapide", "wiz_desc": "Réponds à quelques questions — on crée la liste des entrées, le plan de scène et un point de départ technique à affiner.", "wiz_name": "Nom du groupe / artiste", "wiz_members": "Qui est sur scène ?", "wiz_monitoring": "Retours", "wiz_mon_wedges": "Wedges", "wiz_mon_iem": "Oreillettes", "wiz_backline": "Backline", "wiz_back_own": "On apporte la nôtre", "wiz_back_house": "Fournie par la salle", "wiz_build": "Créer mon rider", "wiz_other_ph": "Autre instrument (p. ex. violoncelle, sax, harpe)…", "wiz_t_wedges": "Wedges selon la liste des entrées ; mixes depuis la façade.", "wiz_t_iem": "Retours intra-auriculaires ; on apporte nos packs, mixés depuis la façade.", "wiz_t_back_own": "On apporte notre propre backline.", "wiz_t_back_house": "Backline demandée à la salle — détails à l'avance.", "wiz_t_pa": "Système façade large bande, calé en phase et en temps, couverture homogène de la salle (L-Acoustics, d&b, Adamson ou équivalent).", "wiz_t_foh": "Façade dans la salle, centrée, pas sous un balcon. Toute bonne console numérique (24+ canaux).", "wiz_t_power": "230V aux positions indiquées.", "wiz_t_soundcheck": "Prévoir ~45–60 min d'installation et 20–30 min de changement de plateau.", "plus_contact": "+ contact", "plus_role": "+ rôle", "plus_dietary": "+ régime", "plus_item": "+ élément", "plus_crew": "+ équipe", "plus_channel": "+ canal", "qa_presets": "Ajout rapide :", "qa_renumber": "↺ Renuméroter", "qa_std": "+ Texte standard", "hint_bullets": "Un élément par ligne = puces nettes", "hint_48v": "Marque le 48V par « X ». Les lignes vides sont masquées.", "hint_stageplot": "Téléverse ton plan de scène existant en image, ou utilise l'éditeur glisser-déposer ci-dessous pour en dessiner un toi-même.", "f_bandname": "Nom du groupe / artiste", "f_subtitle": "Sous-titre", "f_validuntil": "Valable jusqu'au", "f_logo": "Logo (image)", "f_accent": "Couleur d'accent", "f_intro": "Texte d'introduction (facultatif)", "f_contacts": "Contacts", "f_travel": "Équipe en tournée", "f_guests": "Liste d'invités", "f_dressing": "Exigences loge", "f_towels": "Serviettes", "f_catering": "Catering / repas", "f_dietary": "Régimes alimentaires", "f_buyout": "Buy-out (par personne)", "f_drinks": "Boissons & rafraîchissements", "f_snacks": "En-cas / extra", "f_soundcheck": "Balance / changement de plateau", "f_crew": "Équipe locale", "f_stage": "Scène & praticables", "f_power": "Alimentation", "f_foh": "Façade / console", "f_monitors": "Retours / oreillettes", "f_pa": "Système son", "f_wireless": "HF / fréquences", "f_fixtures": "Projecteurs / set", "f_lconsole": "Console lumière", "f_notes": "Notes", "f_backline": "Backline", "f_stageplot": "Image du plan de scène", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Valable jusqu'au", "bandname_ph": "NOM DU GROUPE", "sec_general": "Général", "sec_hospitality": "Hospitality", "sec_technical": "Rider technique", "sec_lights": "Lumière", "sec_backline": "Backline", "sec_inputlist": "Liste des entrées", "sec_stageplot": "Plan de scène", "sub_intro": "Introduction", "sub_contact": "Contact", "sub_travel": "Équipe en tournée", "sub_guests": "Liste d'invités", "sub_dressing": "Loge", "sub_towels": "Serviettes", "sub_catering": "Catering", "sub_dietary": "Régimes alimentaires", "buyout_word": "Buy-out", "per_person": "par personne", "sub_drinks": "Boissons & rafraîchissements", "sub_snacks": "En-cas", "sub_soundcheck": "Balance & changement de plateau", "sub_crew": "Équipe locale", "sub_stage": "Scène & praticables", "sub_power": "Alimentation", "sub_foh": "Façade", "sub_monitors": "Retours", "sub_pa": "Son", "sub_wireless": "HF", "sub_console": "Console lumière", "th_ch": "CH", "th_input": "Entrée", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Pied", "th_position": "Position", "th_notes": "Notes", "plot_open": "✎ Dessiner le plan de scène", "plot_title": "Éditeur de plan de scène", "plot_done": "Terminé", "plot_clear": "Effacer", "plot_audience": "PUBLIC / DEVANT DE SCÈNE", "plot_has": "Plan de scène dessiné actif ✓", "plot_hint": "Clique sur un élément pour l'ajouter, puis glisse pour le placer. Glisse la poignée d'angle pour redimensionner, ↻ pour pivoter, × pour supprimer.", "plot_or_upload": "…ou téléverse plutôt une image du plan de scène", "plot_add": "Ajouter un élément", "plot_rotate": "↻ Tourne ton téléphone pour plus de place", "plot_riser_dims": "Dimensions du praticable (l×p×h), p. ex. 2×1×0,4 m :", "hint_guests": "Un nom ou un rôle par ligne.", "hint_micdi": "Astuce : touche le champ micro/DI pour des suggestions courantes.", "wl_mic_lbl": "Micro HF", "wl_iem_lbl": "Oreillettes (IEM)", "wl_band_lbl": "Bande de fréquence", "wl_mic": "Micro HF", "wl_iem": "IEM", "wl_band": "Bande", "wl_free": "sans licence", "f_lightphoto": "Photo de référence (show précédent)", "hint_lightphoto": "Facultatif — aide la salle à reproduire l'ambiance.", "f_console_own": "Console lumière fournie par", "console_own_bring": "On apporte la nôtre", "console_own_house": "Fournie par la salle", "pt_drums": "Batterie", "pt_keys": "Claviers", "pt_bass": "Basse", "pt_guitar": "Guitare", "pt_vocal": "Chant/Lead", "pt_riser": "Praticable", "pt_monitor": "Retour", "pt_amp": "Ampli", "pt_di": "Boîte DI", "pt_power": "Alim. 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Tabouret", "pt_mstand": "Pupitre", "pt_laptop": "Ordi portable", "pt_text": "Étiquette texte", "acct_btn_out": "Se connecter", "acct_btn_in": "Compte", "acct_title": "Ton compte", "acct_intro": "Connecte-toi avec juste ton e-mail — on t'envoie un lien à usage unique. Pas de mot de passe.", "acct_email": "Adresse e-mail", "acct_send": "Envoyer le lien", "acct_sent": "Regarde dans ta boîte mail pour le lien de connexion.", "acct_need_email": "Saisis d'abord ton e-mail.", "acct_err": "Une erreur est survenue. Réessaie.", "acct_who": "Connecté en tant que {email}.", "acct_lang": "Langue préférée", "acct_save_lbl": "Enregistrer le rider actuel dans ton compte", "acct_save_btn": "Enregistrer", "acct_saved": "Enregistré dans ton compte.", "acct_load": "Ouvrir", "acct_rename": "Renommer", "acct_delete": "Supprimer", "acct_empty": "Aucun rider enregistré pour l'instant.", "acct_logout": "Se déconnecter", "acct_untitled": "Rider sans titre", "acct_rename_q": "Nouveau nom pour ce rider :", "acct_delete_q": "Supprimer ce rider ? C'est irréversible.", "acct_cloud_save": "Enregistrer", "acct_share": "Partager", "acct_dup": "Dupliquer", "acct_copy_suffix": "(copie)", "acct_duplicated": "Dupliqué.", "acct_share_copied": "Lien de partage copié dans le presse-papiers.", "acct_share_prompt": "Copie ce lien de partage :", "shared_banner": "Rider partagé · lecture seule", "shared_cta": "Crée le tien gratuitement sur roborider.nl", "pro_login_hint": "Connecte-toi d'abord pour que Pro reste lié à ton compte sur chaque appareil.", "pro_login_btn": "Se connecter pour activer Pro", "pro_need_login": "Connecte-toi d'abord — ta licence Pro sera alors liée à ton compte.", "step_prev": "Retour", "step_next": "Suivant", "step_preview": "Aperçu", "step_count": "Étape {n} / {t}", "aria_step": "Section", "free_limit": "Le plan gratuit inclut 1 rider enregistré. Passe à Pro pour des riders illimités (et sans filigrane)."});
+Object.assign(I18N.es,{"tagline": "Rider Builder · demo", "lang_label": "Idioma", "btn_new": "Nuevo", "btn_example": "Cargar ejemplo", "btn_open": "Abrir…", "btn_save": "Guardar (.json)", "btn_pdf": "⬇ Exportar PDF", "btn_translate": "Traducir", "btn_edit": "Editar", "btn_preview": "Vista previa", "saved": "Guardado", "saving": "Guardando…", "onboard": "¿Nuevo por aquí? Empieza con el Inicio rápido abajo, o toca «Cargar ejemplo» para explorar uno.", "pro_off": "Pro", "pro_on": "Pro", "pro_choose": "¿Pasar a RoboRider Pro?\n\nOK = ir al pago\nCancelar = ya tengo una clave de licencia", "pro_enter": "Pega tu clave de licencia de RoboRider Pro:", "pro_ok": "Pro activado — marca de agua eliminada. ¡Gracias!", "pro_bad": "Esa clave de licencia no es válida. Compruébala e inténtalo de nuevo.", "pro_err": "No se pudo contactar con el servidor de licencias. Inténtalo de nuevo.", "pro_manage": "RoboRider Pro está activo en este navegador. ¿Quitarlo?", "pro_soon": "El pago aún no está configurado — pega primero tu enlace de Lemon Squeezy en el código.", "pro_cta": "Pasar a Pro", "pro_status_free": "Estás en el plan gratuito. Los PDF exportados llevan una pequeña marca de agua de RoboRider.", "pro_status_on": "RoboRider Pro está activo en este navegador — sin marca de agua. ¡Gracias por tu apoyo!", "pro_sub_btn": "Desbloquear Pro — 29 € una vez", "pro_or": "o", "pro_key_lbl": "¿Ya compraste Pro? Pega tu clave de licencia", "pro_act": "Activar", "pro_remove": "Quitar Pro de este navegador", "confirm_new": "¿Empezar un rider nuevo y vacío? Se borrarán los cambios sin guardar. (Usa Guardar primero.)", "confirm_example": "¿Cargar el rider de ejemplo? Tu rider actual será reemplazado y se perderán los cambios sin guardar. (Usa Guardar primero.)", "ai_title": "✨ Pega tu rider antiguo o describe tu setup", "ai_desc": "Demo: esta versión usa reconocimiento de texto inteligente (nombres, contactos, cantidades, dietas, importes, lista de entradas). La versión IA completa con modelo de lenguaje se conecta aquí.", "ai_ph": "Pega texto de tu rider actual, o escribe p. ej.: «banda de 4, baterista diabetes tipo 1, buy-out 25 €, equipo 8, contacto Alex booking@example.com +31 6 12 34 56 78»", "ai_btn": "Autocompletar", "ai_empty": "Pega algo de texto primero.", "ai_recognized": "Reconocido: ", "ai_check": ". Revisa y completa.", "ai_none": "No se reconoció nada automáticamente — rellénalo manualmente.", "wiz_title": "Inicio rápido", "wiz_desc": "Responde unas preguntas — creamos la lista de entradas, el plano de escenario y un punto de partida técnico que podrás ajustar.", "wiz_name": "Nombre de banda / artista", "wiz_members": "¿Quién está en el escenario?", "wiz_monitoring": "Monitoreo", "wiz_mon_wedges": "Cuñas", "wiz_mon_iem": "In-ears", "wiz_backline": "Backline", "wiz_back_own": "Llevamos el nuestro", "wiz_back_house": "De la sala", "wiz_build": "Crear mi rider", "wiz_other_ph": "Otro instrumento (p. ej. cello, sax, arpa)…", "wiz_t_wedges": "Monitores de cuña según la lista de entradas; mezclas desde FOH.", "wiz_t_iem": "Monitoreo in-ear; llevamos nuestros packs, mezclados desde FOH.", "wiz_t_back_own": "Llevamos nuestro propio backline.", "wiz_t_back_house": "Backline solicitado a la sala — detalles por adelantado.", "wiz_t_pa": "PA de rango completo, alineada en fase y tiempo, cobertura uniforme de toda la sala (L-Acoustics, d&b, Adamson o equivalente).", "wiz_t_foh": "FOH en la sala, centrado, no bajo un balcón. Cualquier consola digital decente (24+ canales).", "wiz_t_power": "230V en las posiciones marcadas.", "wiz_t_soundcheck": "Prevé ~45–60 min de montaje y 20–30 min de cambio.", "plus_contact": "+ contacto", "plus_role": "+ rol", "plus_dietary": "+ dieta", "plus_item": "+ elemento", "plus_crew": "+ equipo", "plus_channel": "+ canal", "qa_presets": "Añadir rápido:", "qa_renumber": "↺ Renumerar", "qa_std": "+ Texto estándar", "hint_bullets": "Un elemento por línea = viñetas limpias", "hint_48v": "Marca el 48V con «X». Las filas vacías se ocultan.", "hint_stageplot": "Sube tu plano de escenario existente como imagen, o usa el editor de arrastrar y soltar de abajo para dibujar uno tú mismo.", "f_bandname": "Nombre de banda / artista", "f_subtitle": "Subtítulo", "f_validuntil": "Válido hasta", "f_logo": "Logo (imagen)", "f_accent": "Color de acento", "f_intro": "Texto de introducción (opcional)", "f_contacts": "Contactos", "f_travel": "Equipo de gira", "f_guests": "Lista de invitados", "f_dressing": "Requisitos de camerino", "f_towels": "Toallas", "f_catering": "Catering / comida", "f_dietary": "Requisitos dietéticos", "f_buyout": "Buy-out (por persona)", "f_drinks": "Bebidas y refrigerios", "f_snacks": "Snacks / extra", "f_soundcheck": "Prueba de sonido / cambio", "f_crew": "Equipo local", "f_stage": "Escenario y tarimas", "f_power": "Corriente", "f_foh": "FOH / consola", "f_monitors": "Monitores / in-ears", "f_pa": "Sistema PA", "f_wireless": "Inalámbrico / frecuencias", "f_fixtures": "Focos / set", "f_lconsole": "Mesa de luces", "f_notes": "Notas", "f_backline": "Backline", "f_stageplot": "Imagen del plano", "subtitle_default": "Technical & Hospitality Rider", "valid_until": "Válido hasta", "bandname_ph": "NOMBRE DE BANDA", "sec_general": "General", "sec_hospitality": "Hospitality", "sec_technical": "Rider técnico", "sec_lights": "Iluminación", "sec_backline": "Backline", "sec_inputlist": "Lista de entradas", "sec_stageplot": "Plano de escenario", "sub_intro": "Introducción", "sub_contact": "Contacto", "sub_travel": "Equipo de gira", "sub_guests": "Lista de invitados", "sub_dressing": "Camerino", "sub_towels": "Toallas", "sub_catering": "Catering", "sub_dietary": "Requisitos dietéticos", "buyout_word": "Buy-out", "per_person": "por persona", "sub_drinks": "Bebidas y refrigerios", "sub_snacks": "Snacks", "sub_soundcheck": "Prueba de sonido y cambio", "sub_crew": "Equipo local", "sub_stage": "Escenario y tarimas", "sub_power": "Corriente", "sub_foh": "FOH", "sub_monitors": "Monitores", "sub_pa": "PA", "sub_wireless": "Inalámbrico", "sub_console": "Mesa de luces", "th_ch": "CH", "th_input": "Entrada", "th_micdi": "Micro/DI", "th_48v": "48V", "th_stand": "Soporte", "th_position": "Posición", "th_notes": "Notas", "plot_open": "✎ Dibujar plano de escenario", "plot_title": "Editor de plano", "plot_done": "Listo", "plot_clear": "Borrar", "plot_audience": "PÚBLICO / FRENTE DEL ESCENARIO", "plot_has": "Plano de escenario dibujado activo ✓", "plot_hint": "Haz clic en un elemento para añadirlo y arrástralo para colocarlo. Arrastra la esquina para redimensionar, ↻ para girar, × para eliminar.", "plot_or_upload": "…o sube una imagen del plano en su lugar", "plot_add": "Añadir elemento", "plot_rotate": "↻ Gira el teléfono para más espacio", "plot_riser_dims": "Dimensiones de la tarima (an×prof×al), p. ej. 2×1×0,4 m:", "hint_guests": "Un nombre o rol por línea.", "hint_micdi": "Consejo: toca el campo micro/DI para ver sugerencias comunes.", "wl_mic_lbl": "Micro inalámbrico", "wl_iem_lbl": "In-ears (IEM)", "wl_band_lbl": "Banda de frecuencia", "wl_mic": "Micro inalámbrico", "wl_iem": "IEM", "wl_band": "Banda", "wl_free": "sin licencia", "f_lightphoto": "Foto de referencia (show anterior)", "hint_lightphoto": "Opcional — ayuda a la sala a igualar el look.", "f_console_own": "Mesa de luces aportada por", "console_own_bring": "La llevamos nosotros", "console_own_house": "Aportada por la sala", "pt_drums": "Batería", "pt_keys": "Teclados", "pt_bass": "Bajo", "pt_guitar": "Guitarra", "pt_vocal": "Voz/Lead", "pt_riser": "Tarima", "pt_monitor": "Monitor", "pt_amp": "Ampli", "pt_di": "Caja DI", "pt_power": "Corriente 230V", "pt_mic": "Micro", "pt_perc": "Perc", "pt_sub": "Sub", "pt_sidefill": "Sidefill", "pt_stool": "Banqueta", "pt_mstand": "Atril", "pt_laptop": "Portátil", "pt_text": "Etiqueta texto", "acct_btn_out": "Iniciar sesión", "acct_btn_in": "Cuenta", "acct_title": "Tu cuenta", "acct_intro": "Inicia sesión solo con tu correo — te enviamos un enlace de un solo uso. Sin contraseña.", "acct_email": "Correo electrónico", "acct_send": "Enviar enlace", "acct_sent": "Revisa tu correo para el enlace de acceso.", "acct_need_email": "Introduce primero tu correo.", "acct_err": "Algo salió mal. Inténtalo de nuevo.", "acct_who": "Conectado como {email}.", "acct_lang": "Idioma preferido", "acct_save_lbl": "Guardar el rider actual en tu cuenta", "acct_save_btn": "Guardar", "acct_saved": "Guardado en tu cuenta.", "acct_load": "Abrir", "acct_rename": "Renombrar", "acct_delete": "Eliminar", "acct_empty": "Aún no hay riders guardados.", "acct_logout": "Cerrar sesión", "acct_untitled": "Rider sin título", "acct_rename_q": "Nuevo nombre para este rider:", "acct_delete_q": "¿Eliminar este rider? No se puede deshacer.", "acct_cloud_save": "Guardar", "acct_share": "Compartir", "acct_dup": "Duplicar", "acct_copy_suffix": "(copia)", "acct_duplicated": "Duplicado.", "acct_share_copied": "Enlace para compartir copiado al portapapeles.", "acct_share_prompt": "Copia este enlace para compartir:", "shared_banner": "Rider compartido · solo lectura", "shared_cta": "Crea el tuyo gratis en roborider.nl", "pro_login_hint": "Inicia sesión primero para que Pro quede vinculado a tu cuenta en todos los dispositivos.", "pro_login_btn": "Inicia sesión para activar Pro", "pro_need_login": "Inicia sesión primero — así tu licencia Pro se vincula a tu cuenta.", "step_prev": "Atrás", "step_next": "Siguiente", "step_preview": "Vista previa", "step_count": "Paso {n} / {t}", "aria_step": "Sección", "free_limit": "El plan gratuito incluye 1 rider guardado. Pasa a Pro para riders ilimitados (y sin marca de agua)."});
 /* --- Aux/output section, bulk add & auto-numbering (all 5 languages) --- */
 Object.assign(I18N.en,{sec_aux:"Monitor mixes & outputs",th_aux:"AUX",th_dest:"Mix / destination",th_type:"Type",plus_aux:"+ aux",hint_aux:"IEM mixes, wedges, FX and engineer channels. Reorder with ↑↓ — the numbering updates automatically.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Engineer",aux_t_other:"Other",bulk_total:"Channels needed:",aux_bulk_total:"Auxes needed:",bulk_add:"Fill",hint_bulk:"Type e.g. 48 and press Fill — empty channels are added up to that number.",hint_autonum:"Channel numbers follow the list order automatically — use ↑↓ to reorder or ⤵ to insert a row."});
 Object.assign(I18N.nl,{sec_aux:"Monitormixen & outputs",th_aux:"AUX",th_dest:"Mix / bestemming",th_type:"Type",plus_aux:"+ aux",hint_aux:"In-earmixen, wedges, FX en engineer-kanalen. Herorden met ↑↓ — de nummering loopt automatisch mee.",aux_t_wedge:"Wedge",aux_t_iem:"IEM",aux_t_fx:"FX",aux_t_eng:"Engineer",aux_t_other:"Anders",bulk_total:"Kanalen nodig:",aux_bulk_total:"Auxen nodig:",bulk_add:"Aanvullen",hint_bulk:"Typ bijv. 48 en klik Aanvullen — er komen lege kanalen bij tot dat aantal.",hint_autonum:"Kanaalnummers volgen automatisch de volgorde van de lijst — gebruik ↑↓ om te schuiven of ⤵ om een rij tussen te voegen."});
@@ -943,6 +975,117 @@ Object.assign(I18N.de,{wiz_mon_both:"Beides",wiz_t_both:"Gemischtes Monitoring: 
 Object.assign(I18N.fr,{wiz_mon_both:"Les deux",wiz_t_both:"Retours mixtes : une partie en wedges, une partie en oreillettes, le tout mixé depuis la façade."});
 Object.assign(I18N.es,{wiz_mon_both:"Ambos",wiz_t_both:"Monitoreo mixto: parte en cuñas, parte en in-ears, todo mezclado desde FOH."});
 
+/* DE/FR/ES catch-up (2026-09-10): these keys existed for EN/NL but still fell back to English
+   for German/French/Spanish users — quick-add labels, cover-photo (Pro) fields, section help
+   text and the pre-export upsell modal. NL only needed wiz_generator. */
+Object.assign(I18N.nl,{wiz_generator:"Auto-generator"});
+Object.assign(I18N.de,{
+  btn_polish:"Aufpolieren", ai_need:"KI ist noch nicht eingerichtet.",
+  ai_gate:"Du hast deine kostenlosen KI-Aktionen aufgebraucht. Upgrade auf Pro für unbegrenztes Aufpolieren und Übersetzen.",
+  wiz_generator:"Auto-Generator", sec_essential:"Essentiell",
+  f_cover:"Titelfoto (Pro)", hint_cover:"Ganzseitiges Foto nur hinter der Titelseite — der Text bleibt dank einer automatischen dunklen Abdunkelung lesbar.",
+  btn_cover_remove:"× Titelfoto entfernen", cover_pro:"Titelfoto ist eine Pro-Funktion — upgraden", f_coverpos:"Fotoposition (hoch/runter)",
+  help_1:"Bandname, Kontakte und Reisegruppe. Der Kopf deines Riders: wer ihr seid und wen die Location bei Fragen anruft.",
+  help_2:"Eine Draufsicht der Bühne: wer wo steht, mit Risern, Monitoren und Strom. Ziehe die Elemente an ihren Platz.",
+  help_3:"Jedes Signal, das ins Pult geht. Pro Kanal: die Quelle (Kick, Gesang …), Mikro oder DI, und 48V wo nötig.",
+  help_4:"Die Monitorwege und Outputs: wie viele Wedge- oder In-Ear-Mixe du brauchst, und für wen.",
+  help_5:"Die Amps, das Schlagzeug und die Ständer auf der Bühne. Gib an, was ihr selbst mitbringt und was ihr vom Haus erbittet.",
+  help_6:"Weitere technische Wünsche: Soundcheck, lokale Crew, Bühnengröße, Strom, FOH-Pult, PA und Funksysteme.",
+  help_7:"Deine Lichtwünsche: Scheinwerfer/Set, das Lichtpult, und optional ein Referenzfoto einer früheren Show.",
+  help_8:"Alles rund um die Band abseits vom Sound: Garderobe, Catering mit Diätwünschen, Getränke und Handtücher.",
+  help_9:"Parken und Anfahrt: Platz für den Bus oder die Autos, und ein Anfahrtspunkt nah an der Bühne.",
+  help_10:"Produktions-Extras: Backdrop oder LED-Wand, Spezialeffekte, und der Umbau/Soundcheck-Ablauf.",
+  help_11:"Absprachen und Sicherheit: Haftung, und Absprachen zu Foto, Video und Interviews.",
+  pu_title:"Bevor du exportierst", pu_body:"Du nutzt den kostenlosen Plan, daher trägt dein PDF ein kleines RoboRider-Wasserzeichen. Hol dir Pro (einmalig 29 €), um es zu entfernen und unbegrenzt Rider zu speichern.", pu_go:"Trotzdem exportieren"
+});
+Object.assign(I18N.fr,{
+  btn_polish:"Peaufiner", ai_need:"L'IA n'est pas encore configurée.",
+  ai_gate:"Tu as utilisé tes actions IA gratuites. Passe à Pro pour peaufiner et traduire sans limite.",
+  wiz_generator:"Générateur automatique", sec_essential:"Essentiel",
+  f_cover:"Photo de couverture (Pro)", hint_cover:"Photo pleine page uniquement derrière la couverture — le texte reste lisible grâce à un voile sombre automatique.",
+  btn_cover_remove:"× Retirer la photo de couverture", cover_pro:"La photo de couverture est une fonctionnalité Pro — passer à Pro", f_coverpos:"Position de la photo (haut/bas)",
+  help_1:"Nom du groupe, contacts et équipe en tournée. L'en-tête de ton rider : qui compose le groupe, et qui la salle appelle en cas de question.",
+  help_2:"Un plan de scène vu du dessus : qui se tient où, avec les praticables, moniteurs et alimentations. Glisse les éléments pour les placer.",
+  help_3:"Chaque signal qui arrive à la console. Par canal : la source (grosse caisse, chant…), micro ou DI, et le 48V si besoin.",
+  help_4:"Les retours et sorties : combien de mixes wedge ou in-ear il te faut, et pour qui.",
+  help_5:"Les amplis, la batterie et les pieds sur scène. Précise ce que tu apportes toi-même et ce que tu demandes à la salle.",
+  help_6:"Autres besoins techniques : balance, équipe locale, taille de la scène, alimentation, console façade, PA et systèmes HF.",
+  help_7:"Tes envies lumière : projecteurs/kit, la console lumière, et en option une photo de référence d'un show précédent.",
+  help_8:"Tout ce qui entoure le groupe en dehors du son : loge, catering avec les régimes alimentaires, boissons et serviettes.",
+  help_9:"Parking et chargement : place pour le van ou les voitures, et un point de chargement proche de la scène.",
+  help_10:"Extras de production : backdrop ou écran LED, effets spéciaux, et le changement de plateau / la balance.",
+  help_11:"Accords et sécurité : responsabilité, et accords concernant photo, vidéo et interviews.",
+  pu_title:"Avant d'exporter", pu_body:"Tu es sur le plan gratuit, donc ton PDF porte un petit filigrane RoboRider. Passe à Pro (29 € une fois) pour le retirer et enregistrer des riders illimités.", pu_go:"Exporter quand même"
+});
+Object.assign(I18N.es,{
+  btn_polish:"Pulir", ai_need:"La IA aún no está configurada.",
+  ai_gate:"Has usado tus acciones de IA gratuitas. Pasa a Pro para pulir y traducir sin límite.",
+  wiz_generator:"Generador automático", sec_essential:"Esencial",
+  f_cover:"Foto de portada (Pro)", hint_cover:"Foto a página completa solo detrás de la portada — el texto sigue siendo legible gracias a una capa oscura automática.",
+  btn_cover_remove:"× Quitar foto de portada", cover_pro:"La foto de portada es una función Pro — mejorar a Pro", f_coverpos:"Posición de la foto (arriba/abajo)",
+  help_1:"Nombre de la banda, contactos y equipo de gira. La cabecera de tu rider: quiénes sois, y a quién llama la sala si tiene preguntas.",
+  help_2:"Un plano del escenario visto desde arriba: quién está dónde, con tarimas, monitores y corriente. Arrastra los elementos para colocarlos.",
+  help_3:"Cada señal que llega a la mesa. Por canal: la fuente (bombo, voz…), micro o DI, y el 48V donde haga falta.",
+  help_4:"Las mezclas de monitor y salidas: cuántas mezclas de cuña o in-ear necesitas, y para quién.",
+  help_5:"Los amplis, la batería y los soportes en el escenario. Indica qué traéis vosotros mismos y qué pedís a la sala.",
+  help_6:"Otras necesidades técnicas: prueba de sonido, equipo local, tamaño del escenario, corriente, consola FOH, PA y sistemas inalámbricos.",
+  help_7:"Tus preferencias de iluminación: focos/set, la mesa de luces, y opcionalmente una foto de referencia de un show anterior.",
+  help_8:"Todo lo que rodea a la banda más allá del sonido: camerino, catering con necesidades dietéticas, bebidas y toallas.",
+  help_9:"Aparcamiento y carga: espacio para la furgoneta o los coches, y un punto de carga cerca del escenario.",
+  help_10:"Extras de producción: fondo o pantalla LED, efectos especiales, y el cambio de escenario / prueba de línea.",
+  help_11:"Acuerdos y seguridad: responsabilidad, y acuerdos sobre foto, vídeo y entrevistas.",
+  pu_title:"Antes de exportar", pu_body:"Estás en el plan gratuito, así que tu PDF lleva una pequeña marca de agua de RoboRider. Pasa a Pro (29 € una vez) para quitarla y guardar riders ilimitados.", pu_go:"Exportar de todos modos"
+});
+
+/* Aria-label / tooltip translations (2026-09-10): these were hardcoded English everywhere —
+   repeating-row controls, the stage-plot toolbar, the AI button tooltips, and a couple of nav
+   icons — so screen-reader users and hover tooltips stayed in English regardless of UI language. */
+Object.assign(I18N.en,{
+  aria_move_up:"Move row {n} up", aria_move_down:"Move row {n} down", aria_insert_below:"Insert row below row {n}", aria_duplicate:"Duplicate row {n}", aria_delete:"Delete row {n}",
+  aria_pt_left:"Move left", aria_pt_up:"Move up", aria_pt_down:"Move down", aria_pt_right:"Move right", aria_pt_smaller:"Smaller", aria_pt_bigger:"Bigger", aria_pt_rotate:"Rotate", aria_pt_duplicate:"Duplicate", aria_pt_editlabel:"Edit label", aria_pt_delete:"Delete",
+  aria_translate_tip:"Translate own text to selected language", aria_polish_tip:"Make your wording clean and professional",
+  aria_home:"Home", aria_more:"More", aria_zoomin:"Zoom in", aria_zoomout:"Zoom out", aria_dismiss:"Dismiss", aria_stereo:"Stereo",
+  confirm_switch_rider:"Open this rider? Your current unsaved changes will be lost. (Save first to keep them.)",
+  shared_invalid:"This share link no longer works. Redirecting you to start your own rider.",
+  confirm_delete_row:"Delete this row? This can't be undone."
+});
+Object.assign(I18N.nl,{
+  aria_move_up:"Rij {n} omhoog verplaatsen", aria_move_down:"Rij {n} omlaag verplaatsen", aria_insert_below:"Rij invoegen onder rij {n}", aria_duplicate:"Rij {n} dupliceren", aria_delete:"Rij {n} verwijderen",
+  aria_pt_left:"Naar links", aria_pt_up:"Omhoog", aria_pt_down:"Omlaag", aria_pt_right:"Naar rechts", aria_pt_smaller:"Kleiner", aria_pt_bigger:"Groter", aria_pt_rotate:"Draaien", aria_pt_duplicate:"Dupliceren", aria_pt_editlabel:"Label bewerken", aria_pt_delete:"Verwijderen",
+  aria_translate_tip:"Eigen tekst vertalen naar gekozen taal", aria_polish_tip:"Maak je tekst netjes en professioneel",
+  aria_home:"Home", aria_more:"Meer", aria_zoomin:"Inzoomen", aria_zoomout:"Uitzoomen", aria_dismiss:"Sluiten", aria_stereo:"Stereo",
+  confirm_switch_rider:"Deze rider openen? Je huidige, niet-opgeslagen wijzigingen gaan verloren. (Sla eerst op om ze te bewaren.)",
+  shared_invalid:"Deze deel-link werkt niet meer. Je wordt doorgestuurd om je eigen rider te starten.",
+  confirm_delete_row:"Deze rij verwijderen? Dit kan niet ongedaan worden gemaakt."
+});
+Object.assign(I18N.de,{
+  aria_move_up:"Zeile {n} nach oben verschieben", aria_move_down:"Zeile {n} nach unten verschieben", aria_insert_below:"Zeile unter Zeile {n} einfügen", aria_duplicate:"Zeile {n} duplizieren", aria_delete:"Zeile {n} löschen",
+  aria_pt_left:"Nach links", aria_pt_up:"Nach oben", aria_pt_down:"Nach unten", aria_pt_right:"Nach rechts", aria_pt_smaller:"Kleiner", aria_pt_bigger:"Größer", aria_pt_rotate:"Drehen", aria_pt_duplicate:"Duplizieren", aria_pt_editlabel:"Label bearbeiten", aria_pt_delete:"Löschen",
+  aria_translate_tip:"Eigenen Text in die gewählte Sprache übersetzen", aria_polish_tip:"Mache deinen Text sauber und professionell",
+  aria_home:"Startseite", aria_more:"Mehr", aria_zoomin:"Vergrößern", aria_zoomout:"Verkleinern", aria_dismiss:"Schließen", aria_stereo:"Stereo",
+  confirm_switch_rider:"Diesen Rider öffnen? Deine aktuellen, nicht gespeicherten Änderungen gehen verloren. (Speichere zuerst, um sie zu behalten.)",
+  shared_invalid:"Dieser Freigabelink funktioniert nicht mehr. Du wirst weitergeleitet, um deinen eigenen Rider zu starten.",
+  confirm_delete_row:"Diese Zeile löschen? Das kann nicht rückgängig gemacht werden."
+});
+Object.assign(I18N.fr,{
+  aria_move_up:"Déplacer la ligne {n} vers le haut", aria_move_down:"Déplacer la ligne {n} vers le bas", aria_insert_below:"Insérer une ligne sous la ligne {n}", aria_duplicate:"Dupliquer la ligne {n}", aria_delete:"Supprimer la ligne {n}",
+  aria_pt_left:"Vers la gauche", aria_pt_up:"Vers le haut", aria_pt_down:"Vers le bas", aria_pt_right:"Vers la droite", aria_pt_smaller:"Plus petit", aria_pt_bigger:"Plus grand", aria_pt_rotate:"Pivoter", aria_pt_duplicate:"Dupliquer", aria_pt_editlabel:"Modifier le label", aria_pt_delete:"Supprimer",
+  aria_translate_tip:"Traduire ton texte dans la langue choisie", aria_polish_tip:"Rends ton texte propre et professionnel",
+  aria_home:"Accueil", aria_more:"Plus", aria_zoomin:"Zoomer", aria_zoomout:"Dézoomer", aria_dismiss:"Fermer", aria_stereo:"Stéréo",
+  confirm_switch_rider:"Ouvrir ce rider ? Tes modifications non enregistrées seront perdues. (Enregistre d'abord pour les garder.)",
+  shared_invalid:"Ce lien de partage ne fonctionne plus. Tu es redirigé pour créer ton propre rider.",
+  confirm_delete_row:"Supprimer cette ligne ? Cette action est irréversible."
+});
+Object.assign(I18N.es,{
+  aria_move_up:"Mover la fila {n} hacia arriba", aria_move_down:"Mover la fila {n} hacia abajo", aria_insert_below:"Insertar fila debajo de la fila {n}", aria_duplicate:"Duplicar la fila {n}", aria_delete:"Eliminar la fila {n}",
+  aria_pt_left:"Hacia la izquierda", aria_pt_up:"Hacia arriba", aria_pt_down:"Hacia abajo", aria_pt_right:"Hacia la derecha", aria_pt_smaller:"Más pequeño", aria_pt_bigger:"Más grande", aria_pt_rotate:"Girar", aria_pt_duplicate:"Duplicar", aria_pt_editlabel:"Editar etiqueta", aria_pt_delete:"Eliminar",
+  aria_translate_tip:"Traducir tu texto al idioma elegido", aria_polish_tip:"Deja tu texto limpio y profesional",
+  aria_home:"Inicio", aria_more:"Más", aria_zoomin:"Acercar", aria_zoomout:"Alejar", aria_dismiss:"Cerrar", aria_stereo:"Estéreo",
+  confirm_switch_rider:"¿Abrir este rider? Tus cambios sin guardar se perderán. (Guarda primero para conservarlos.)",
+  shared_invalid:"Este enlace compartido ya no funciona. Te redirigimos para crear tu propio rider.",
+  confirm_delete_row:"¿Eliminar esta fila? Esta acción no se puede deshacer."
+});
+
 async function initAuth(){
   if(!sb){ updateAccountUI(); return; }
   try{
@@ -966,7 +1109,7 @@ function maybeAutoOpenLast(list){
   if(currentRiderId) return;          // already working on a saved rider
   if(!list||!list.length) return;     // nothing saved yet
   if(!isBlankState()) return;         // don't overwrite work in progress
-  cloudLoad(list[0].id);              // open most recently updated rider
+  cloudLoad(list[0].id,true);         // open most recently updated rider (auto: state is already blank, no need to confirm)
 }
 function updateAccountUI(){
   const b=$("btnAccount"); const cs=$("btnCloudSave");
@@ -974,7 +1117,8 @@ function updateAccountUI(){
   if(!sb || sharedMode){ b.style.display="none"; if(cs)cs.style.display="none"; return; }
   b.style.display="";
   b.textContent = user ? ("✓ "+L("acct_btn_in")) : L("acct_btn_out");
-  if(cs){ cs.style.display = user ? "" : "none"; cs.textContent = "☁ "+L("acct_cloud_save"); }
+  b.title = user ? L("acct_btn_in") : L("acct_btn_out");
+  if(cs){ cs.style.display = user ? "" : "none"; cs.textContent = "☁ "+L("acct_cloud_save"); cs.title = L("acct_cloud_save"); }
 }
 function openAcctModal(){
   if(!sb) return;
@@ -1071,8 +1215,9 @@ async function cloudSaveCurrent(){
     refreshRiderList();
   }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
-async function cloudLoad(id){
+async function cloudLoad(id,auto){
   if(!sb||!user) return;
+  if(!auto && !isBlankState() && !confirm(L("confirm_switch_rider"))) return;
   try{
     const {data}=await sb.from("riders").select("data,title,share_id").eq("id",id).single();
     if(data&&data.data){ S=Object.assign(blank(),data.data); currentRiderId=id; shareToken=data.share_id||null; selPlot=null; applyChrome(); renderForm(); renderPreview(); closeAcctModal(); }
@@ -1080,16 +1225,21 @@ async function cloudLoad(id){
 }
 async function cloudRename(id){
   const nm=prompt(L("acct_rename_q")); if(nm==null) return;
-  try{ await sb.from("riders").update({title:(nm.trim()||L("acct_untitled"))}).eq("id",id); refreshRiderList(); }catch(e){}
+  try{ await sb.from("riders").update({title:(nm.trim()||L("acct_untitled"))}).eq("id",id); refreshRiderList(); }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
 async function cloudDelete(id){
   if(!confirm(L("acct_delete_q"))) return;
-  try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) currentRiderId=null; refreshRiderList(); }catch(e){}
+  try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) currentRiderId=null; refreshRiderList(); }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
 function flashCloud(){const e=$("saveStatus");if(!e)return;e.textContent="☁ "+L("acct_saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},1800);}
+function flashCloudError(){const e=$("saveStatus");if(!e)return;e.textContent="⚠ "+L("acct_err");e.style.color="#a85a5a";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},3200);}
+let _cloudBusy=false; /* blocks overlapping cloud saves — a rapid double-click (or a manual save landing mid-autosave) could otherwise insert the same not-yet-saved rider twice before the first call's currentRiderId comes back */
 async function cloudSaveQuick(){
   if(!sb||!user){ openAcctModal(); return; }
   if(!currentRiderId && !PRO && riderCount>=1){ openProModal(); $("proMsg").textContent=L("free_limit"); return; }
+  if(_cloudBusy)return;
+  _cloudBusy=true;
+  const st=$("saveStatus"); if(st){clearTimeout(st._t);st.style.color="var(--muted)";st.textContent=L("saving");}
   const title=((S.band&&S.band.name)||L("acct_untitled"));
   try{
     if(currentRiderId){
@@ -1099,18 +1249,21 @@ async function cloudSaveQuick(){
       if(data){ currentRiderId=data.id; riderCount++; }
     }
     flashCloud();
-  }catch(e){}
+  }catch(e){ flashCloudError(); }
+  _cloudBusy=false;
 }
 let _cloudTimer=null;
 function scheduleCloudSave(){
-  if(!sb||!user||sharedMode) return;
+  if(!sb||!user||sharedMode||demoMode) return;
   if(isBlankState()) return;          // nothing worth saving yet
   clearTimeout(_cloudTimer);
   _cloudTimer=setTimeout(cloudAutoSave, 2500);   // save 2.5s after the last change
 }
 async function cloudAutoSave(){
-  if(!sb||!user||sharedMode||isBlankState()) return;
+  if(!sb||!user||sharedMode||demoMode||isBlankState()) return;
   if(!currentRiderId && !PRO && riderCount>=1) return;   // free: 1 saved rider — manual save shows the upgrade prompt
+  if(_cloudBusy)return;
+  _cloudBusy=true;
   const title=((S.band&&S.band.name)||L("acct_untitled"));
   try{
     if(currentRiderId){
@@ -1120,7 +1273,8 @@ async function cloudAutoSave(){
       if(data){ currentRiderId=data.id; riderCount++; }
     }
     flashCloud();
-  }catch(e){}
+  }catch(e){ flashCloudError(); }
+  _cloudBusy=false;
 }
 async function cloudDuplicate(id){
   if(!sb||!user) return;
@@ -1161,6 +1315,8 @@ async function tryOpenShared(){
       return true;
     }
   }catch(e){}
+  alert(L("shared_invalid"));
+  location.href="rider-builder.html";  // fresh load: sharedMode re-evaluates to false, so the visitor can actually start a rider
   return false;
 }
 
@@ -1189,6 +1345,16 @@ function applyChrome(){
   $("btnPdf").textContent=L("btn_pdf");
   $("btnTranslateLbl").textContent=L("btn_translate");
   if($("btnAILbl"))$("btnAILbl").textContent=L("btn_polish");
+  if($("btnTranslate"))$("btnTranslate").title=L("aria_translate_tip");
+  if($("btnAI"))$("btnAI").title=L("aria_polish_tip");
+  const ptLabels={ptLeft:"aria_pt_left",ptUp:"aria_pt_up",ptDown:"aria_pt_down",ptRight:"aria_pt_right",
+    ptSmaller:"aria_pt_smaller",ptBigger:"aria_pt_bigger",ptRotate:"aria_pt_rotate",
+    ptDuplicate:"aria_pt_duplicate",ptEditLabel:"aria_pt_editlabel",ptDelete:"aria_pt_delete"};
+  Object.keys(ptLabels).forEach(id=>{const el=$(id);if(el){const t=L(ptLabels[id]);el.title=t;el.setAttribute("aria-label",t);}});
+  const homeLink=document.querySelector('a.logo[href="index.html"]');if(homeLink)homeLink.title=L("aria_home");
+  if($("topMenuBtn")){const t=L("aria_more");$("topMenuBtn").title=t;$("topMenuBtn").setAttribute("aria-label",t);}
+  if($("plotZoomIn")){const t=L("aria_zoomin");$("plotZoomIn").title=t;$("plotZoomIn").setAttribute("aria-label",t);}
+  if($("plotZoomOut")){const t=L("aria_zoomout");$("plotZoomOut").title=t;$("plotZoomOut").setAttribute("aria-label",t);}
   updateAIBadge();
   updateAIUI();
   renderWizard();
@@ -1240,7 +1406,7 @@ function applySteps(){
     const pct=Math.round(((curStep+1)/total)*100);
     const chips=secs.map(function(s,i){
       const c=i===curStep?"on":(i<curStep?"done":"");
-      return '<button class="secchip '+c+(s.getAttribute("data-ess")?" ess":"")+'" onclick="goStep('+i+')" aria-label="Sectie '+(i+1)+'">'+(i+1)+'</button>';
+      return '<button class="secchip '+c+(s.getAttribute("data-ess")?" ess":"")+'" onclick="goStep('+i+')" aria-label="'+L("aria_step")+' '+(i+1)+'">'+(i+1)+'</button>';
     }).join("");
     const asec=secs[curStep]; const an=asec?asec.getAttribute("data-sec"):null;
     const ahelp=an?L("help_"+an):""; const hasAHelp=ahelp&&ahelp!==("help_"+an);
@@ -1370,6 +1536,10 @@ function renderForm(){
     ${inputPresetChips()}
     <div class="hint">${L("hint_48v")} · ${L("hint_micdi")}</div>
     <div class="hint">${L("hint_autonum")}</div>
+    ${S.inputs.length?`<div class="rep-header">
+      <div class="row"><span style="flex:0 0 30px"></span><span>${L("th_input")}</span><span style="flex:0 0 110px">${L("th_micdi")}</span><span style="flex:0 0 136px"></span></div>
+      <div class="row"><span style="flex:0 0 48px">${L("th_48v")}</span><span>${L("th_stand")}</span><span>${L("th_position")}</span></div>
+    </div>`:""}
     <div id="rep-inputs"></div>
     <button class="add" onclick="addInput()">${L("plus_channel")}</button>
   `);
@@ -1377,6 +1547,9 @@ function renderForm(){
     <div class="bulkrow" style="margin-top:0"><span class="chips-lbl">${L("aux_bulk_total")}</span><input type="number" id="bulkAuxN" min="1" max="32" placeholder="8"><button class="chip" onclick="fillAuxes()">${L("bulk_add")}</button></div>
     ${auxPresetChips()}
     <div class="hint">${L("hint_aux")}</div>
+    ${S.auxes.length?`<div class="rep-header">
+      <div class="row"><span style="flex:0 0 42px">${L("th_aux")}</span><span>${L("th_dest")}</span><span style="flex:0 0 86px">${L("th_type")}</span><span style="flex:0 0 20px"></span><span style="flex:0 0 136px"></span></div>
+    </div>`:""}
     <div id="rep-auxes"></div>
     <button class="add" onclick="addAux()">${L("plus_aux")}</button>
   `);
@@ -1488,7 +1661,6 @@ function renderRepeats(){
       <div class="row">
         <input type="text" placeholder="${L('sub_contact')}" data-rep="contacts.${i}.role" value="${esc(c.role)}">
         <input type="text" data-rep="contacts.${i}.name" value="${esc(c.name)}">
-        <button class="mini" onclick="delRow('contacts',${i})">×</button>
       </div>
       <div class="row">
         <input type="text" placeholder="@" data-rep="contacts.${i}.email" value="${esc(c.email)}">
@@ -1565,7 +1737,7 @@ function renderRepeats(){
         <span class="chno" title="${L('th_aux')}" style="flex-basis:42px">${esc(c.n)}</span>
         <input type="text" placeholder="${L('th_dest')}" data-rep="auxes.${i}.dest" value="${esc(c.dest)}">
         <select data-rep="auxes.${i}.type" style="flex:0 0 86px;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${auxTypeOpts(c.type)}</select>
-        <label class="stchk" title="Stereo"><input type="checkbox"${c.st?" checked":""} onchange="setRep('auxes.${i}.st',this.checked?'X':'');renumberAuxes();renderForm();renderPreview()">ST</label>
+        <label class="stchk" title="${esc(L('aria_stereo'))}"><input type="checkbox"${c.st?" checked":""} onchange="setRep('auxes.${i}.st',this.checked?'X':'');renumberAuxes();renderForm();renderPreview()">ST</label>
         ${rowCtl('auxes',i,1)}
       </div>
       <input type="text" placeholder="${L('th_notes')}" data-rep="auxes.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
@@ -1581,18 +1753,30 @@ function addRow(p,item){const a=getPath(p);a.push(typeof item==="object"?JSON.pa
 function addInput(){const a=S.inputs;a.push({ch:String(a.length+1),input:"",micdi:"",p48:"",stand:"",pos:"",notes:""});renderForm();renderPreview();}
 function addAux(){S.auxes.push({n:"",dest:"",type:"",st:"",notes:""});renumberAuxes();renderForm();renderPreview();}
 function reIdx(p){if(p==="inputs")renumberInputs();if(p==="auxes")renumberAuxes();}
-function delRow(p,i){const a=getPath(p);a.splice(i,1);reIdx(p);renderForm();renderPreview();}
+function rowHasData(row){
+  if(typeof row!=="object"||!row) return !!row;
+  return Object.keys(row).some(k=>{
+    if(k==="ch"||k==="n") return false; /* auto-numbered, not real content */
+    const v=row[k];
+    if(k==="count"&&(v===""||v==="1")) return false; /* travelParty's "+ role" button defaults count to "1" on an otherwise-empty row — that alone shouldn't count as content */
+    return typeof v==="string" ? v.trim().length>0 : !!v;
+  });
+}
+function delRow(p,i){const a=getPath(p);if(rowHasData(a[i])&&!confirm(L("confirm_delete_row")))return;a.splice(i,1);reIdx(p);renderForm();renderPreview();}
 function moveRow(p,i,dir){const a=getPath(p);const j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];reIdx(p);renderForm();renderPreview();}
 function dupRow(p,i){const a=getPath(p);const it=a[i];a.splice(i+1,0,(typeof it==="object")?JSON.parse(JSON.stringify(it)):it);reIdx(p);renderForm();renderPreview();}
 function insRow(p,i){const a=getPath(p);const it=(p==="auxes")?{n:"",dest:"",type:"",st:"",notes:""}:{ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""};a.splice(i+1,0,it);reIdx(p);renderForm();renderPreview();}
 function fillChannels(){const e=$("bulkChN");const n=Math.min(96,parseInt(e&&e.value,10)||0);if(!n)return;while(S.inputs.length<n)S.inputs.push({ch:"",input:"",micdi:"",p48:"",stand:"",pos:"",notes:""});renumberInputs();renderForm();renderPreview();}
 function fillAuxes(){const e=$("bulkAuxN");const n=Math.min(32,parseInt(e&&e.value,10)||0);if(!n)return;while(auxChannelsUsed()<n)S.auxes.push({n:"",dest:"",type:"",st:"",notes:""});renumberAuxes();renderForm();renderPreview();}
-function rowCtl(p,i,ins){return `<div class="rowctl">`+
-  `<button class="mini2" title="up" onclick="moveRow('${p}',${i},-1)">↑</button>`+
-  `<button class="mini2" title="down" onclick="moveRow('${p}',${i},1)">↓</button>`+
-  (ins?`<button class="mini2" title="insert below" onclick="insRow('${p}',${i})">⤵</button>`:"")+
-  `<button class="mini2" title="duplicate" onclick="dupRow('${p}',${i})">⧉</button>`+
-  `<button class="mini2" title="delete" onclick="delRow('${p}',${i})">×</button></div>`;}
+function rowCtl(p,i,ins){const n=i+1;
+  const up=esc(L('aria_move_up').replace('{n}',n)), down=esc(L('aria_move_down').replace('{n}',n)),
+    ib=esc(L('aria_insert_below').replace('{n}',n)), dup=esc(L('aria_duplicate').replace('{n}',n)), del=esc(L('aria_delete').replace('{n}',n));
+  return `<div class="rowctl">`+
+  `<button class="mini2" title="${up}" aria-label="${up}" onclick="moveRow('${p}',${i},-1)">↑</button>`+
+  `<button class="mini2" title="${down}" aria-label="${down}" onclick="moveRow('${p}',${i},1)">↓</button>`+
+  (ins?`<button class="mini2" title="${ib}" aria-label="${ib}" onclick="insRow('${p}',${i})">⤵</button>`:"")+
+  `<button class="mini2" title="${dup}" aria-label="${dup}" onclick="dupRow('${p}',${i})">⧉</button>`+
+  `<button class="mini2" title="${del}" aria-label="${del}" onclick="delRow('${p}',${i})">×</button></div>`;}
 /* one filled row = one person; legacy rows like "Band, aantal 5" still count as 5 */
 function travelTotal(){return S.travelParty.reduce((s,x)=>s+((((x.label||"").trim()||(x.name||"").trim())?(parseInt(x.count,10)||1):0)),0);}
 /* Standard text blocks per free-text field (language-aware) */
@@ -1893,7 +2077,7 @@ function rememberPlotSize(it){
 function addPlotItem(type){
   const d=PLOT_TYPES[type];
   const mem=PLOT_SIZES[type];
-  S.plot.items.push({id:uid(),type,label:d.lbl,x:50,y:42,w:mem?mem.w:d.w,h:mem?mem.h:d.h,rot:0});
+  S.plot.items.push({id:uid(),type,label:L('pt_'+type),x:50,y:42,w:mem?mem.w:d.w,h:mem?mem.h:d.h,rot:0});
   selPlot=S.plot.items[S.plot.items.length-1].id;
   const m=$("plotModal");if(m)m.classList.remove("pal-open");
   renderPlotEditor();renderPreview();
@@ -1926,6 +2110,7 @@ function buildPlotEl(it){
   del.onclick=ev=>{ev.stopPropagation();S.plot.items=S.plot.items.filter(x=>x.id!==it.id);selPlot=null;renderPlotEditor();renderPreview();};
   const rot=document.createElement("button");rot.className="pl-ctl pl-rot";rot.textContent="↻";
   /* ↻: tap = +15°, drag = free rotation (snapped to 5°) */
+  const rotVal=document.createElement("div");rotVal.className="pl-rotval";el.appendChild(rotVal);
   rot.addEventListener("pointerdown",ev=>{
     ev.stopPropagation();ev.preventDefault();
     const canvas=el.parentElement,r=canvas.getBoundingClientRect();
@@ -1934,12 +2119,16 @@ function buildPlotEl(it){
     const apply=()=>{el.style.transform=`translate(-50%,-50%) rotate(${it.rot||0}deg)`;};
     const mv=e2=>{
       if(Math.abs(e2.clientX-sx)+Math.abs(e2.clientY-sy)<7&&!moved)return;
+      if(!moved)rotVal.classList.add("show");
       moved=true;
       const a=Math.atan2(e2.clientY-cy,e2.clientX-cx)*180/Math.PI+90;
       it.rot=((Math.round(a/5)*5)%360+360)%360;
       apply();
+      rotVal.textContent=it.rot+"°";
+      rotVal.style.transform=`translateX(-50%) rotate(${-it.rot}deg)`;
     };
     const up2=()=>{document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",up2);
+      rotVal.classList.remove("show");
       if(!moved){it.rot=((it.rot||0)+15)%360;apply();}
       renderPreview();};
     document.addEventListener("pointermove",mv);document.addEventListener("pointerup",up2);
@@ -2040,7 +2229,6 @@ function renderPlotEditor(){
   S.plot.items.forEach(it=>c.appendChild(buildPlotEl(it)));
   plotApplyZoom();renderPlotList();updatePlotTools();
 }
-function plotIsMobile(){return !!(window.matchMedia&&window.matchMedia("(max-width:820px)").matches);}
 function selItem(){return S.plot.items.find(x=>x.id===selPlot);}
 function clampPlot(v){return Math.max(0,Math.min(100,v));}
 function plotNudge(dx,dy){const it=selItem();if(!it)return;it.x=clampPlot(snap(it.x+dx*SNAP));it.y=clampPlot(snap(it.y+dy*SNAP));renderPlotEditor();renderPreview();}
@@ -2053,9 +2241,17 @@ function plotSelectFromList(id){selPlot=id;renderPlotEditor();renderPreview();}
 function renderPlotList(){
   const box=$("plotList");if(!box)return;
   box.innerHTML=S.plot.items.map(it=>{const ic=PLOT_ICONS[it.type]||"";
-    return `<div class="pli${it.id===selPlot?' on':''}" onclick="plotSelectFromList('${it.id}')"><span>${ic}</span><b>${esc(it.label||L('pt_'+it.type))}</b></div>`;}).join("");
+    return `<button type="button" class="pli${it.id===selPlot?' on':''}" onclick="plotSelectFromList('${it.id}')"><span>${ic}</span><b>${esc(it.label||L('pt_'+it.type))}</b></button>`;}).join("");
 }
-function updatePlotTools(){const t=$("plotTools");if(!t)return;t.hidden=!(selPlot&&plotIsMobile());}
+/* Shown on mobile as a fixed bottom bar (see the max-width:820px rule), and also on desktop
+   (in normal flow, under the element list) once something is selected — this is the keyboard
+   path to move/resize/rotate/duplicate/delete a stage-plot element without a mouse. */
+function updatePlotTools(){
+  const t=$("plotTools");if(!t)return;
+  t.hidden=!selPlot;
+  const lbl=$("ptEditing");
+  if(lbl){const it=selItem();lbl.textContent=it?((PLOT_ICONS[it.type]||"")+" "+(it.label||L('pt_'+it.type))):"";}
+}
 function plotApplyZoom(){const c=$("stagecanvas");if(c)c.style.transform="scale("+plotZoom+")";}
 function updateZoomLabel(){const l=$("plotZoomLbl");if(l)l.textContent=Math.round(plotZoom*100)+"%";}
 function plotZoomBy(d){plotZoom=Math.max(0.5,Math.min(3,Math.round((plotZoom+d)*100)/100));plotApplyZoom();updateZoomLabel();}
@@ -2113,7 +2309,10 @@ const WIZ_INSTR=[
   {k:"dj",en:"DJ / playback",nl:"DJ / playback",qty:false}
 ];
 function renderWizard(){
-  const m=$("wizard");if(!m)return;const lang=S.lang;
+  const m=$("wizard");if(!m)return;
+  if(!isBlankState()){m.style.display="none";m.innerHTML="";return;}
+  m.style.display="";
+  const lang=S.lang;
   const il=WIZ_INSTR.map(it=>{
     const lab=it[lang]||it.en;
     const q=it.qty?`<input type="number" min="1" value="1" id="wzq-${it.k}" title="#">`:"";
@@ -2193,8 +2392,8 @@ function wizardBuild(){
   /* ---- stage plot: place each performer + a wedge in front (if wedges) ---- */
   S.plot.items=[];
   const md=PLOT_TYPES.monitor;
-  const place=(type,x,y,extra)=>{const d=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:d.lbl,x:x,y:y,w:d.w,h:d.h,rot:0},extra||{}));
-    if(wedges)S.plot.items.push({id:uid(),type:"monitor",label:md.lbl,x:x,y:Math.min(82,y+15),w:md.w,h:md.h,rot:0});};
+  const place=(type,x,y,extra)=>{const d=PLOT_TYPES[type];S.plot.items.push(Object.assign({id:uid(),type:type,label:L('pt_'+type),x:x,y:y,w:d.w,h:d.h,rot:0},extra||{}));
+    if(wedges)S.plot.items.push({id:uid(),type:"monitor",label:L('pt_monitor'),x:x,y:Math.min(82,y+15),w:md.w,h:md.h,rot:0});};
   if(on("drums"))place("drums",52,22);
   if(on("percussion"))place("perc",78,24,{label:"PERC"});
   if(on("keys")){const n=qty("keys");place("keys",22,24);if(n>1)place("keys",22,42,{label:"KEYS 2"});}
@@ -2207,8 +2406,8 @@ function wizardBuild(){
   if(on("acguitar"))place("guitar",38,50,{label:"AC GTR"});
   if(on("leadvocal")){const n=Math.min(3,qty("leadvocal"));const xs=n===1?[50]:n===2?[40,60]:[30,50,70];for(let i=0;i<n;i++)place("vocal",xs[i],64,n>1?{label:"LEAD "+(i+1)}:null);}
   const pw=PLOT_TYPES.power;
-  S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:11,y:40,w:pw.w,h:pw.h,rot:0});
-  S.plot.items.push({id:uid(),type:"power",label:pw.lbl,x:89,y:40,w:pw.w,h:pw.h,rot:0});
+  S.plot.items.push({id:uid(),type:"power",label:L('pt_power'),x:11,y:40,w:pw.w,h:pw.h,rot:0});
+  S.plot.items.push({id:uid(),type:"power",label:L('pt_power'),x:89,y:40,w:pw.w,h:pw.h,rot:0});
   applyChrome();renderForm();renderPreview();
 }
 
@@ -2256,8 +2455,9 @@ const AUX_PRESETS={
   mains:{lbl:{en:"Main L/R (st)",nl:"Main L/R (st)",de:"Main L/R (st)",fr:"Main L/R (st)",es:"Main L/R (st)"},rows:[{dest:"Main L/R",type:"pa",st:"X"}]},
   subs:{lbl:{en:"Subs (aux-fed)",nl:"Subs (aux-fed)",de:"Subs (aux-fed)",fr:"Subs (aux-fed)",es:"Subs (aux-fed)"},rows:[{dest:"Subs (aux-fed)",type:"pa"}]},
   ffill:{lbl:{en:"Front fills",nl:"Front fills",de:"Front-Fills",fr:"Front fills",es:"Front fills"},rows:[{dest:"Front fills",type:"pa"}]},
-  sfill:{lbl:{en:"Side/out fills",nl:"Side/out fills",de:"Side/Out-Fills",fr:"Side/out fills",es:"Side/out fills"},rows:[{dest:"Side / out fills",type:"pa"}]},
-  dfill:{lbl:{en:"Delay fills",nl:"Delay fills",de:"Delay-Fills",fr:"Delay fills",es:"Delay fills"},rows:[{dest:"Delay fills / towers",type:"pa"}]},
+  sidefill:{lbl:{en:"Side fill",nl:"Sidefill",de:"Sidefill",fr:"Side fill",es:"Side fill"},rows:[{dest:"Side fill",type:"wedge"}]},
+  outfill:{lbl:{en:"Out fill",nl:"Outfill",de:"Out-Fill",fr:"Out fill",es:"Out fill"},rows:[{dest:"Out fill",type:"pa"}]},
+  dfill:{lbl:{en:"Delay towers",nl:"Delay towers",de:"Delay-Towers",fr:"Delay towers",es:"Delay towers"},rows:[{dest:"Delay fills / towers",type:"pa"}]},
   bfill:{lbl:{en:"Balcony fills",nl:"Balkon fills",de:"Balkon-Fills",fr:"Balcony fills",es:"Balcony fills"},rows:[{dest:"Balcony fills",type:"pa"}]}
 };
 function addAuxPreset(key){
@@ -2275,7 +2475,7 @@ function auxPresetChips(){
 const MICS=[
   /* zang — dynamisch */
   "SM58","Beta 58A","SM58S","565SD","e835","e845","e935","e945","OM2","OM5","OM6","OM7",
-  "M80","M81","M88 TG","TG V70","V7","D5","D7","ND76","ND86","RE20","RE320","MB85","R102",
+  "M80","M81","M88 TG","TG V70","V7","D5","D7","ND76","ND86","RE20","RE320","MB85",
   /* zang — condensator */
   "Beta 87A","Beta 87C","KSM8","KSM9","KMS 104","KMS 105","e865","e965","C535","DPA 2028",
   "d:facto 4018","SR40V","MTP 940 CM",
@@ -2284,7 +2484,7 @@ const MICS=[
   /* kick & bas */
   "Beta 52A","Beta 91A","D6","D112","e602","e901","e902","ATM250","Kick",
   /* toms */
-  "e604","e904","D2","D4","ATM230","Beta 98A","604",
+  "e604","e904","D2","D4","ATM230","Beta 98A",
   /* overheads, hi-hat & akoestisch — condensator */
   "SM81","KM184","KM185","C414","C451","C214","e914","AT4041","ATM450","KSM137","Beta 181",
   "NT5","M5","sE8","LCT 040","Pencil condenser",
@@ -2473,13 +2673,14 @@ function quickChips(group){
 }
 
 /* ===================== Save / load ===================== */
-function saveLocal(){try{localStorage.setItem("roborider",JSON.stringify(S));}catch(e){}flashSaved();}
+let booting=true; /* true until the boot sequence below finishes: blocks saveLocal() so the initial blank-then-demo/restore render passes can never clobber the real autosave in localStorage */
+function saveLocal(){if(booting||sharedMode||demoMode)return;try{localStorage.setItem("roborider",JSON.stringify(S));}catch(e){}flashSaved();}
 function flashSaved(){const e=$("saveStatus");if(!e)return;e.textContent="✓ "+L("saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(()=>{e.style.color="var(--muted)";},1100);}
 function initOnboard(){
   const e=$("onboard");if(!e)return;
   let seen;try{seen=localStorage.getItem("rr_seen");}catch(_){}
-  if(seen){e.style.display="none";return;}
-  e.innerHTML=`<span>${L("onboard")}</span><button onclick="dismissOnboard()" aria-label="dismiss">×</button>`;
+  if(seen||!isBlankState()){e.style.display="none";return;}
+  e.innerHTML=`<span>${L("onboard")}</span><button onclick="dismissOnboard()" aria-label="${esc(L("aria_dismiss"))}">×</button>`;
   e.style.display="flex";
 }
 function dismissOnboard(){try{localStorage.setItem("rr_seen","1");}catch(_){}const e=$("onboard");if(e)e.style.display="none";}
@@ -2672,8 +2873,9 @@ const EX={
 function _person(){return _pick(EX.first)+" "+_pick(EX.last);}
 function _email(name){return name.toLowerCase().replace(/[^a-z]+/g,".").replace(/^\.+|\.+$/g,"")+"@"+_pick(EX.domains);}
 function _phone(){return "+31 6 "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99);}
-function loadExample(){
+function loadExample(auto){
   /* Fixed flagship example — "Velvet Hours", matches the homepage showcase. Shows everything the builder can do. */
+  if(!auto && !confirm(L("confirm_example")))return;
   const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; currentRiderId=null; shareToken=null;
   S.band={name:"Velvet Hours", subtitle:"Technical & Hospitality Rider · Club tour 2026", validUntil:"2026-12-31", version:"2026 · V1", presskit:"", accent:"#1b1a17", logo:""};
   S.intro="Five-piece band — drums, bass, guitar, keys and vocals. We keep it simple and friendly: everything you need is below, and we're happy to talk anything through in advance. Let's make a great show day with your crew.";
@@ -2822,11 +3024,14 @@ async function fbSubmit(){
 }
 
 /* ===================== Boot ===================== */
-/* Always start with an empty rider. Use Save/Open (.json) to keep work. */
+/* Restore the last autosaved rider on reload (not when viewing a shared link or a ?demo=1 link — those must stay predictable).
+   Restore before applyChrome() so the Quick-start wizard / "New here?" banner correctly stay hidden when there's already content. */
+if(!sharedMode && !demoMode) loadLocal();
 applyChrome();
 renderForm();
 renderPreview();
-if(/demo/i.test(location.search+location.hash)) loadExample();
+if(demoMode) loadExample(true);
+booting=false;
 initAuth();
 if(sharedMode) tryOpenShared();
 </script>

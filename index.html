@@ -31,7 +31,7 @@
 <link rel="canonical" href="https://roborider.nl/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RoboRider","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://roborider.nl/","description":"RoboRider builds a clean, professional technical & hospitality rider with a drag-and-drop stage plot, input list and polished PDF export. Free, in any language.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 <style>
-  :root{--ink:#1b1a17;--soft:#56544d;--muted:#6b665d;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#ffffff;--paper2:#eceae3;--clay:#9a7257;
+  :root{--ink:#1b1a17;--soft:#56544d;--muted:#6b665d;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#ffffff;--paper2:#eceae3;--clay:#9a7257;--clay-text:#89654d;
     --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --display:'Jost','Inter',-apple-system,sans-serif}
   *{box-sizing:border-box}
@@ -42,7 +42,7 @@
   .wrap{max-width:1060px;margin:0 auto;padding:0 30px}
   .kick{font-family:var(--display);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:400}
   /* nav */
-  nav{position:sticky;top:0;background:rgba(243,241,236,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);z-index:10}
+  nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--hair);z-index:10}
   nav .wrap{display:flex;align-items:center;gap:18px;padding:20px 30px}
   .logo{font-weight:300;font-size:18px;letter-spacing:5px;text-transform:lowercase;color:var(--ink);display:flex;align-items:center;gap:11px}
   .logo span{color:var(--ink)}
@@ -69,7 +69,7 @@
   @media (prefers-reduced-motion:reduce){.hero-mark,.hero-mark .eye{animation:none}}
   .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .badge{display:inline-block;background:none;color:var(--clay);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
+  .badge{display:inline-block;background:none;color:var(--clay-text);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
   .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
   .hero-shot{max-width:980px;margin:56px auto 0;padding:0 4px}
   .bframe{border:1px solid var(--hair);border-radius:11px;overflow:hidden;background:#fff;box-shadow:0 34px 70px -34px rgba(27,26,23,.38)}
@@ -107,7 +107,7 @@
   .plan ul{list-style:none;padding:0;margin:18px 0 24px;flex:1}
   .plan li{padding:8px 0 8px 18px;position:relative;font-size:13.5px;color:var(--soft);font-weight:400;border-bottom:1px solid var(--line)}
   .plan li::before{content:"—";position:absolute;left:0;color:var(--clay)}
-  .tag{font-family:var(--display);font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--clay);margin-bottom:6px}
+  .tag{font-family:var(--display);font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--clay-text);margin-bottom:6px}
   /* feedback */
   .feedback{background:var(--card);border:1px solid var(--hair);border-radius:0;padding:70px 48px;text-align:center}
   .feedback h2{margin:0 0 14px;font-size:34px}
@@ -173,7 +173,7 @@
   .on-old li::before{content:"✕";position:absolute;left:2px;top:11px;color:#a13c3c;opacity:.55;font-size:11px}
   .on-new li::before{content:"✓";position:absolute;left:0;top:10px;color:var(--clay);font-size:13px}
   @media(max-width:720px){.on-grid{grid-template-columns:1fr}}
-  .p2val{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay);margin:-6px 0 14px}
+  .p2val{font-family:var(--display);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay-text);margin:-6px 0 14px}
   .faq{background:#efece4;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
   .faq-list{max-width:720px;margin:20px auto 0;text-align:left}
   .faq details{border-bottom:1px solid var(--hair)}
@@ -184,6 +184,8 @@
   .faq details p{margin:0 0 22px;color:var(--soft);font-size:14.5px;font-weight:400;line-height:1.65;max-width:64ch}
   [data-i]{}
   @media(max-width:620px){
+    /* The wrapped 3-row nav (logo/CTA/language switcher) is too tall to stay pinned while scrolling on a phone — let it scroll away with the page instead of eating the viewport permanently. */
+    nav{position:static}
     nav .wrap{flex-wrap:wrap;gap:10px 14px;padding:14px 20px}
     .wrap{padding:0 20px}
     section{padding:60px 0}
@@ -199,6 +201,17 @@
 </style>
 </head>
 <body>
+
+<noscript>
+  <div class="wrap" style="padding:40px 30px;text-align:center">
+    <h1 style="font-size:32px;margin:0 0 14px">RoboRider</h1>
+    <p style="max-width:520px;margin:0 auto 24px;line-height:1.6">
+      Build a technical &amp; hospitality rider for your band in minutes — stage plot, input list, hospitality and a clean PDF export.
+      Free to use. This page needs JavaScript enabled to show the full homepage, but the tool itself works the same either way.
+    </p>
+    <a class="btn primary" href="rider-builder.html">Open the builder</a>
+  </div>
+</noscript>
 
 <nav><div class="wrap">
   <div class="logo"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><line x1="29" y1="6.5" x2="35" y2="6.5" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><line x1="28.7" y1="8.3" x2="35.3" y2="8.3" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></div>
