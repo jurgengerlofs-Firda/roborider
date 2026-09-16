@@ -1,5 +1,5 @@
 /* RoboRider service worker — bump CACHE version on every deploy to push updates */
-const CACHE = 'roborider-v73';
+const CACHE = 'roborider-v74';
 
 /* App shell precached so the tool opens instantly and works offline */
 const SHELL = [

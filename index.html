@@ -58,8 +58,8 @@
   .btn.outline:hover{background:var(--ink);color:var(--bg)}
   .btn.sm{padding:10px 16px}
   /* hero */
-  .hero{background:var(--bg);color:var(--ink);padding:120px 0 110px;text-align:center;border-bottom:1px solid var(--hair)}
-  .hero h1{font-size:72px;line-height:1.02;letter-spacing:.5px;margin:0 0 26px;font-weight:300}
+  .hero{background:linear-gradient(180deg,var(--paper2) 0%,var(--bg) 100%);color:var(--ink);padding:120px 0 110px;text-align:center;border-bottom:1px solid var(--hair)}
+  .hero h1{font-size:72px;line-height:1.02;letter-spacing:.5px;margin:0 0 26px;font-weight:600}
   .hero h1 em{font-style:italic;color:var(--clay)}
   .hero p.sub{font-size:18px;font-weight:400;color:var(--soft);max-width:600px;margin:0 auto 38px;line-height:1.7}
   .hero-mark{width:200px;max-width:62%;margin:0 auto 30px;display:block;animation:rr-float 5.5s ease-in-out infinite}
@@ -80,6 +80,8 @@
   @media(max-width:640px){.burl{display:none}.hero-shot{margin-top:40px}}
   /* sections */
   section{padding:96px 0}
+  section:nth-of-type(odd){background:var(--bg)}
+  section:nth-of-type(even){background:var(--paper2)}
   h2.sec{font-size:40px;letter-spacing:.5px;text-align:center;margin:0 0 14px;font-weight:300}
   p.lead{text-align:center;color:var(--soft);max-width:600px;margin:0 auto 56px;font-size:16px;font-weight:400}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--hair)}
@@ -296,7 +298,7 @@
   </div>
 </div></section>
 
-<section style="background:#fafafa;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+<section style="border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
   <h2 class="sec" data-i="how_h"></h2>
   <p class="lead" data-i="how_lead"></p>
   <div class="steps">
