@@ -67,6 +67,9 @@
   @keyframes rr-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
   @keyframes rr-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
   @media (prefers-reduced-motion:reduce){.hero-mark,.hero-mark .eye{animation:none}}
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.visible{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
   .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .badge{display:inline-block;background:none;color:var(--clay-text);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
@@ -741,6 +744,20 @@ function setLang(l){
   if(p2)p2.href=live?CHECKOUT_URL:"#feedback"; if(p3)p3.href="#feedback";
 }
 setLang("en");
+</script>
+<script>
+/* Scroll-reveal for section content — reveals once, respects prefers-reduced-motion via the .reveal CSS rule above (which already shows content immediately, so this JS just becomes a no-op observer there). */
+document.querySelectorAll("section > .wrap").forEach(function(el){ el.classList.add("reveal"); });
+if("IntersectionObserver" in window){
+  const io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("visible"); io.unobserve(e.target); }
+    });
+  },{threshold:0.15});
+  document.querySelectorAll("section > .wrap").forEach(function(el){ io.observe(el); });
+} else {
+  document.querySelectorAll("section > .wrap").forEach(function(el){ el.classList.add("visible"); });
+}
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). Sign up free at goatcounter.com and register the code "roborider". -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
