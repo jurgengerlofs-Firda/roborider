@@ -470,7 +470,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
 
 <!-- Stage plot editor modal -->
 <div class="modal-bg" id="plotModal">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="plotTitle" tabindex="-1">
     <div class="modal-head">
       <h3 id="plotTitle"></h3>
       <span class="spacer"></span>
@@ -1630,7 +1630,7 @@ function renderForm(){
     ${field(L("f_guests"),S.guests,"guests",{type:"textarea",hint:L("hint_guests")})}
   `);
   h+=section(2,L("sec_stageplot"),`
-    <button class="btn primary" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
+    <button class="btn primary" id="plotOpenBtn" style="width:100%" onclick="openPlotModal()">${L("plot_open")}</button>
     ${S.plot.items.length?`<div class="hint" style="color:#16a34a;font-weight:600">${L("plot_has")} (${S.plot.items.length})</div>`:""}
     <label class="fld">${L("plot_or_upload")}</label>
     <input type="file" accept="image/*" onchange="readImg(event,'stageplot')">
@@ -2387,8 +2387,24 @@ function initPlotGestures(){
   const end=e=>{pts.delete(e.pointerId);if(pts.size<2)gesturing=false;if(pts.size===0)panStart=null;};
   sc.addEventListener("pointerup",end);sc.addEventListener("pointercancel",end);
 }
-function openPlotModal(){plotZoom=1;$("plotModal").classList.add("open");renderPlotEditor();updateZoomLabel();initPlotGestures();}
-function closePlotModal(){$("plotModal").classList.remove("open");renderForm();renderPreview();}
+function plotModalKeydown(e){ if(e.key==="Escape"){ e.preventDefault(); closePlotModal(); } }
+function openPlotModal(){
+  plotZoom=1;
+  const m=$("plotModal"); m.classList.add("open");
+  const layout=$("layout"); if(layout)layout.inert=true;
+  renderPlotEditor();updateZoomLabel();initPlotGestures();
+  const box=m.querySelector(".modal"); if(box)box.focus();
+  document.addEventListener("keydown",plotModalKeydown);
+}
+function closePlotModal(){
+  $("plotModal").classList.remove("open");
+  const layout=$("layout"); if(layout)layout.inert=false;
+  document.removeEventListener("keydown",plotModalKeydown);
+  /* renderForm() rebuilds #formMount's innerHTML, so any DOM-node reference to the
+     trigger button captured before this call would be stale — re-look-up by id instead. */
+  renderForm();renderPreview();
+  const trigger=$("plotOpenBtn"); if(trigger)trigger.focus();
+}
 function clearPlot(){if(S.plot.items.length&&confirm(L("plot_clear")+"?")){S.plot.items=[];selPlot=null;renderPlotEditor();renderPreview();}}
 function plotPreviewHTML(){
   const els=S.plot.items.map(it=>{
