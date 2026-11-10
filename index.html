@@ -828,6 +828,27 @@ if("IntersectionObserver" in window){
 })();
 </script>
 <script>
+/* Measuring: anonymous event counts in GoatCounter (paths "ev/…"), same helper as in rider-builder.html. */
+var _tracked={};
+function track(name,once){
+  try{
+    if(once){ if(_tracked[name])return; _tracked[name]=1; }
+    var send=function(){ window.goatcounter.count({path:"ev/"+name,title:name,event:true}); };
+    if(window.goatcounter&&window.goatcounter.count)send();
+    else window.addEventListener("load",function(){ setTimeout(function(){ try{ if(window.goatcounter&&window.goatcounter.count)send(); }catch(e){} },800); },{once:true});
+  }catch(e){}
+}
+document.addEventListener("click",function(e){
+  var a=e.target.closest&&e.target.closest("a[href]"); if(!a)return;
+  var h=a.getAttribute("href")||"", i=a.getAttribute("data-i")||"";
+  if(i==="hero_cta1")track("home_cta_build");
+  else if(i==="hero_sample")track("home_cta_sample");
+  else if(i==="hero3d_cta")track("home_stage_open_rider");
+  else if(i==="show_cta")track("home_showcase_sample");
+  else if(h.indexOf("rider-builder.html")===0)track("home_to_builder_other");
+});
+</script>
+<script>
 /* Homepage hero: the sample rider's stage plot (same layout as rider-builder.html?demo=1), live in 3D. */
 (function(){
   var host=document.getElementById("hero3d"), wrap=document.getElementById("heroStage");
@@ -846,7 +867,9 @@ if("IntersectionObserver" in window){
       var st=m.create({host:host,items:function(){return items;},readOnly:true,pageScroll:true,
         audienceText:function(){return "";},ariaLabel:function(){return "3D stage plot: drums and keys on risers, bass, guitar, lead vocal, backing vocal mic and four monitors";}});
       st.setLive(true); st.enter(false,{orbit:true});
-    }).catch(function(){wrap.remove();});
+      track("home_stage_shown");
+      host.addEventListener("pointerdown",function(){track("home_stage_touched",true);});
+    }).catch(function(){track("home_stage_failed");wrap.remove();});
   },{rootMargin:"300px"});
   io.observe(host);
 })();

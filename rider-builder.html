@@ -883,6 +883,22 @@ const blank = () => ({
 });
 let S = blank();
 
+/* ===================== Measuring (GoatCounter events) =====================
+   Anonymous counts of what people do: an event name, nothing else. No cookies, no storage, no personal data.
+   track("x")        counts every time
+   track("x",true)   counts at most once per page load (for things that repeat while you work)
+   Events show up in GoatCounter as paths starting with "ev/". The full list is in docs/measuring.md. */
+const _tracked={};
+function track(name,once){
+  try{
+    if(once){ if(_tracked[name])return; _tracked[name]=1; }
+    const send=function(){ window.goatcounter.count({path:"ev/"+name,title:name,event:true}); };
+    if(window.goatcounter&&window.goatcounter.count)send();
+    else window.addEventListener("load",function(){ setTimeout(function(){ try{ if(window.goatcounter&&window.goatcounter.count)send(); }catch(e){} },800); },{once:true});
+  }catch(e){}
+}
+const planTag=()=>PRO?"pro":"free";
+
 /* ===================== Pro / subscription (Lemon Squeezy) ===================== */
 /* After you create your Lemon Squeezy product, paste its checkout link below. */
 const CHECKOUT_URL="https://roborider.lemonsqueezy.com/checkout/buy/fe73b9c7-5498-4c4c-8cb6-8c2104fc57f4";
@@ -906,6 +922,7 @@ let _upsellJustShown=false;
 /* Clean the document title before printing: the browser's print header (if left on)
    and the default PDF filename then read "[Band] — Technical & Hospitality Rider". */
 function printRider(){
+  track("pdf_export_"+planTag());
   var prev=document.title;
   var nm=(S.band.name||"").trim();
   var sub=(S.band.subtitle||"").trim()||(typeof L==="function"?L("subtitle_default"):"Technical & Hospitality Rider");
@@ -921,12 +938,14 @@ function exportPDF(){
   $("puTitle").textContent=L("pu_title"); $("puBody").textContent=L("pu_body");
   $("puGo").textContent=L("pu_go"); $("puPro").textContent=L("pro_cta");
   $("pdfUpsell").classList.add("open");
+  track("pdf_upsell_shown");
 }
 function _upsellSeen(){try{localStorage.setItem("rr_pdf_upsell","1");}catch(e){}}
 function closePdfUpsell(){ _upsellSeen(); $("pdfUpsell").classList.remove("open"); }
 function pdfExportAnyway(){ _upsellSeen(); _upsellJustShown=true; $("pdfUpsell").classList.remove("open"); setTimeout(printRider,180); }
 function deactivatePro(){try{localStorage.removeItem("rr_pro");}catch(e){}PRO=false;updateProUI();try{renderForm();}catch(e){}renderPreview();}
 function openProModal(){
+  track("pro_modal_open");
   $("proTitle").textContent="RoboRider Pro";
   const needLogin = !!sb && !user && !PRO;
   let status = PRO?L("pro_status_on"):L("pro_status_free");
@@ -944,7 +963,7 @@ function openProModal(){
   $("proModal").classList.add("open");
 }
 function closeProModal(){$("proModal").classList.remove("open");}
-function proSubscribe(){ if(CHECKOUT_URL.indexOf("REPLACE")>=0){$("proMsg").textContent=L("pro_soon");}else{window.open(CHECKOUT_URL,"_blank");} }
+function proSubscribe(){ track("pro_checkout_click"); if(CHECKOUT_URL.indexOf("REPLACE")>=0){$("proMsg").textContent=L("pro_soon");}else{window.open(CHECKOUT_URL,"_blank");} }
 async function proActivate(){
   const key=($("proKeyInput").value||"").trim(); if(!key){$("proMsg").textContent=L("pro_enter");return;}
   if(sb && !user){ $("proMsg").textContent=L("pro_need_login"); setTimeout(function(){closeProModal();openAcctModal();},1000); return; }
@@ -953,8 +972,8 @@ async function proActivate(){
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
     const storeOk = !LS_STORE_ID || String((j&&j.meta&&j.meta.store_id)||"")===LS_STORE_ID;
-    if(j&&j.valid&&storeOk){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
-    else{$("proMsg").textContent=L("pro_bad");}
+    if(j&&j.valid&&storeOk){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;track("pro_activated");updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    else{$("proMsg").textContent=L("pro_bad");track("pro_key_rejected");}
   }catch(err){$("proMsg").textContent=L("pro_err");}
   $("proActBtn").disabled=false;
 }
@@ -1257,6 +1276,7 @@ function updateAccountUI(){
   if(cs){ cs.style.display = user ? "" : "none"; cs.textContent = "☁ "+L("acct_cloud_save"); cs.title = L("acct_cloud_save"); }
 }
 function openAcctModal(){
+  track("account_modal_open",true);
   if(!sb) return;
   $("acctTitle").textContent=L("acct_title");
   $("acctIntro").textContent=L("acct_intro");
@@ -1286,6 +1306,7 @@ async function sendMagicLink(){
   try{
     const redir=location.href.split("#")[0];
     const {error}=await sb.auth.signInWithOtp({email, options:{emailRedirectTo:redir}});
+    if(!error)track("login_link_sent");
     $("acctMsg").textContent=error?L("acct_err"):L("acct_sent");
   }catch(e){ $("acctMsg").textContent=L("acct_err"); }
   $("acctSendBtn").disabled=false;
@@ -1336,6 +1357,7 @@ async function refreshRiderList(){
   }catch(e){ box.innerHTML=""; return null; }
 }
 async function cloudSaveCurrent(){
+  track("rider_save_click");
   if(!sb||!user) return;
   const title=(($("acctRiderName").value||"").trim())||((S.band&&S.band.name)||L("acct_untitled"));
   $("acctMsg").textContent="⏳";
@@ -1371,6 +1393,7 @@ function flashCloud(){const e=$("saveStatus");if(!e)return;e.textContent="☁ "+
 function flashCloudError(){const e=$("saveStatus");if(!e)return;e.textContent="⚠ "+L("acct_err");e.style.color="#a85a5a";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},3200);}
 let _cloudBusy=false; /* blocks overlapping cloud saves — a rapid double-click (or a manual save landing mid-autosave) could otherwise insert the same not-yet-saved rider twice before the first call's currentRiderId comes back */
 async function cloudSaveQuick(){
+  track("rider_save_click");
   if(!sb||!user){ openAcctModal(); return; }
   if(!currentRiderId && !PRO && riderCount>=1){ openProModal(); $("proMsg").textContent=L("free_limit"); return; }
   if(_cloudBusy)return;
@@ -1423,6 +1446,7 @@ async function cloudDuplicate(id){
   }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
 async function cloudShare(id){
+  track("share_link_click");
   if(!sb||!user) return;
   try{
     let {data}=await sb.from("riders").select("share_id").eq("id",id).single();
@@ -1512,7 +1536,7 @@ function applyChrome(){
   buildPalette();
   document.documentElement.lang=S.lang;
 }
-function setLang(v){S.lang=v; applyChrome(); renderForm(); renderPreview(); if(typeof sb!=="undefined"&&sb&&user){try{sb.from("profiles").update({lang:v}).eq("id",user.id);}catch(e){}}}
+function setLang(v){track("lang_"+v,true);S.lang=v; applyChrome(); renderForm(); renderPreview(); if(typeof sb!=="undefined"&&sb&&user){try{sb.from("profiles").update({lang:v}).eq("id",user.id);}catch(e){}}}
 function setView(v){
   const l=$("layout");if(!l)return;
   l.classList.toggle("show-edit",v==="edit");
@@ -2346,6 +2370,7 @@ function addPlotItem(type,v){
   if(pr.v)it.v=pr.v;
   const mem=PLOT_SIZES[plotSizeKey(it)]; if(mem){it.w=mem.w;it.h=mem.h;}
   S.plot.items.push(it);
+  track("plot_item_add",true); track("plot_add_"+it.type+(it.v?"_"+it.v:""),true);
   selPlot=it.id;
   const m=$("plotModal");if(m)m.classList.remove("pal-open");
   renderPlotEditor();renderPreview();
@@ -2544,6 +2569,7 @@ function fillPlotProps(){
 }
 function plotProp(k,v){
   const it=selItem(); if(!it)return;
+  track("plot_panel_"+k,true);
   if(k==="hgt"){
     it.hgt=Math.round(v*10)/10;
     /* keep a "3×2×0.4 m" style label in step with the slider */
@@ -2614,9 +2640,10 @@ function plotViewUI(){
   $("plotHint").textContent=L(watch?"plot3d_watch_hint":is3d?"plot3d_hint":"plot_hint");
   updateZoomLabel();
 }
-function plot3dUpsell(){ openProModal(); $("proStatusLine").textContent=L("plot3d_pro"); }
+function plot3dUpsell(){ track("plot3d_unlock_click"); openProModal(); $("proStatusLine").textContent=L("plot3d_pro"); }
 function togglePlotLive(){
   plotLive=!plotLive; try{localStorage.setItem("rr_plotlive",plotLive?"1":"0");}catch(e){}
+  track("plot3d_live_"+(plotLive?"on":"off"),true);
   $("plotLiveBtn").setAttribute("aria-pressed",String(plotLive));
   if(stage3d&&plotView==="3d")stage3d.setLive(plotLive);
 }
@@ -2632,6 +2659,7 @@ function plotLiveWrap(inner){
 }
 function setPrevPlot(m){
   prevPlotMode=m; try{localStorage.setItem("rr_prevplot",m);}catch(e){}
+  track("preview_plot_"+m,true);
   renderPreview();
 }
 function pausePreview3d(){ if(prev3d&&prev3d.isActive()){ try{prev3d.leave(false);}catch(e){} } }
@@ -2655,13 +2683,14 @@ function mountPreview3d(){
   import("./stage3d.js?v=3").then(function(mod){
     prev3d=mod.create({ host:prev3dHost, items:()=>S.plot.items, readOnly:true, pageScroll:true,
       audienceText:()=>L("plot_audience"), ariaLabel:()=>L("aria_plot3d").replace("{n}",S.plot.items.length) });
-    prev3dLoading=false; mountPreview3d();
-  }).catch(function(){ prev3dLoading=false; prevPlotMode="2d"; renderPreview(); });
+    prev3dLoading=false; track("preview3d_shown_"+(sharedMode?"shared":demoMode?"demo":planTag())); mountPreview3d();
+  }).catch(function(){ prev3dLoading=false; prevPlotMode="2d"; track("preview3d_failed"); renderPreview(); });
 }
 async function setPlotView(v,instant){
   if(v===plotView||stage3dBusy)return;
   if(v==="3d"){
     stage3dBusy=true; plotView="3d"; plotViewUI();
+    track("plot3d_open_"+planTag());
     const msg=$("stage3dMsg");
     try{
       if(!stage3d){ msg.textContent=L("plot3d_loading"); const mod=await import("./stage3d.js?v=3"); stage3d=mod.create(plot3dApi()); }
@@ -2671,7 +2700,7 @@ async function setPlotView(v,instant){
       stage3d.setLive(plotLive);
       await stage3d.enter(!instant);
     }catch(err){
-      stage3dBusy=false; stage3d=null; msg.textContent=L("plot3d_err");
+      stage3dBusy=false; stage3d=null; msg.textContent=L("plot3d_err"); track("plot3d_failed");
       setTimeout(function(){ if(!stage3d&&plotView==="3d"){ plotView="2d"; plotViewUI(); msg.textContent=""; renderPlotEditor(); } },2600);
     }
   }else{
@@ -2683,6 +2712,7 @@ async function setPlotView(v,instant){
 function openPlotModal(){
   plotZoom=1;
   const m=$("plotModal"); m.classList.add("open");
+  track("plot_open");
   pausePreview3d();   /* one moving stage at a time */
   const layout=$("layout"); if(layout)layout.inert=true;
   renderPlotEditor();updateZoomLabel();initPlotGestures();
@@ -2766,6 +2796,7 @@ function renderWizard(){
     </div>`;
 }
 function wizardBuild(){
+  track("wizard_build");
   const lang=S.lang; S=blank(); S.lang=lang; selPlot=null;
   const nm=($("wz-name").value||"").trim(); if(nm)S.band.name=nm;
   const on=k=>$("wz-"+k)&&$("wz-"+k).checked;
@@ -3294,6 +3325,7 @@ function _phone(){return "+31 6 "+_int(10,99)+" "+_int(10,99)+" "+_int(10,99)+" 
 function loadExample(auto){
   /* Fixed flagship example — "Velvet Hours", matches the homepage showcase. Shows everything the builder can do. */
   if(!auto && !confirm(L("confirm_example")))return;
+  if(!auto)track("example_load");
   const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; setRid(null); shareToken=null;
   S.band={name:"Velvet Hours", subtitle:"Technical & Hospitality Rider · Club tour 2026", validUntil:"2026-12-31", version:"2026 · V1", presskit:"", accent:"#1b1a17", logo:""};
   S.intro="Five-piece band — drums, bass, guitar, keys and vocals. We keep it simple and friendly: everything you need is below, and we're happy to talk anything through in advance. Let's make a great show day with your crew.";
@@ -3448,10 +3480,10 @@ if(!sharedMode && !demoMode) loadLocal();
 applyChrome();
 renderForm();
 renderPreview();
-if(demoMode) loadExample(true);
+if(demoMode){ loadExample(true); track("demo_view"); }
 booting=false;
 initAuth();
-if(sharedMode) tryOpenShared();
+if(sharedMode){ tryOpenShared(); track("shared_view"); }
 </script>
 <!-- Visitor analytics (GoatCounter — privacy-friendly, no cookies). -->
 <script data-goatcounter="https://roborider.goatcounter.com/count" async src="//gc.zgo.org/count.js"></script>
