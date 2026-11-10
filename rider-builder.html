@@ -379,6 +379,12 @@
   .stage3d canvas:focus-visible{box-shadow:inset 0 0 0 2px var(--clay)}
   .stage3d-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#e9e2d3;font-family:var(--display);font-size:12px;letter-spacing:2px;text-transform:uppercase;pointer-events:none}
   .stage3d-msg:empty{display:none}
+  /* free plan: the 3D stage is watch-only */
+  .stage3d-watch{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;display:flex;align-items:center;justify-content:center;gap:10px 14px;flex-wrap:wrap;padding:10px 14px;background:rgba(20,18,15,.82);color:#e9e2d3;font-size:12.5px;text-align:center}
+  .stage3d-watch[hidden]{display:none}
+  .stage3d-watch button,.plot-live-unlock{border:1px solid var(--clay);background:var(--clay);color:#fff;font-family:var(--display);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 14px;cursor:pointer}
+  .plot-live-unlock{padding:6px 12px;font-size:10px}
+  #plotModal.watch3d .palette,#plotModal.watch3d .pal-toggle,#plotModal.watch3d .plot-tools,#plotModal.watch3d .plot-list,#plotModal.watch3d #plotClear{display:none!important}
   #plotModal.is3d .stage-scroll,#plotModal.is3d .rotate-tip{display:none}
   .plot-live-btn{display:none;border:1px solid var(--hair);background:#fff;color:var(--ink);font-family:var(--display);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;height:32px;padding:0 12px;cursor:pointer;flex:0 0 auto}
   .plot-live-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -431,6 +437,7 @@
     .rotate-tip{display:none}
   }
   @media print{
+    .plot-live-unlock{display:none!important}
     .plot-live-bar,.plot-live-slot{display:none!important}
     .plot-live .plot-preview{display:block!important}
     .topbar,.editor,.ai-box,.mobile-tabs,.modal-bg{display:none!important}
@@ -519,7 +526,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
       <h3 id="plotTitle"></h3>
       <div class="plot-view" role="group" id="plotViewGrp">
         <button type="button" id="plotV2d" class="on" aria-pressed="true" onclick="setPlotView('2d')">2D</button>
-        <button type="button" id="plotV3d" aria-pressed="false" onclick="setPlotView('3d')">3D <span class="pv-pro">Pro</span></button>
+        <button type="button" id="plotV3d" aria-pressed="false" onclick="setPlotView('3d')">3D</button>
       </div>
       <span class="spacer"></span>
       <button class="btn ghost" id="plotClear" onclick="clearPlot()"></button>
@@ -542,7 +549,8 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
         <div class="stage-front" id="stageFront"></div>
       </div>
     </div>
-    <div class="stage3d" id="stage3d" hidden><div class="stage3d-msg" id="stage3dMsg" role="status"></div></div>
+    <div class="stage3d" id="stage3d" hidden><div class="stage3d-msg" id="stage3dMsg" role="status"></div>
+      <div class="stage3d-watch" id="stage3dWatch" hidden><span id="stage3dWatchTxt"></span><button type="button" id="stage3dUnlock" onclick="plot3dUpsell()"></button></div></div>
     <div class="plot-list" id="plotList"></div>
     <div class="plot-tools" id="plotTools" hidden>
       <div class="pt-editing" id="ptEditing"></div>
@@ -869,6 +877,8 @@ function updateProUI(){
   if(b){ b.textContent=PRO?("✓ "+L("pro_on")):("✦ "+L("pro_cta"));
     b.classList.toggle("procta",!PRO); b.classList.toggle("proactive",PRO); }
   document.body.classList.toggle("free",!PRO);
+  /* Pro just switched on or off while the 3D stage is open: lock or unlock editing right away */
+  try{ if(typeof plotView!=="undefined"&&$("plotModal").classList.contains("open")){ plotViewUI(); plot3dSync(); } }catch(e){}
 }
 /* One-time Pro upsell shown just before export (free users only) */
 let _upsellJustShown=false;
@@ -1002,6 +1012,12 @@ Object.assign(I18N.nl,{plot3d_live:"Live", aria_plot3d_live:"Live-modus: de band
 Object.assign(I18N.de,{plot3d_live:"Live", aria_plot3d_live:"Live-Modus: Band bewegt sich, Showlicht ist an", prev_2d:"2D-Plan", prev_3d:"3D live", prev_note:"Live-Vorschau. Das PDF enthält den 2D-Plan.", pp_label:"Label", pp_width:"Breite", pp_depth:"Tiefe", pp_rot:"Drehung", pp_height:"Höhe", aria_pt_more:"Element-Einstellungen"});
 Object.assign(I18N.fr,{plot3d_live:"Live", aria_plot3d_live:"Mode live : le groupe bouge et les lumières sont allumées", prev_2d:"Plan 2D", prev_3d:"3D live", prev_note:"Aperçu live. Le PDF contient le plan 2D.", pp_label:"Label", pp_width:"Largeur", pp_depth:"Profondeur", pp_rot:"Rotation", pp_height:"Hauteur", aria_pt_more:"Réglages de l'élément"});
 Object.assign(I18N.es,{plot3d_live:"Live", aria_plot3d_live:"Modo live: la banda se mueve y las luces están encendidas", prev_2d:"Plano 2D", prev_3d:"3D live", prev_note:"Vista previa en vivo. El PDF contiene el plano 2D.", pp_label:"Etiqueta", pp_width:"Ancho", pp_depth:"Fondo", pp_rot:"Rotación", pp_height:"Altura", aria_pt_more:"Ajustes del elemento"});
+/* 3D watch mode for the free plan (must come after the first plot3d block: it overrides plot3d_pro) */
+Object.assign(I18N.en,{"plot3d_pro": "Editing your stage in 3D is a Pro feature. Upgrade to drag gear around on the live stage.", "plot3d_watch": "You're watching your stage in 3D. Moving gear in 3D is part of Pro.", "plot3d_unlock": "Unlock 3D editing", "plot3d_watch_hint": "Drag to look around, scroll or pinch to zoom. Switch to 2D to move things.", "prev_edit3d": "Edit in 3D with Pro"});
+Object.assign(I18N.nl,{"plot3d_pro": "Je podium in 3D bewerken is een Pro-functie. Upgrade en sleep je spullen over het live podium.", "plot3d_watch": "Je bekijkt je podium in 3D. Spullen verplaatsen in 3D hoort bij Pro.", "plot3d_unlock": "Ontgrendel 3D-bewerken", "plot3d_watch_hint": "Sleep om rond te kijken, scroll of knijp om te zoomen. Ga naar 2D om dingen te verplaatsen.", "prev_edit3d": "Bewerk in 3D met Pro"});
+Object.assign(I18N.de,{"plot3d_pro": "Die Bühne in 3D zu bearbeiten ist eine Pro-Funktion. Upgrade und ziehe dein Equipment über die Live-Bühne.", "plot3d_watch": "Du siehst deine Bühne in 3D. Equipment in 3D verschieben gehört zu Pro.", "plot3d_unlock": "3D-Bearbeitung freischalten", "plot3d_watch_hint": "Ziehen zum Umsehen, scrollen oder mit zwei Fingern zoomen. Wechsle zu 2D, um Dinge zu verschieben.", "prev_edit3d": "In 3D bearbeiten mit Pro"});
+Object.assign(I18N.fr,{"plot3d_pro": "Modifier ta scène en 3D est une fonction Pro. Passe à Pro pour déplacer ton matériel sur la scène live.", "plot3d_watch": "Tu regardes ta scène en 3D. Déplacer le matériel en 3D fait partie de Pro.", "plot3d_unlock": "Débloquer l'édition 3D", "plot3d_watch_hint": "Glisse pour regarder autour, molette ou pincement pour zoomer. Passe en 2D pour déplacer les éléments.", "prev_edit3d": "Modifier en 3D avec Pro"});
+Object.assign(I18N.es,{"plot3d_pro": "Editar tu escenario en 3D es una función Pro. Hazte Pro y arrastra tu equipo por el escenario en vivo.", "plot3d_watch": "Estás viendo tu escenario en 3D. Mover el equipo en 3D es parte de Pro.", "plot3d_unlock": "Desbloquear edición 3D", "plot3d_watch_hint": "Arrastra para mirar alrededor, rueda o pellizco para hacer zoom. Cambia a 2D para mover cosas.", "prev_edit3d": "Editar en 3D con Pro"});
 /* Stageplot: uitlijn-hulplijnen + maat-snapping */
 Object.assign(I18N.en,{plot_hint:"Click an element to add it, then drag to position. While dragging, elements snap to other elements' centres and edges (guide lines appear); while resizing, they snap to matching sizes. Drag the corner handle to resize, ↻ to rotate, × to delete."});
 Object.assign(I18N.nl,{plot_hint:"Klik een element om het toe te voegen en sleep het op z'n plek. Tijdens het slepen klikt het vast aan middens en randen van andere elementen (er verschijnen hulplijnen); tijdens het vergroten klikt het vast op gelijke maten. Sleep de hoekgreep om te schalen, ↻ om te draaien, × om te verwijderen."});
@@ -1459,7 +1475,7 @@ function applyChrome(){
   $("plotTitle").textContent=L("plot_title");
   $("plotDone").textContent=L("plot_done");
   $("plotClear").textContent=L("plot_clear");
-  $("plotHint").textContent=L(plotView==="3d"?"plot3d_hint":"plot_hint");
+  $("plotHint").textContent=L(plotView==="3d"?(PRO?"plot3d_hint":"plot3d_watch_hint"):"plot_hint");
   if($("plotViewGrp"))$("plotViewGrp").setAttribute("aria-label",L("aria_plot_view"));
   if($("plotLiveBtn")){$("plotLiveBtn").textContent="▶ "+L("plot3d_live");$("plotLiveBtn").setAttribute("aria-label",L("aria_plot3d_live"));}
   [["ppLabelT","pp_label"],["ppWT","pp_width"],["ppDT","pp_depth"],["ppRT","pp_rot"],["ppHT","pp_height"],["ppVT","pp_variant"],["ppPT","pp_pose"]].forEach(function(a){if($(a[0]))$(a[0]).textContent=L(a[1]);});
@@ -2557,19 +2573,22 @@ function plotModalKeydown(e){ if(e.key==="Escape"){ e.preventDefault(); if($("pr
 /* ---- 3D view (Pro): the same S.plot.items, rendered by stage3d.js, which is only downloaded on first use ---- */
 function plot3dSync(){ if(plotView==="3d"&&stage3d&&!stage3dBusy)stage3d.sync(); }
 function plot3dApi(){
-  return { host:$("stage3d"), items:()=>S.plot.items, getSel:()=>selPlot,
+  return { host:$("stage3d"), get readOnly(){return !PRO;}, items:()=>S.plot.items, getSel:()=>selPlot,
     setSel:id=>{selPlot=id;highlightSel();}, snap:snap, align:alignAxis,
     commit:()=>{renderPlotEditor();renderPreview();}, editLabel:editPlotLabel,
     audienceText:()=>L("plot_audience"), ariaLabel:()=>L("aria_plot3d").replace("{n}",S.plot.items.length) };
 }
 function plotViewUI(){
   const is3d=plotView==="3d", m=$("plotModal");
-  m.classList.toggle("is3d",is3d); $("stage3d").hidden=!is3d;
+  const watch=is3d&&!PRO;
+  m.classList.toggle("is3d",is3d); m.classList.toggle("watch3d",watch); $("stage3d").hidden=!is3d;
+  $("stage3dWatch").hidden=!watch; $("stage3dWatchTxt").textContent=L("plot3d_watch"); $("stage3dUnlock").textContent="✦ "+L("plot3d_unlock");
   $("plotV2d").classList.toggle("on",!is3d); $("plotV3d").classList.toggle("on",is3d);
   $("plotV2d").setAttribute("aria-pressed",String(!is3d)); $("plotV3d").setAttribute("aria-pressed",String(is3d));
-  $("plotHint").textContent=L(is3d?"plot3d_hint":"plot_hint");
+  $("plotHint").textContent=L(watch?"plot3d_watch_hint":is3d?"plot3d_hint":"plot_hint");
   updateZoomLabel();
 }
+function plot3dUpsell(){ openProModal(); $("proStatusLine").textContent=L("plot3d_pro"); }
 function togglePlotLive(){
   plotLive=!plotLive; try{localStorage.setItem("rr_plotlive",plotLive?"1":"0");}catch(e){}
   $("plotLiveBtn").setAttribute("aria-pressed",String(plotLive));
@@ -2578,21 +2597,26 @@ function togglePlotLive(){
 /* Rider preview: a live 3D stage above the plot for Pro users. One persistent WebGL view that is
    re-attached after every preview render, and only rebuilt when the plot itself changed. */
 function plotLiveWrap(inner){
-  const on=PRO&&prevPlotMode==="3d";
+  const on=prevPlotMode==="3d";
   return `<div class="plot-live${on?" show3d":""}"><div class="plot-live-bar"><div class="plot-view" role="group" aria-label="${esc(L("aria_plot_view"))}">`+
     `<button type="button" class="${on?"":"on"}" aria-pressed="${!on}" onclick="setPrevPlot('2d')">${L("prev_2d")}</button>`+
-    `<button type="button" class="${on?"on":""}" aria-pressed="${on}" onclick="setPrevPlot('3d')">${L("prev_3d")} <span class="pv-pro">Pro</span></button></div>`+
-    `<span class="plot-live-note">${L("prev_note")}</span></div><div class="plot-live-slot" id="plot3dSlot"></div>${inner}</div>`;
+    `<button type="button" class="${on?"on":""}" aria-pressed="${on}" onclick="setPrevPlot('3d')">${L("prev_3d")}</button></div>`+
+    `<span class="plot-live-note">${L("prev_note")}</span>`+
+    ((on&&!PRO&&!sharedMode)?`<button type="button" class="plot-live-unlock" onclick="plot3dUpsell()">✦ ${L("prev_edit3d")}</button>`:"")+`</div><div class="plot-live-slot" id="plot3dSlot"></div>${inner}</div>`;
 }
 function setPrevPlot(m){
-  if(m==="3d"&&!PRO){ openProModal(); $("proStatusLine").textContent=L("plot3d_pro"); return; }
   prevPlotMode=m; try{localStorage.setItem("rr_prevplot",m);}catch(e){}
   renderPreview();
 }
 function pausePreview3d(){ if(prev3d&&prev3d.isActive()){ try{prev3d.leave(false);}catch(e){} } }
 function mountPreview3d(){
   const slot=$("plot3dSlot");
-  if(!slot||!PRO||prevPlotMode!=="3d"||$("plotModal").classList.contains("open")){ pausePreview3d(); return; }
+  if(!slot||prevPlotMode!=="3d"||$("plotModal").classList.contains("open")){ pausePreview3d(); return; }
+  /* don't download the 3D engine for a preview nobody is looking at (mobile: the Preview tab) */
+  if(!prev3d&&!slot.offsetParent){
+    try{ const io=new IntersectionObserver(function(es){ if(es.some(e=>e.isIntersecting)){ io.disconnect(); mountPreview3d(); } }); io.observe(slot); }catch(e){}
+    return;
+  }
   if(!prev3dHost){ prev3dHost=document.createElement("div"); prev3dHost.className="stage3d prev"; }
   slot.appendChild(prev3dHost);
   const sig=JSON.stringify(S.plot.items)+"|"+S.lang;
@@ -2611,7 +2635,6 @@ function mountPreview3d(){
 async function setPlotView(v,instant){
   if(v===plotView||stage3dBusy)return;
   if(v==="3d"){
-    if(!PRO){ openProModal(); $("proStatusLine").textContent=L("plot3d_pro"); return; }
     stage3dBusy=true; plotView="3d"; plotViewUI();
     const msg=$("stage3dMsg");
     try{
@@ -2638,7 +2661,7 @@ function openPlotModal(){
   const layout=$("layout"); if(layout)layout.inert=true;
   renderPlotEditor();updateZoomLabel();initPlotGestures();
   /* reopen in the view you left it in (3D only while Pro is still active) */
-  if(plotView==="3d"){ plotView="2d"; if(PRO)setPlotView("3d",true); else plotViewUI(); }
+  if(plotView==="3d"){ plotView="2d"; setPlotView("3d",true); }
   const box=m.querySelector(".modal"); if(box)box.focus();
   document.addEventListener("keydown",plotModalKeydown);
 }
