@@ -436,6 +436,27 @@
   @media(max-width:820px) and (orientation:landscape){
     .rotate-tip{display:none}
   }
+  /* 3D on a phone: the tools sit under the stage instead of on top of it, so the stage stays in view */
+  @media(max-width:820px){
+    #plotModal.is3d .plot-tools{position:static;box-shadow:none;gap:8px;padding:8px 10px}
+    #plotModal.is3d .plot-tools button{width:40px;height:40px;font-size:16px}
+    #plotModal.is3d .pt-editing{display:none}
+    #plotModal.is3d .pt-props{gap:6px 14px;max-height:30dvh;overflow:auto}
+    #plotModal.is3d .stage3d{min-height:150px}
+  }
+  @media(max-width:920px) and (orientation:landscape) and (max-height:520px){
+    #plotModal .modal-head{padding:6px 14px;gap:10px}
+    #plotModal .modal-head h3{font-size:15px}
+    #plotModal .modal-head .btn{padding:7px 12px}
+    #plotModal .plot-view button{min-height:30px;padding:5px 12px}
+    #plotModal.is3d .pal-toggle{margin:6px 14px 0;padding:8px}
+    #plotModal.is3d .plot-bar{padding:6px 14px 0}
+    #plotModal.is3d .plot-tools{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;padding:6px 10px}
+    #plotModal.is3d .plot-tools button{width:36px;height:36px;flex:0 0 auto}
+    #plotModal.is3d .plot-tools.props-open{flex-wrap:wrap}
+    #plotModal.is3d .pt-props{max-height:34dvh}
+    #plotModal.is3d .stage3d{min-height:110px}
+  }
   @media print{
     .plot-live-unlock{display:none!important}
     .plot-live-bar,.plot-live-slot{display:none!important}

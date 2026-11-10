@@ -305,7 +305,7 @@ export function create(api) {
   /* ---------- camera + render loop ---------- */
   const view = { theta: 0, phi: 0.001, r: 12, target: new THREE.Vector3() };
   let tween = null, raf = 0, dirty = false, active = false, onscreen = true;
-  let live = false, motion = false, auto = false, autoT0 = 0, showFade = 0;
+  let live = false, motion = false, auto = false, autoT0 = 0, showFade = 0, touched = false;
   const reduced = () => { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } };
   function fitRadius() {
     const t = Math.tan((FOV * Math.PI) / 360);
@@ -358,6 +358,8 @@ export function create(api) {
     const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    /* the frame changed shape (phone rotated, tool bar opened): re-frame the stage unless the user moved the camera */
+    if (active && !touched && !tween) setView(homeView());
     invalidate();
   }
   const ro = new ResizeObserver(resize); ro.observe(host);
@@ -396,7 +398,7 @@ export function create(api) {
   function zoomBy(f) { view.r = clamp(view.r * f, 2.5, 40); invalidate(); }
   el.addEventListener("pointerdown", e => {
     if (tween) return;
-    auto = false;
+    auto = false; touched = true;
     if (!api.readOnly) el.focus({ preventScroll: true });
     try { el.setPointerCapture(e.pointerId); } catch (_) {}
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -455,7 +457,7 @@ export function create(api) {
   el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
   el.addEventListener("wheel", e => {
     if (api.pageScroll && !e.ctrlKey) return;      /* in the rider preview the wheel scrolls the page */
-    e.preventDefault(); auto = false; if (!tween) zoomBy(Math.exp(clamp(e.deltaY, -120, 120) * 0.0012));
+    e.preventDefault(); auto = false; touched = true; if (!tween) zoomBy(Math.exp(clamp(e.deltaY, -120, 120) * 0.0012));
   }, { passive: false });
   el.addEventListener("contextmenu", e => e.preventDefault());
   el.addEventListener("dblclick", e => { if (api.readOnly) return; const id = pick(e); if (id) { const it = api.items().find(x => x.id === id); if (it) api.editLabel(it); } });
@@ -467,7 +469,7 @@ export function create(api) {
     /* 2D → 3D: start exactly on the top-down plot, then sweep down into the stage.
        opts.orbit: let the camera drift slowly around the front of the stage until someone touches it. */
     async enter(animate, opts) {
-      active = true; resize(); setAudience(); sync();
+      active = true; touched = false; resize(); setAudience(); sync();
       if (animate) { setView(topView()); applyView(); renderer.render(scene, camera); await flyTo(homeView(), 1100); }
       else { setView(homeView()); invalidate(); }
       auto = !!(opts && opts.orbit); autoT0 = performance.now() / 1000;
@@ -475,8 +477,8 @@ export function create(api) {
     /* 3D → 2D: rise back to the top-down plot; the caller then swaps in the 2D editor */
     async leave(animate) { auto = false; if (animate) await flyTo(topView(), 800); active = false; if (raf) { cancelAnimationFrame(raf); raf = 0; } tween = null; },
     isActive: () => active,
-    zoomBy(d) { if (!tween) zoomBy(d > 0 ? 0.8 : 1.25); },
-    resetView() { flyTo(homeView(), 600); },
+    zoomBy(d) { touched = true; if (!tween) zoomBy(d > 0 ? 0.8 : 1.25); },
+    resetView() { touched = false; flyTo(homeView(), 600); },
     topDown() { flyTo(topView(), 600); },
     dispose() { ro.disconnect(); if (io) io.disconnect(); nodes.forEach(disposeNode); renderer.dispose(); el.remove(); }
   };
