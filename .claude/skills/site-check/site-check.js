@@ -43,7 +43,7 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
   };
   async function findItem(page) {
     const box = await page.locator('#stage3d canvas').boundingBox();
-    for (let fy = 0.2; fy < 0.95; fy += 0.05) for (let fx = 0.15; fx < 0.9; fx += 0.05) {
+    for (let fy = 0.3; fy < 0.9; fy += 0.08) for (let fx = 0.2; fx < 0.85; fx += 0.08) {
       const x = box.x + box.width * fx, y = box.y + box.height * fy;
       await page.mouse.move(x, y);
       if ((await page.evaluate(() => document.querySelector('#stage3d canvas').style.cursor)) === 'grab') return { x, y };
@@ -148,9 +148,11 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     if (st !== 200) continue;
     await page.route(/goatcounter|gc\.zgo\.org/, r => r.abort());
     await page.goto(BASE + pg, { waitUntil: 'domcontentloaded' });
-    (await page.evaluate(() => [...document.querySelectorAll('a[href]')].map(a => a.href))).forEach(h => { if (h.startsWith(location.origin) || h.startsWith(BASE)) links.add(h.split('#')[0]); });
+    (await page.evaluate(() => [...document.querySelectorAll('a[href]')].map(a => a.href))).forEach(h => { if (h.startsWith(BASE + '/') || h === BASE) links.add(h.split('#')[0]); });
   }
-  for (const h of links) { const st = await get(h); if (st !== 200) ok('health', 'internal link works: ' + h.replace(BASE, ''), false, 'status ' + st); }
+  const todo = [...links].filter(h => !pages.some(pg => BASE + pg === h));
+  for (let i = 0; i < todo.length; i += 8)
+    await Promise.all(todo.slice(i, i + 8).map(async h => { const st = await get(h); if (st !== 200) ok('health', 'internal link works: ' + h.replace(BASE, ''), false, 'status ' + st); }));
   ok('health', links.size + ' internal links checked', true);
   try { const sw = await (await ctx.request.get(BASE + '/sw.js?cb=' + Date.now())).text(); ok('health', 'deployed version: ' + ((sw.match(/roborider-v\d+/) || ['unknown'])[0]), true); } catch (e) { ok('health', 'sw.js is readable', false); }
   await browser.close();
