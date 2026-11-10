@@ -72,6 +72,11 @@
   @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
   .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .hero-stage{max-width:980px;margin:56px auto 0}
+  .hero-stage-view{position:relative;width:100%;aspect-ratio:16/9;max-height:82vh;max-height:82svh;background:#14120f;overflow:hidden;box-shadow:0 30px 60px -34px rgba(27,26,23,.55)}
+  .hero-stage-cap{font-size:13px;color:var(--muted);margin:14px 0 0}
+  .hero-stage-cap a{color:var(--ink);white-space:nowrap}
+  @media(max-width:820px) and (orientation:portrait){.hero-stage{margin-top:40px}.hero-stage-view{aspect-ratio:4/3}}
   .badge{display:inline-block;background:none;color:var(--clay-text);font-family:var(--display);font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;margin-bottom:30px}
   .note{font-size:11px;letter-spacing:1px;color:var(--muted);margin-top:22px;text-transform:uppercase;font-family:var(--display)}
   /* sections */
@@ -248,6 +253,11 @@
     <a class="btn outline" href="rider-builder.html?demo=1" data-i="hero_sample">See a sample rider</a>
   </div>
   <div class="note" data-i="hero_note"></div>
+  <!-- live 3D stage (stage3d.js, loaded when it scrolls into view; removed again if WebGL is unavailable) -->
+  <div class="hero-stage" id="heroStage">
+    <div class="hero-stage-view" id="hero3d"></div>
+    <p class="hero-stage-cap"><span data-i="hero3d_cap"></span> <a href="rider-builder.html?demo=1" data-i="hero3d_cta"></a></p>
+  </div>
 </div></header>
 
 <section class="showcase"><div class="wrap">
@@ -399,6 +409,7 @@ const T={
   send7_h:"Lights", send7_p:"Fixtures and looks, your own or the house console, plus a reference photo from an earlier show.",
   send8_h:"Hospitality", send8_p:"Dressing room, catering and dietary requirements, drinks, towels and buy-out. The calculator works out the quantities from your travelling party.",
   hero_note:"Free in your browser, no account needed · Pro: €29 once, no subscription",
+  hero3d_cap:"A stage plot from the rider builder, live in 3D. Drag to look around.", hero3d_cta:"Open this rider",
   feat_h:"Everything a rider needs, nothing it doesn't",
   feat_lead:"Built by a touring musician who got tired of editing PDFs the night before a show.",
   f1_h:"Smart auto-fill",
@@ -466,6 +477,7 @@ const T={
   send7_h:"Licht", send7_p:"Fixtures en looks, eigen of huis-lichttafel, plus een referentiefoto van een eerdere show.",
   send8_h:"Hospitality", send8_p:"Kleedkamer, catering en dieetwensen, drankjes, handdoeken en buy-out. De aantallen rekent de calculator uit op basis van je reisgezelschap.",
   hero_note:"Gratis in je browser, zonder account · Pro: eenmalig €29, geen abonnement",
+  hero3d_cap:"Een stageplot uit de rider builder, live in 3D. Sleep om rond te kijken.", hero3d_cta:"Bekijk deze rider",
   feat_h:"Alles wat een rider nodig heeft, niets te veel",
   feat_lead:"Gebouwd door een tourende muzikant die geen zin meer had om de avond voor een show PDF's te editen.",
   f1_h:"Slim automatisch invullen",
@@ -533,6 +545,7 @@ const T={
   send7_h:"Licht", send7_p:"Scheinwerfer und Looks, eigenes oder Haus-Lichtpult, plus ein Referenzfoto einer früheren Show.",
   send8_h:"Hospitality", send8_p:"Garderobe, Catering und Diätwünsche, Getränke, Handtücher und Buy-out. Die Mengen rechnet der Rechner aus deiner Reisegruppe aus.",
   hero_note:"Gratis im Browser, ohne Konto · Pro: einmalig 29 €, kein Abo",
+  hero3d_cap:"Ein Bühnenplan aus dem Rider Builder, live in 3D. Ziehen zum Umsehen.", hero3d_cta:"Diesen Rider ansehen",
   feat_h:"Alles, was ein Rider braucht. Nicht mehr.",
   feat_lead:"Entwickelt von einem tourenden Musiker, der keine Lust mehr hatte, am Vorabend einer Show PDFs zu bearbeiten.",
   f1_h:"Intelligentes Auto-Ausfüllen",
@@ -600,6 +613,7 @@ const T={
   send7_h:"Lumière", send7_p:"Projecteurs et ambiances, ta console ou celle de la salle, plus une photo de référence d'un concert précédent.",
   send8_h:"Hospitality", send8_p:"Loge, catering et régimes, boissons, serviettes et buy-out. Le calculateur déduit les quantités de ton équipe en tournée.",
   hero_note:"Gratuit dans ton navigateur, sans compte · Pro : 29 € une fois, sans abonnement",
+  hero3d_cap:"Un plan de scène du rider builder, en 3D et en direct. Glisse pour regarder autour.", hero3d_cta:"Voir ce rider",
   feat_h:"Tout ce qu'un rider doit avoir, rien de superflu",
   feat_lead:"Conçu par un musicien en tournée fatigué d'éditer des PDF la veille d'un concert.",
   f1_h:"Remplissage auto intelligent",
@@ -667,6 +681,7 @@ const T={
   send7_h:"Luces", send7_p:"Focos y ambientes, tu mesa o la de la sala, más una foto de referencia de un show anterior.",
   send8_h:"Hospitality", send8_p:"Camerino, catering y dietas, bebidas, toallas y buy-out. La calculadora saca las cantidades de tu equipo de gira.",
   hero_note:"Gratis en tu navegador, sin cuenta · Pro: 29 € una vez, sin suscripción",
+  hero3d_cap:"Un plano de escenario del rider builder, en 3D y en vivo. Arrastra para mirar alrededor.", hero3d_cta:"Ver este rider",
   feat_h:"Todo lo que un rider necesita, nada de más",
   feat_lead:"Creado por un músico de gira cansado de editar PDF la noche antes de un concierto.",
   f1_h:"Autocompletado inteligente",
@@ -810,6 +825,30 @@ if("IntersectionObserver" in window){
   if(isIOS){
     txt.textContent=t.ios;btn.style.display='none';pill.hidden=false;
   }
+})();
+</script>
+<script>
+/* Homepage hero: the sample rider's stage plot (same layout as rider-builder.html?demo=1), live in 3D. */
+(function(){
+  var host=document.getElementById("hero3d"), wrap=document.getElementById("heroStage");
+  if(!host||!wrap||!("IntersectionObserver" in window))return;
+  var SIZE={riser:[26,26],keys:[20,14],drums:[20,24],bass:[15,12],guitar:[15,12],vocal:[13,12],power:[8,8],mic:[8,10],monitor:[10,9]}, items=[];
+  function P(type,x,y,label,w,h){items.push({id:"h"+items.length,type:type,label:label,x:x,y:y,w:w||SIZE[type][0],h:h||SIZE[type][1],rot:0});}
+  P("riser",19,20,"RISER 2×1×0.2 m",22,20); P("keys",19,20,"KEYS");
+  P("riser",50,19,"RISER 3×2×0.4 m",26,24); P("drums",50,20,"DRUMS");
+  P("bass",71,18,"BASS"); P("power",89,12,"230V"); P("power",11,46,"230V");
+  P("mic",28,63,"BV"); P("vocal",50,63,"LEAD"); P("guitar",78,61,"GUITAR");
+  [18,38,58,78].forEach(function(x){P("monitor",x,80,"MON");});
+  var io=new IntersectionObserver(function(es){
+    if(!es.some(function(e){return e.isIntersecting;}))return;
+    io.disconnect();
+    import("./stage3d.js?v=3").then(function(m){
+      var st=m.create({host:host,items:function(){return items;},readOnly:true,pageScroll:true,
+        audienceText:function(){return "";},ariaLabel:function(){return "3D stage plot: drums and keys on risers, bass, guitar, lead vocal, backing vocal mic and four monitors";}});
+      st.setLive(true); st.enter(false,{orbit:true});
+    }).catch(function(){wrap.remove();});
+  },{rootMargin:"300px"});
+  io.observe(host);
 })();
 </script>
 </body>
