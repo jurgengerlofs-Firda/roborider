@@ -303,6 +303,10 @@
   .palette{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-bottom:1px solid var(--hair);background:none}
   .palette button{font-family:var(--display);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid var(--hair);background:none;border-radius:0;padding:8px 12px;font-weight:400;color:var(--soft)}
   .palette button:hover{border-color:var(--ink);color:var(--ink)}
+  .pal-cats{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:2px 16px;margin-bottom:4px}
+  .palette .pal-cats button{border:none;border-bottom:2px solid transparent;padding:4px 0 5px;font-size:10.5px;letter-spacing:1.6px;color:var(--muted)}
+  .palette .pal-cats button.on{color:var(--ink);border-bottom-color:var(--clay)}
+  .pt-props select{border:1px solid var(--hair);background:#fff;font:inherit;font-size:13px!important;letter-spacing:0;text-transform:none;padding:6px 8px;color:var(--ink)}
   .stage-scroll{padding:24px;overflow:auto;background:var(--paper2)}
   .stagecanvas{position:relative;background:#fff;border:2px solid var(--accent);border-radius:4px;width:100%;max-width:840px;aspect-ratio:16/10;container-type:size;margin:0 auto;touch-action:none;
     background-image:linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px);background-size:4% 4%}
@@ -561,6 +565,8 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
       </div>
       <div class="pt-props" id="ptProps">
         <label><span id="ppLabelT"></span><input type="text" id="ppLabel" oninput="plotProp('label',this.value)"></label>
+        <label id="ppVWrap" hidden><span id="ppVT"></span><select id="ppV" onchange="plotProp('v',this.value)"></select></label>
+        <label id="ppPWrap" hidden><span id="ppPT"></span><select id="ppP" onchange="plotProp('pose',this.value)"></select></label>
         <label><span id="ppWT"></span><input type="range" id="ppW" min="4" max="94" step="1" oninput="plotProp('w',+this.value)"><output id="ppWO"></output></label>
         <label><span id="ppDT"></span><input type="range" id="ppD" min="4" max="94" step="1" oninput="plotProp('h',+this.value)"><output id="ppDO"></output></label>
         <label><span id="ppRT"></span><input type="range" id="ppR" min="0" max="355" step="5" oninput="plotProp('rot',+this.value)"><output id="ppRO"></output></label>
@@ -979,6 +985,12 @@ Object.assign(I18N.nl,{f_multi:"Multikabel / stagebox (podium↔FOH)",sub_multi:
 Object.assign(I18N.de,{f_multi:"Multicore / Stagebox (Bühne↔FOH)",sub_multi:"Multicore / Stagebox"});
 Object.assign(I18N.fr,{f_multi:"Multipaire / stagebox (scène↔façade)",sub_multi:"Multipaire / stagebox"});
 Object.assign(I18N.es,{f_multi:"Manguera / stagebox (escenario↔FOH)",sub_multi:"Manguera / stagebox"});
+/* Stageplot: instrument library (variants + poses) */
+Object.assign(I18N.en,{"cat_voc": "Vocals", "cat_gtr": "Guitars & bass", "cat_keys": "Keys", "cat_drums": "Drums & perc", "cat_horns": "Horns & strings", "cat_dj": "DJ & playback", "cat_mics": "Mics & sound", "cat_stage": "Stage", "pp_variant": "Type", "pp_pose": "Position", "pose_stand": "Standing", "pose_high": "High stool", "pose_low": "Chair", "pt_dj": "DJ", "pt_horn": "Horn", "pt_strings": "Strings", "pv_vocal_wireless": "Vocal handheld", "pv_vocal_vintage": "Vocal vintage mic", "pv_guitar_single": "Guitar single-cut", "pv_guitar_acoustic": "Acoustic guitar", "pv_bass_upright": "Upright bass", "pv_keys_synth": "Synths", "pv_keys_organ": "Organ", "pv_keys_upright": "Upright piano", "pv_keys_grand": "Grand piano", "pv_drums_compact": "Jazz kit", "pv_drums_big": "Big kit", "pv_drums_standup": "Stand-up kit", "pv_drums_electronic": "E-drums", "pv_perc_cajon": "Cajon", "pv_perc_djembe": "Djembe", "pv_horn_alto": "Alto sax", "pv_horn_tenor": "Tenor sax", "pv_horn_bari": "Bari sax", "pv_horn_soprano": "Soprano sax", "pv_horn_trumpet": "Trumpet", "pv_horn_trombone": "Trombone", "pv_strings_violin": "Violin", "pv_strings_viola": "Viola", "pv_strings_cello": "Cello", "pv_dj_cdj": "DJ (CDJs)", "pv_dj_turntables": "DJ (turntables)", "pv_dj_controller": "DJ (controller)", "pv_mic_short": "Low mic", "pv_mic_condenser": "Condenser mic", "pv_mic_vintage": "Vintage mic", "pv_mic_overhead": "Overhead mic", "pv_amp_stack": "Amp stack", "pv_amp_leslie": "Leslie", "pv_stool_chair": "Chair", "pv_stool_bench": "Bench"});
+Object.assign(I18N.nl,{"cat_voc": "Zang", "cat_gtr": "Gitaren & bas", "cat_keys": "Toetsen", "cat_drums": "Drums & perc", "cat_horns": "Blazers & strijkers", "cat_dj": "DJ & playback", "cat_mics": "Mics & geluid", "cat_stage": "Podium", "pp_variant": "Type", "pp_pose": "Houding", "pose_stand": "Staand", "pose_high": "Hoge kruk", "pose_low": "Stoel", "pt_dj": "DJ", "pt_horn": "Blazer", "pt_strings": "Strijker", "pv_vocal_wireless": "Zang handheld", "pv_vocal_vintage": "Zang vintage mic", "pv_guitar_single": "Gitaar single-cut", "pv_guitar_acoustic": "Akoestische gitaar", "pv_bass_upright": "Contrabas", "pv_keys_synth": "Synths", "pv_keys_organ": "Orgel", "pv_keys_upright": "Piano", "pv_keys_grand": "Vleugel", "pv_drums_compact": "Jazzkit", "pv_drums_big": "Grote kit", "pv_drums_standup": "Sta-kit", "pv_drums_electronic": "E-drums", "pv_perc_cajon": "Cajon", "pv_perc_djembe": "Djembé", "pv_horn_alto": "Altsax", "pv_horn_tenor": "Tenorsax", "pv_horn_bari": "Baritonsax", "pv_horn_soprano": "Sopraansax", "pv_horn_trumpet": "Trompet", "pv_horn_trombone": "Trombone", "pv_strings_violin": "Viool", "pv_strings_viola": "Altviool", "pv_strings_cello": "Cello", "pv_dj_cdj": "DJ (CDJ's)", "pv_dj_turntables": "DJ (draaitafels)", "pv_dj_controller": "DJ (controller)", "pv_mic_short": "Lage mic", "pv_mic_condenser": "Condensatormic", "pv_mic_vintage": "Vintage mic", "pv_mic_overhead": "Overhead-mic", "pv_amp_stack": "Amp-stack", "pv_amp_leslie": "Leslie", "pv_stool_chair": "Stoel", "pv_stool_bench": "Bank"});
+Object.assign(I18N.de,{"cat_voc": "Gesang", "cat_gtr": "Gitarren & Bass", "cat_keys": "Tasten", "cat_drums": "Drums & Perc", "cat_horns": "Bläser & Streicher", "cat_dj": "DJ & Playback", "cat_mics": "Mikros & Sound", "cat_stage": "Bühne", "pp_variant": "Typ", "pp_pose": "Haltung", "pose_stand": "Stehend", "pose_high": "Barhocker", "pose_low": "Stuhl", "pt_dj": "DJ", "pt_horn": "Bläser", "pt_strings": "Streicher", "pv_vocal_wireless": "Gesang Handheld", "pv_vocal_vintage": "Gesang Vintage-Mikro", "pv_guitar_single": "Gitarre Single-Cut", "pv_guitar_acoustic": "Akustikgitarre", "pv_bass_upright": "Kontrabass", "pv_keys_synth": "Synths", "pv_keys_organ": "Orgel", "pv_keys_upright": "Klavier", "pv_keys_grand": "Flügel", "pv_drums_compact": "Jazz-Kit", "pv_drums_big": "Großes Kit", "pv_drums_standup": "Steh-Kit", "pv_drums_electronic": "E-Drums", "pv_perc_cajon": "Cajon", "pv_perc_djembe": "Djembe", "pv_horn_alto": "Altsax", "pv_horn_tenor": "Tenorsax", "pv_horn_bari": "Baritonsax", "pv_horn_soprano": "Sopransax", "pv_horn_trumpet": "Trompete", "pv_horn_trombone": "Posaune", "pv_strings_violin": "Violine", "pv_strings_viola": "Bratsche", "pv_strings_cello": "Cello", "pv_dj_cdj": "DJ (CDJs)", "pv_dj_turntables": "DJ (Plattenspieler)", "pv_dj_controller": "DJ (Controller)", "pv_mic_short": "Niedriges Mikro", "pv_mic_condenser": "Kondensatormikro", "pv_mic_vintage": "Vintage-Mikro", "pv_mic_overhead": "Overhead-Mikro", "pv_amp_stack": "Amp-Stack", "pv_amp_leslie": "Leslie", "pv_stool_chair": "Stuhl", "pv_stool_bench": "Bank"});
+Object.assign(I18N.fr,{"cat_voc": "Chant", "cat_gtr": "Guitares & basse", "cat_keys": "Claviers", "cat_drums": "Batterie & percus", "cat_horns": "Cuivres & cordes", "cat_dj": "DJ & playback", "cat_mics": "Micros & son", "cat_stage": "Scène", "pp_variant": "Type", "pp_pose": "Position", "pose_stand": "Debout", "pose_high": "Tabouret haut", "pose_low": "Chaise", "pt_dj": "DJ", "pt_horn": "Cuivre", "pt_strings": "Cordes", "pv_vocal_wireless": "Chant micro main", "pv_vocal_vintage": "Chant micro vintage", "pv_guitar_single": "Guitare single-cut", "pv_guitar_acoustic": "Guitare acoustique", "pv_bass_upright": "Contrebasse", "pv_keys_synth": "Synthés", "pv_keys_organ": "Orgue", "pv_keys_upright": "Piano droit", "pv_keys_grand": "Piano à queue", "pv_drums_compact": "Kit jazz", "pv_drums_big": "Grand kit", "pv_drums_standup": "Kit debout", "pv_drums_electronic": "Batterie électronique", "pv_perc_cajon": "Cajon", "pv_perc_djembe": "Djembé", "pv_horn_alto": "Sax alto", "pv_horn_tenor": "Sax ténor", "pv_horn_bari": "Sax baryton", "pv_horn_soprano": "Sax soprano", "pv_horn_trumpet": "Trompette", "pv_horn_trombone": "Trombone", "pv_strings_violin": "Violon", "pv_strings_viola": "Alto", "pv_strings_cello": "Violoncelle", "pv_dj_cdj": "DJ (CDJ)", "pv_dj_turntables": "DJ (platines)", "pv_dj_controller": "DJ (contrôleur)", "pv_mic_short": "Micro bas", "pv_mic_condenser": "Micro statique", "pv_mic_vintage": "Micro vintage", "pv_mic_overhead": "Micro overhead", "pv_amp_stack": "Stack d'ampli", "pv_amp_leslie": "Leslie", "pv_stool_chair": "Chaise", "pv_stool_bench": "Banc"});
+Object.assign(I18N.es,{"cat_voc": "Voces", "cat_gtr": "Guitarras y bajo", "cat_keys": "Teclados", "cat_drums": "Batería y percusión", "cat_horns": "Vientos y cuerdas", "cat_dj": "DJ y playback", "cat_mics": "Micros y sonido", "cat_stage": "Escenario", "pp_variant": "Tipo", "pp_pose": "Posición", "pose_stand": "De pie", "pose_high": "Taburete alto", "pose_low": "Silla", "pt_dj": "DJ", "pt_horn": "Viento", "pt_strings": "Cuerdas", "pv_vocal_wireless": "Voz micro de mano", "pv_vocal_vintage": "Voz micro vintage", "pv_guitar_single": "Guitarra single-cut", "pv_guitar_acoustic": "Guitarra acústica", "pv_bass_upright": "Contrabajo", "pv_keys_synth": "Sintes", "pv_keys_organ": "Órgano", "pv_keys_upright": "Piano vertical", "pv_keys_grand": "Piano de cola", "pv_drums_compact": "Kit de jazz", "pv_drums_big": "Kit grande", "pv_drums_standup": "Kit de pie", "pv_drums_electronic": "Batería electrónica", "pv_perc_cajon": "Cajón", "pv_perc_djembe": "Djembé", "pv_horn_alto": "Saxo alto", "pv_horn_tenor": "Saxo tenor", "pv_horn_bari": "Saxo barítono", "pv_horn_soprano": "Saxo soprano", "pv_horn_trumpet": "Trompeta", "pv_horn_trombone": "Trombón", "pv_strings_violin": "Violín", "pv_strings_viola": "Viola", "pv_strings_cello": "Violonchelo", "pv_dj_cdj": "DJ (CDJ)", "pv_dj_turntables": "DJ (platos)", "pv_dj_controller": "DJ (controlador)", "pv_mic_short": "Micro bajo", "pv_mic_condenser": "Micro de condensador", "pv_mic_vintage": "Micro vintage", "pv_mic_overhead": "Micro overhead", "pv_amp_stack": "Stack de ampli", "pv_amp_leslie": "Leslie", "pv_stool_chair": "Silla", "pv_stool_bench": "Banco"});
 /* Stageplot in 3D (Pro) — stage3d.js */
 Object.assign(I18N.en,{plot3d_hint:"Drag gear to move it. Drag the floor to look around, scroll or pinch to zoom, shift-drag to pan. Gear on a riser stands on top of it.", plot3d_pro:"The 3D stage is a Pro feature. Upgrade to walk around your stage plot in 3D.", plot3d_loading:"Building your stage…", plot3d_err:"3D could not start in this browser. The 2D editor still works.", aria_plot_view:"Stage plot view", aria_plot3d:"3D view of the stage plot with {n} elements", aria_plot_home:"Reset view"});
 Object.assign(I18N.nl,{plot3d_hint:"Sleep spullen om ze te verplaatsen. Sleep de vloer om rond te kijken, scroll of knijp om te zoomen, shift-sleep om te schuiven. Wat op een riser staat, staat er ook echt bovenop.", plot3d_pro:"Het 3D-podium is een Pro-functie. Upgrade en loop in 3D om je stageplot heen.", plot3d_loading:"Je podium wordt opgebouwd…", plot3d_err:"3D kon niet starten in deze browser. De 2D-editor werkt gewoon.", aria_plot_view:"Weergave stageplot", aria_plot3d:"3D-weergave van de stageplot met {n} elementen", aria_plot_home:"Beeld herstellen"});
@@ -1450,7 +1462,7 @@ function applyChrome(){
   $("plotHint").textContent=L(plotView==="3d"?"plot3d_hint":"plot_hint");
   if($("plotViewGrp"))$("plotViewGrp").setAttribute("aria-label",L("aria_plot_view"));
   if($("plotLiveBtn")){$("plotLiveBtn").textContent="▶ "+L("plot3d_live");$("plotLiveBtn").setAttribute("aria-label",L("aria_plot3d_live"));}
-  [["ppLabelT","pp_label"],["ppWT","pp_width"],["ppDT","pp_depth"],["ppRT","pp_rot"],["ppHT","pp_height"]].forEach(function(a){if($(a[0]))$(a[0]).textContent=L(a[1]);});
+  [["ppLabelT","pp_label"],["ppWT","pp_width"],["ppDT","pp_depth"],["ppRT","pp_rot"],["ppHT","pp_height"],["ppVT","pp_variant"],["ppPT","pp_pose"]].forEach(function(a){if($(a[0]))$(a[0]).textContent=L(a[1]);});
   if($("ptMore"))$("ptMore").setAttribute("aria-label",L("aria_pt_more"));
   if($("plotAddLbl"))$("plotAddLbl").textContent=L("plot_add");
   if($("rotateTip"))$("rotateTip").textContent=L("plot_rotate");
@@ -2224,8 +2236,38 @@ const PLOT_TYPES={
   stool:{lbl:"STOOL",w:8,h:8,sh:"circle",c:"#ffffff"},
   mstand:{lbl:"STAND",w:8,h:8,sh:"box",c:"#ffffff"},
   laptop:{lbl:"LAPTOP",w:11,h:8,sh:"box",c:"#f4f1e9"},
+  dj:{lbl:"DJ",w:22,h:24,sh:"box",c:"#ffffff"},
+  horn:{lbl:"HORN",w:9,h:13,sh:"box",c:"#ffffff"},
+  strings:{lbl:"STRINGS",w:9,h:13,sh:"box",c:"#ffffff"},
   text:{lbl:"Text",w:16,h:8,sh:"text",c:"transparent"}
 };
+/* What you can add: a type, optionally a variant (v) with its own default footprint. The 2D plot shows the
+   label; the 3D stage (stage3d-gear.js) builds the matching model. */
+const PLOT_CATS=["voc","gtr","keys","drums","horns","dj","mics","stage"];
+const PLOT_PRESETS=[
+  {cat:"voc",type:"vocal"},{cat:"voc",type:"vocal",v:"wireless"},{cat:"voc",type:"vocal",v:"vintage"},
+  {cat:"gtr",type:"guitar"},{cat:"gtr",type:"guitar",v:"single"},{cat:"gtr",type:"guitar",v:"acoustic"},
+  {cat:"gtr",type:"bass"},{cat:"gtr",type:"bass",v:"upright",w:10,h:16},
+  {cat:"keys",type:"keys"},{cat:"keys",type:"keys",v:"synth",w:14,h:16},{cat:"keys",type:"keys",v:"organ",w:13,h:20},
+  {cat:"keys",type:"keys",v:"upright",w:16,h:21},{cat:"keys",type:"keys",v:"grand",w:16,h:43},
+  {cat:"drums",type:"drums"},{cat:"drums",type:"drums",v:"compact",w:17,h:24},{cat:"drums",type:"drums",v:"big",w:29,h:30},
+  {cat:"drums",type:"drums",v:"standup",w:15,h:21},{cat:"drums",type:"drums",v:"electronic",w:18,h:22},
+  {cat:"drums",type:"perc"},{cat:"drums",type:"perc",v:"cajon",w:8,h:13},{cat:"drums",type:"perc",v:"djembe",w:8,h:14},
+  {cat:"horns",type:"horn",v:"alto"},{cat:"horns",type:"horn",v:"tenor"},{cat:"horns",type:"horn",v:"bari"},{cat:"horns",type:"horn",v:"soprano"},
+  {cat:"horns",type:"horn",v:"trumpet"},{cat:"horns",type:"horn",v:"trombone",w:9,h:17},
+  {cat:"horns",type:"strings",v:"violin"},{cat:"horns",type:"strings",v:"viola"},{cat:"horns",type:"strings",v:"cello",w:9,h:18},
+  {cat:"dj",type:"dj",v:"cdj"},{cat:"dj",type:"dj",v:"turntables"},{cat:"dj",type:"dj",v:"controller"},{cat:"dj",type:"laptop"},
+  {cat:"mics",type:"mic"},{cat:"mics",type:"mic",v:"short"},{cat:"mics",type:"mic",v:"condenser"},{cat:"mics",type:"mic",v:"vintage"},{cat:"mics",type:"mic",v:"overhead"},
+  {cat:"mics",type:"monitor"},{cat:"mics",type:"sidefill"},{cat:"mics",type:"sub"},
+  {cat:"mics",type:"amp"},{cat:"mics",type:"amp",v:"stack",w:8,h:7},{cat:"mics",type:"amp",v:"leslie",w:7,h:9},{cat:"mics",type:"di"},
+  {cat:"stage",type:"riser"},{cat:"stage",type:"stool"},{cat:"stage",type:"stool",v:"chair"},{cat:"stage",type:"stool",v:"bench",w:9,h:6},
+  {cat:"stage",type:"mstand"},{cat:"stage",type:"power"},{cat:"stage",type:"text"}
+];
+const POSE_TYPES=["vocal","guitar","bass","keys","horn","strings","perc"];
+let palCat="voc";
+function presetLabel(pr){return pr.v?L("pv_"+pr.type+"_"+pr.v):L("pt_"+pr.type);}
+function presetOf(type,v){return PLOT_PRESETS.find(p=>p.type===type&&(p.v||"")===(v||""))||PLOT_PRESETS.find(p=>p.type===type);}
+function plotSizeKey(it){return it.type+(it.v?":"+it.v:"");}
 let selPlot=null;
 let plotView="2d", stage3d=null, stage3dBusy=false;
 let plotLive=true; try{plotLive=localStorage.getItem("rr_plotlive")!=="0";}catch(e){}
@@ -2236,7 +2278,7 @@ let plotZoom=1;
 const WEDGE="polygon(0% 100%,100% 100%,80% 0%,20% 0%)";
 const Z_ORDER={riser:1,drums:3,keys:3,bass:3,guitar:3,vocal:3,amp:3,perc:3,di:5,power:5,mic:6,text:7};
 function zOf(type){return Z_ORDER[type]||3;}
-const PLOT_ICONS={drums:"🥁",keys:"🎹",bass:"🎸",guitar:"🎸",vocal:"🎤",riser:"",monitor:"🔈",amp:"🎛️",di:"",power:"⚡",mic:"🎤",perc:"🪘",text:""};
+const PLOT_ICONS={drums:"🥁",keys:"🎹",bass:"🎸",guitar:"🎸",vocal:"🎤",riser:"",monitor:"🔈",amp:"🎛️",di:"",power:"⚡",mic:"🎤",perc:"🪘",horn:"🎷",strings:"🎻",dj:"🎧",text:""};
 const SNAP=2; /* grid step in % for alignment */
 function snap(v){return Math.round(v/SNAP)*SNAP;}
 /* Label scales with BOTH the box size and the text length, so names stay readable inside small boxes. */
@@ -2253,22 +2295,26 @@ function uid(){return Math.random().toString(36).slice(2,9);}
 let PLOT_SIZES={};try{PLOT_SIZES=JSON.parse(localStorage.getItem("rr_plotsizes")||"{}")||{};}catch(e){}
 function rememberPlotSize(it){
   if(!it||!it.type||it.type==="text")return;
-  PLOT_SIZES[it.type]={w:it.w,h:it.h};
+  PLOT_SIZES[plotSizeKey(it)]={w:it.w,h:it.h};
   try{localStorage.setItem("rr_plotsizes",JSON.stringify(PLOT_SIZES));}catch(e){}
 }
-function addPlotItem(type){
-  const d=PLOT_TYPES[type];
-  const mem=PLOT_SIZES[type];
-  S.plot.items.push({id:uid(),type,label:L('pt_'+type),x:50,y:42,w:mem?mem.w:d.w,h:mem?mem.h:d.h,rot:0});
-  selPlot=S.plot.items[S.plot.items.length-1].id;
+function addPlotItem(type,v){
+  const d=PLOT_TYPES[type], pr=presetOf(type,v)||{type:type};
+  const it={id:uid(),type,label:presetLabel(pr),x:50,y:42,w:pr.w||d.w,h:pr.h||d.h,rot:0};
+  if(pr.v)it.v=pr.v;
+  const mem=PLOT_SIZES[plotSizeKey(it)]; if(mem){it.w=mem.w;it.h=mem.h;}
+  S.plot.items.push(it);
+  selPlot=it.id;
   const m=$("plotModal");if(m)m.classList.remove("pal-open");
   renderPlotEditor();renderPreview();
 }
 function togglePalette(){const m=$("plotModal");if(m)m.classList.toggle("pal-open");}
 function buildPalette(){
   const p=$("plotPalette");if(!p)return;
-  p.innerHTML=Object.keys(PLOT_TYPES).map(tp=>`<button onclick="addPlotItem('${tp}')">+ ${L('pt_'+tp)}</button>`).join("");
+  p.innerHTML=`<div class="pal-cats">`+PLOT_CATS.map(c=>`<button type="button" class="${c===palCat?"on":""}" aria-pressed="${c===palCat}" onclick="setPalCat('${c}')">${L("cat_"+c)}</button>`).join("")+`</div>`+
+    PLOT_PRESETS.filter(pr=>pr.cat===palCat).map(pr=>`<button type="button" onclick="addPlotItem('${pr.type}','${pr.v||""}')">+ ${presetLabel(pr)}</button>`).join("");
 }
+function setPalCat(c){palCat=c;buildPalette();}
 function shapeStyle(d,it){
   let s=`background-color:${d.sh==='text'?'transparent':d.c};`;
   if(d.sh==='wedge')s+=`clip-path:${WEDGE};-webkit-clip-path:${WEDGE};`;
@@ -2446,6 +2492,11 @@ function fillPlotProps(){
   const act=document.activeElement, set=(id,v)=>{const e=$(id);if(e&&e!==act)e.value=v;};
   set("ppLabel",it.label||""); set("ppW",Math.round(it.w)); set("ppD",Math.round(it.h)); set("ppR",it.rot||0);
   $("ppWO").textContent=Math.round(it.w)+"%"; $("ppDO").textContent=Math.round(it.h)+"%"; $("ppRO").textContent=(it.rot||0)+"°";
+  const vars=PLOT_PRESETS.filter(p=>p.type===it.type), sv=$("ppV"), spz=$("ppP");
+  $("ppVWrap").hidden=vars.length<2;
+  if(vars.length>1&&sv!==act){ sv.innerHTML=vars.map(p=>`<option value="${p.v||""}">${esc(presetLabel(p))}</option>`).join(""); sv.value=presetOf(it.type,it.v).v||""; }
+  const hasPose=POSE_TYPES.indexOf(it.type)>=0; $("ppPWrap").hidden=!hasPose;
+  if(hasPose&&spz!==act){ spz.innerHTML=["stand","high","low"].map(k=>`<option value="${k}">${esc(L("pose_"+k))}</option>`).join(""); spz.value=it.pose||"stand"; }
   const isR=it.type==="riser"; $("ppHWrap").hidden=!isR;
   if(isR){const h=riserHgt(it);set("ppH",h);$("ppHO").textContent=h.toFixed(1)+" m";}
 }
@@ -2456,6 +2507,14 @@ function plotProp(k,v){
     /* keep a "3×2×0.4 m" style label in step with the slider */
     const m=String(it.label||"").match(/^(.*?\d+(?:[.,]\d+)?\s*[×xX*]\s*\d+(?:[.,]\d+)?\s*[×xX*]\s*)(\d+(?:[.,]\d+)?)(.*)$/);
     if(m)it.label=m[1]+String(it.hgt)+m[3];
+  }else if(k==="v"){
+    /* switching variant: take its default footprint, and its name if the label was still the default one */
+    const old=presetOf(it.type,it.v), nw=presetOf(it.type,v), d=PLOT_TYPES[it.type];
+    if(old&&(it.label||"")===presetLabel(old))it.label=presetLabel(nw);
+    if(nw.v)it.v=nw.v; else delete it.v;
+    it.w=nw.w||d.w; it.h=nw.h||d.h;
+  }else if(k==="pose"){
+    if(v&&v!=="stand")it.pose=v; else delete it.pose;
   }else if(k==="label"){
     it.label=v;
     if(it.type==="riser")delete it.hgt;   /* a typed label decides the height again */
@@ -2543,7 +2602,7 @@ function mountPreview3d(){
     return;
   }
   if(prev3dLoading)return; prev3dLoading=true;
-  import("./stage3d.js?v=2").then(function(mod){
+  import("./stage3d.js?v=3").then(function(mod){
     prev3d=mod.create({ host:prev3dHost, items:()=>S.plot.items, readOnly:true, pageScroll:true,
       audienceText:()=>L("plot_audience"), ariaLabel:()=>L("aria_plot3d").replace("{n}",S.plot.items.length) });
     prev3dLoading=false; mountPreview3d();
@@ -2556,7 +2615,7 @@ async function setPlotView(v,instant){
     stage3dBusy=true; plotView="3d"; plotViewUI();
     const msg=$("stage3dMsg");
     try{
-      if(!stage3d){ msg.textContent=L("plot3d_loading"); const mod=await import("./stage3d.js?v=2"); stage3d=mod.create(plot3dApi()); }
+      if(!stage3d){ msg.textContent=L("plot3d_loading"); const mod=await import("./stage3d.js?v=3"); stage3d=mod.create(plot3dApi()); }
       msg.textContent="";
       stage3dBusy=false;
       $("plotLiveBtn").setAttribute("aria-pressed",String(plotLive));
