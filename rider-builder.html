@@ -479,6 +479,97 @@
     .doc p{orphans:2;widows:2}
     @page{size:A4;margin:16mm}
   }
+  /* ---------- Repeat-row field labels ----------
+     Every field in a repeat row (input list, contacts, crew…) is wrapped in <label class="rf">.
+     On desktop the wrapper is display:contents, so the input stays the flex item it always was and
+     the label text is hidden: the desktop layout is byte-for-byte what it was before. */
+  .rf{display:contents}
+  .row>.rf>input,.row>.rf>select,.row>.rf>textarea{flex:1}
+  .rfl{display:none}
+  #stepMini{display:none}
+  /* ---------- Mobile editor (2026-11 overhaul) ----------
+     Deliberately the LAST block of this stylesheet: earlier mobile rules (e.g. .editor padding)
+     were silently overridden by desktop rules that come later in the file. Everything here is
+     scoped to the single-column layout (<=860px) or to body.stepmode (<=820px, set by JS). */
+  @media(max-width:860px){
+    /* overflow:visible so #stepNav (position:sticky;bottom:0) sticks to the viewport: with the
+       desktop overflow-y:auto the editor was its own (non-scrolling) scroll box and it never stuck */
+    .editor{padding:14px 16px 24px;overflow:visible}
+    .mobile-tabs button{font-size:12.5px;letter-spacing:1.5px;padding:15px 0;font-weight:500}
+    label.fld{font-size:12px;letter-spacing:1.2px;margin:24px 0 8px}
+    .hint{font-size:13px;line-height:1.5;color:var(--soft);margin-top:6px}
+    .chips-lbl{font-size:11px;letter-spacing:1.2px;color:var(--soft)}
+    /* 16px stops iOS Safari from zooming the page on every focus; inline 12-13px sizes lose too */
+    input[type=text],input[type=date],input[type=number],input[type=email],input[type=tel],textarea,select{font-size:16px!important;min-height:46px;padding:10px 11px;background:#fff;border-color:#cfc8ba;border-radius:4px}
+    textarea{min-height:92px}
+    select{padding:10px 8px!important}
+    input[type=file]{font-size:14px;max-width:100%}
+    input[type=color]{width:56px!important;height:46px!important}
+    /* quick-add chips: tidy two-column grid with full-size tap targets instead of a ragged wrap */
+    .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+    .chips-lbl{grid-column:1/-1;margin:0}
+    .chip{min-height:46px;padding:10px 8px;font-size:12px;letter-spacing:.6px;line-height:1.25;text-align:center;border-color:#cfc8ba;border-radius:4px;color:var(--ink);background:var(--bg)}
+    .add{min-height:50px;font-size:12px;letter-spacing:1.4px;font-weight:500;color:var(--ink);border:1px dashed #b9b1a2;border-radius:4px;margin-top:12px}
+    .bulkrow{flex-wrap:wrap;gap:8px 10px;margin-top:4px}
+    .bulkrow .chips-lbl{flex:0 0 100%}
+    .bulkrow input{flex:1 1 0;min-width:0;font-size:16px}
+    .bulkrow .chip{flex:0 0 auto;min-width:96px}
+    .calcrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .calcrow .chips-lbl{grid-column:1/-1}
+    .calcrow input[type=number],.calcrow select{width:100%}
+    .calcrow .stchk{font-size:13px;letter-spacing:.3px;color:var(--ink);min-height:44px;gap:8px}
+    .calcrow .chip{grid-column:1/-1}
+    .stchk input{width:20px;height:20px}
+    .swatch{width:34px;height:34px;border-radius:3px}
+    .color-presets{gap:9px}
+    .sechelp{font-size:14px}
+
+    /* repeat rows become labelled cards: controls in the card head, fields in a 2-column grid */
+    .rep-header{display:none}
+    .repeat{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;border:1px solid var(--hair);border-radius:6px;background:#faf9f6;padding:8px 12px 14px;margin-top:10px}
+    .repeat>.row{display:contents}
+    .repeat>input,.repeat>textarea{margin:0!important}
+    .repeat .rowctl{grid-row:1;grid-column:1/-1;justify-self:end;gap:6px}
+    .repeat .chno{grid-row:1;grid-column:1;justify-self:start;align-self:center;height:auto;border:none;background:none;font-size:15px;font-weight:500;color:var(--clay-text);padding:0;flex:none}
+    .repeat .chno::before{content:"#";color:var(--muted);font-weight:400;margin-right:1px}
+    .repeat .mini2{width:40px;height:40px;font-size:16px;border-radius:4px;color:var(--soft);border-color:#d5cebf;background:var(--bg)}
+    .rf{display:flex;flex-direction:column;gap:5px;min-width:0}
+    .rf>input,.rf>select,.rf>textarea{width:100%!important;flex:none!important;margin:0!important}
+    .rfl{display:block;font-family:var(--display);font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rf.full{grid-column:1/-1}
+    .repeat.rep-qty{grid-template-columns:1fr 92px}
+    .repeat.rep-one{grid-template-columns:1fr}
+    .repeat .stchk{align-self:end;min-height:46px;font-size:13px;letter-spacing:.5px;color:var(--ink);gap:8px}
+  }
+  @media(max-width:820px){
+    /* step header scrolls away with the page; only the slim #stepMini bar sticks (see applySteps) */
+    body.stepmode #secNav{position:static;padding:6px 0 16px;margin:0 0 4px;border-bottom:1px solid var(--hair)}
+    body.stepmode .stepbar{height:4px;border-radius:2px;margin-bottom:14px}
+    body.stepmode .stepcount{font-size:12px;letter-spacing:1.5px}
+    body.stepmode .steptitle{font-size:26px;line-height:1.2;margin:4px 0 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+    body.stepmode .steptitle .essbadge{margin-left:0;font-size:10.5px;letter-spacing:1px;padding:4px 8px}
+    body.stepmode .steptitle .secinfo{width:36px;height:36px;font-size:15px;margin-left:auto}
+    body.stepmode .stepchips{gap:8px;padding:4px 2px 4px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none;scroll-snap-type:x proximity}
+    body.stepmode .stepchips::-webkit-scrollbar{display:none}
+    body.stepmode .stepchips .secchip{width:42px;height:42px;font-size:15px;color:var(--ink);border-color:#cfc8ba;scroll-snap-align:center}
+    body.stepmode .stepchips .secchip.done{background:#efe6dc}
+    body.stepmode .secchip.ess::after{top:0;right:0;width:8px;height:8px;border:2px solid var(--bg)}
+    body.stepmode #formMount details.sec.step-active{border:none;box-shadow:none;background:none;overflow:visible;margin:0}
+    body.stepmode .sec-body{padding:0 0 8px}
+    body.stepmode .sec-body>label.fld:first-child,body.stepmode .sec-body>.sechelp+label.fld{margin-top:14px}
+    body.stepmode #stepNav{margin:28px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));gap:10px;box-shadow:0 -6px 16px rgba(27,26,23,.05)}
+    body.stepmode #stepNav .btn{min-height:50px;padding:12px 10px;font-size:12px;letter-spacing:1px;line-height:1.3;border-radius:4px;overflow:hidden;text-overflow:ellipsis}
+    body.stepmode #stepNav .btn.ghost{flex:0 0 32%}
+    body.stepmode #stepMini{display:flex;position:fixed;left:0;right:0;top:var(--miniTop,47px);z-index:25;align-items:center;gap:10px;width:100%;border:none;border-bottom:1px solid var(--hair);background:var(--bg);padding:10px 16px 11px;font-family:var(--display);font-size:13px;letter-spacing:.3px;color:var(--ink);text-align:left;cursor:pointer;transform:translateY(-120%);opacity:0;pointer-events:none;transition:transform .18s ease,opacity .18s ease}
+    body.stepmode #stepMini.show{transform:none;opacity:1;pointer-events:auto}
+    #stepMini .sm-n{color:var(--clay-text);font-weight:500;white-space:nowrap}
+    #stepMini .sm-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #stepMini .sm-c{color:var(--soft);font-size:12px;white-space:nowrap}
+    #stepMini .sm-bar{position:absolute;left:0;bottom:-1px;height:2px;background:var(--clay)}
+  }
+  @media(max-width:820px) and (prefers-reduced-motion:reduce){ body.stepmode #stepMini{transition:none} }
+  /* phone held sideways: too little height for two fixed bars, so Back/Next scrolls with the page */
+  @media(max-width:820px) and (max-height:500px){ body.stepmode #stepNav{position:static;box-shadow:none} }
 </style>
 </head>
 <body>
@@ -532,6 +623,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
     <div id="onboard" class="onboard" style="display:none"></div>
     <div class="ai-box" id="wizard"></div>
     <nav id="secNav"></nav>
+    <button type="button" id="stepMini" onclick="stepMiniTop()" tabindex="-1" aria-hidden="true"></button>
     <div id="formMount"></div>
     <div id="stepNav"></div>
   </div>
@@ -701,6 +793,7 @@ var qrcode=(function(){var P=function(x,w){var g=236,l=17,n=x,s=O[w],t=null,r=0,
 /* ===================== i18n ===================== */
 const I18N = {
   en:{
+    step_all:"All steps", lbl_role:"Role", lbl_name:"Name", lbl_email:"Email", lbl_phone:"Phone", lbl_count:"Qty", lbl_item:"Item", lbl_who:"For whom", lbl_diet:"Dietary", lbl_contents:"Contents",
     tagline:"Rider Builder · demo", lang_label:"Language",
     btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_polish:"Polish", ai_need:"AI isn't set up yet.", ai_gate:"You've used your free AI actions. Upgrade to Pro for unlimited polish and translation.", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", saving:"Saving…", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
@@ -758,6 +851,7 @@ const I18N = {
     aria_secnav:"Section {n}: {t}", aria_help:"Show help for this section"
   },
   nl:{
+    step_all:"Alle stappen", lbl_role:"Rol", lbl_name:"Naam", lbl_email:"E-mail", lbl_phone:"Telefoon", lbl_count:"Aantal", lbl_item:"Item", lbl_who:"Voor wie", lbl_diet:"Dieet", lbl_contents:"Inhoud",
     tagline:"Rider Builder · demo", lang_label:"Taal",
     btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_polish:"Oppoetsen", ai_need:"AI is nog niet ingesteld.", ai_gate:"Je hebt je gratis AI-acties gebruikt. Upgrade naar Pro voor onbeperkt oppoetsen en vertalen.", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", saving:"Opslaan…", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
@@ -813,6 +907,7 @@ const I18N = {
     aria_secnav:"Sectie {n}: {t}", aria_help:"Uitleg voor deze sectie tonen"
   },
   de:{
+    step_all:"Alle Schritte", lbl_role:"Rolle", lbl_name:"Name", lbl_email:"E-Mail", lbl_phone:"Telefon", lbl_count:"Anzahl", lbl_item:"Artikel", lbl_who:"Für wen", lbl_diet:"Ernährung", lbl_contents:"Inhalt",
     lang_label:"Sprache",
     subtitle_default:"Technischer & Hospitality Rider", valid_until:"Gültig bis", bandname_ph:"BANDNAME",
     sec_general:"Allgemein", sec_hospitality:"Hospitality", sec_technical:"Technischer Rider", sec_lights:"Licht",
@@ -828,6 +923,7 @@ const I18N = {
     plot_or_upload:"…oder stattdessen ein Bühnenplan-Bild hochladen"
   },
   fr:{
+    step_all:"Toutes les étapes", lbl_role:"Rôle", lbl_name:"Nom", lbl_email:"E-mail", lbl_phone:"Téléphone", lbl_count:"Qté", lbl_item:"Article", lbl_who:"Pour qui", lbl_diet:"Régime", lbl_contents:"Contenu",
     lang_label:"Langue",
     subtitle_default:"Rider technique & hospitalité", valid_until:"Valable jusqu'au", bandname_ph:"NOM DU GROUPE",
     sec_general:"Général", sec_hospitality:"Hospitalité", sec_technical:"Rider technique", sec_lights:"Lumière",
@@ -843,6 +939,7 @@ const I18N = {
     plot_or_upload:"…ou importer une image de plan de scène"
   },
   es:{
+    step_all:"Todos los pasos", lbl_role:"Rol", lbl_name:"Nombre", lbl_email:"Email", lbl_phone:"Teléfono", lbl_count:"Cant.", lbl_item:"Artículo", lbl_who:"Para quién", lbl_diet:"Dieta", lbl_contents:"Contenido",
     lang_label:"Idioma",
     subtitle_default:"Rider técnico y de hospitalidad", valid_until:"Válido hasta", bandname_ph:"NOMBRE DEL GRUPO",
     sec_general:"General", sec_hospitality:"Hospitalidad", sec_technical:"Rider técnico", sec_lights:"Iluminación",
@@ -1597,17 +1694,39 @@ function applySteps(){
     bottom.innerHTML=html;
   }
   const on=nav?nav.querySelector(".secchip.on"):null;
-  if(on){ const strip=on.parentElement; if(strip){ try{ strip.scrollLeft=on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2; }catch(e){} } }
+  /* centre the active chip; measured with rects because the strip is not the chips' offsetParent */
+  if(on){ const strip=on.parentElement; if(strip){ try{ strip.scrollLeft+= (on.getBoundingClientRect().left-strip.getBoundingClientRect().left)-strip.clientWidth/2+on.offsetWidth/2; }catch(e){} } }
+  const mini=$("stepMini");
+  if(mini){
+    const pctM=Math.round(((curStep+1)/total)*100);
+    mini.innerHTML='<span class="sm-n">'+(curStep+1)+'/'+total+'</span><span class="sm-t">'+esc(titleOf(curStep))+'</span><span class="sm-c">'+esc(L("step_all"))+' ⌃</span><span class="sm-bar" style="width:'+pctM+'%"></span>';
+  }
+  updateStepMini();
 }
+/* Slim sticky bar for mobile: appears once the big step header has scrolled under the tabs. */
+function updateStepMini(){
+  const mini=$("stepMini"), nav=$("secNav");
+  if(!mini||!nav)return;
+  if(!document.body.classList.contains("stepmode")){ mini.classList.remove("show"); return; }
+  const tabs=document.querySelector(".mobile-tabs");
+  const tabsH=tabs?tabs.offsetHeight:0;
+  mini.style.setProperty("--miniTop",tabsH+"px");
+  const r=nav.getBoundingClientRect();
+  mini.classList.toggle("show", r.height>0 && r.bottom<tabsH+8);
+}
+let _miniRAF=0;
+window.addEventListener("scroll",function(){ if(_miniRAF)return; _miniRAF=requestAnimationFrame(function(){ _miniRAF=0; updateStepMini(); }); },{passive:true});
+/* Scroll so the step header (title + step chips) sits right under the sticky Edit/Preview tabs. */
+function scrollToStepTop(){
+  const tabs=document.querySelector(".mobile-tabs"), nav=$("secNav");
+  if(!nav)return;
+  const y=window.pageYOffset+nav.getBoundingClientRect().top-(tabs?tabs.offsetHeight:0);
+  window.scrollTo(0,Math.max(0,y));
+}
+function stepMiniTop(){ try{ scrollToStepTop(); }catch(e){ window.scrollTo(0,0); } }
 function goStep(i){ curStep=i; applySteps();
   try{
-    if(isStepMode()){
-      const tabs=document.querySelector(".mobile-tabs"), nav=$("secNav");
-      const off=(tabs?tabs.offsetHeight:0)+(nav?nav.offsetHeight:0)+10;
-      const fm=document.querySelector("#formMount details.sec.step-active")||$("formMount");
-      const y=window.pageYOffset+fm.getBoundingClientRect().top-off;
-      window.scrollTo(0,Math.max(0,y));
-    } else { window.scrollTo(0,0); }
+    if(isStepMode()) scrollToStepTop(); else window.scrollTo(0,0);
   }catch(e){ try{window.scrollTo(0,0);}catch(_){}}
 }
 function renderDeskNav(secs,nav){
@@ -1905,92 +2024,94 @@ function renderForm(){
   if(isStepMode()){ try{ window.scrollTo(0,winY); requestAnimationFrame(function(){window.scrollTo(0,winY);}); }catch(e){} }
 }
 
+/* Field wrapper for repeat rows: a visible label on mobile cards, display:contents on desktop. */
+function rf(lbl,inner,cls){return `<label class="rf${cls?" "+cls:""}"><span class="rfl">${esc(lbl)}</span>${inner}</label>`;}
 function renderRepeats(){
   mountRepeat("rep-contacts",S.contacts,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-contact">
       <div class="row">
-        <input type="text" placeholder="${L('sub_contact')}" data-rep="contacts.${i}.role" value="${esc(c.role)}">
-        <input type="text" data-rep="contacts.${i}.name" value="${esc(c.name)}">
+        ${rf(L('lbl_role'),`<input type="text" placeholder="${L('sub_contact')}" data-rep="contacts.${i}.role" value="${esc(c.role)}">`)}
+        ${rf(L('lbl_name'),`<input type="text" data-rep="contacts.${i}.name" value="${esc(c.name)}">`)}
       </div>
       <div class="row">
-        <input type="text" placeholder="@" data-rep="contacts.${i}.email" value="${esc(c.email)}">
-        <input type="text" placeholder="☎" data-rep="contacts.${i}.phone" value="${esc(c.phone)}">
+        ${rf(L('lbl_email'),`<input type="text" inputmode="email" autocomplete="email" placeholder="@" data-rep="contacts.${i}.email" value="${esc(c.email)}">`,"full")}
+        ${rf(L('lbl_phone'),`<input type="text" inputmode="tel" autocomplete="tel" placeholder="☎" data-rep="contacts.${i}.phone" value="${esc(c.phone)}">`,"full")}
       </div>
       ${rowCtl('contacts',i)}
     </div>`);
   mountRepeat("rep-travelParty",S.travelParty,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-tp">
       <div class="row">
         <span class="chno">${i+1}</span>
-        <input type="text" placeholder="${L('ph_tp_name')}" data-rep="travelParty.${i}.name" value="${esc(c.name||"")}">
-        <input type="text" placeholder="${L('ph_tp_role')}" data-rep="travelParty.${i}.label" value="${esc(c.label)}">
+        ${rf(L('lbl_name'),`<input type="text" placeholder="${L('ph_tp_name')}" data-rep="travelParty.${i}.name" value="${esc(c.name||"")}">`)}
+        ${rf(L('lbl_role'),`<input type="text" placeholder="${L('ph_tp_role')}" data-rep="travelParty.${i}.label" value="${esc(c.label)}">`)}
         ${rowCtl('travelParty',i)}
       </div>
     </div>`);
   mountRepeat("rep-dietary",S.hosp.dietary,(c,i)=>`
-    <div class="repeat"><div class="row">
-      <input type="text" data-rep="hosp.dietary.${i}" value="${esc(c)}">
+    <div class="repeat rep-one"><div class="row">
+      <input type="text" aria-label="${esc(L('lbl_diet'))} ${i+1}" data-rep="hosp.dietary.${i}" value="${esc(c)}">
       ${rowCtl('hosp.dietary',i)}
     </div></div>`);
   mountRepeat("rep-drinks",S.hosp.drinks,(c,i)=>`
-    <div class="repeat"><div class="row">
-      <input type="text" data-rep="hosp.drinks.${i}.item" value="${esc(c.item)}">
-      <input type="text" placeholder="${L('ph_count')}" style="flex:0 0 90px" data-rep="hosp.drinks.${i}.qty" value="${esc(c.qty)}">
+    <div class="repeat rep-qty"><div class="row">
+      ${rf(L('lbl_item'),`<input type="text" data-rep="hosp.drinks.${i}.item" value="${esc(c.item)}">`)}
+      ${rf(L('lbl_count'),`<input type="text" placeholder="${L('ph_count')}" style="flex:0 0 90px" data-rep="hosp.drinks.${i}.qty" value="${esc(c.qty)}">`)}
       ${rowCtl('hosp.drinks',i)}
     </div></div>`);
   mountRepeat("rep-crew",S.tech.crew,(c,i)=>`
-    <div class="repeat"><div class="row">
-      <input type="text" data-rep="tech.crew.${i}.role" value="${esc(c.role)}">
-      <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 84px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">
+    <div class="repeat rep-qty"><div class="row">
+      ${rf(L('lbl_role'),`<input type="text" data-rep="tech.crew.${i}.role" value="${esc(c.role)}">`)}
+      ${rf(L('lbl_count'),`<input type="number" inputmode="numeric" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 84px" data-rep="tech.crew.${i}.count" value="${esc(c.count)}">`)}
       ${rowCtl('tech.crew',i)}
     </div></div>`);
   mountRepeat("rep-rooms",S.hosp.rooms,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-qty">
       <div class="row">
-        <input type="text" placeholder="${L('ph_room_who')}" data-rep="hosp.rooms.${i}.who" value="${esc(c.who)}">
-        <input type="number" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 64px" data-rep="hosp.rooms.${i}.count" value="${esc(c.count)}">
+        ${rf(L('lbl_who'),`<input type="text" placeholder="${L('ph_room_who')}" data-rep="hosp.rooms.${i}.who" value="${esc(c.who)}">`)}
+        ${rf(L('lbl_count'),`<input type="number" inputmode="numeric" min="0" max="99" placeholder="${L('ph_count')}" style="flex:0 0 64px" data-rep="hosp.rooms.${i}.count" value="${esc(c.count)}">`)}
         ${rowCtl('hosp.rooms',i)}
       </div>
-      <input type="text" placeholder="${L('ph_room_notes')}" data-rep="hosp.rooms.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
-      <textarea rows="3" placeholder="${L('ph_room_items')}" data-rep="hosp.rooms.${i}.items" style="margin-top:6px;width:100%">${esc(c.items||"")}</textarea>
+      ${rf(L('th_notes'),`<input type="text" placeholder="${L('ph_room_notes')}" data-rep="hosp.rooms.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">`,"full")}
+      ${rf(L('lbl_contents'),`<textarea rows="3" placeholder="${L('ph_room_items')}" data-rep="hosp.rooms.${i}.items" style="margin-top:6px;width:100%">${esc(c.items||"")}</textarea>`,"full")}
     </div>`);
   mountRepeat("rep-veh",S.park.vehicles,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-qty">
       <div class="row">
-        <select data-rep="park.vehicles.${i}.type" style="flex:1;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${vehTypeOpts(c.type)}</select>
-        <input type="text" placeholder="#" style="flex:0 0 44px" data-rep="park.vehicles.${i}.count" value="${esc(c.count)}">
+        ${rf(L('th_vehicle'),`<select data-rep="park.vehicles.${i}.type" style="flex:1;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${vehTypeOpts(c.type)}</select>`)}
+        ${rf(L('lbl_count'),`<input type="text" inputmode="numeric" placeholder="#" style="flex:0 0 44px" data-rep="park.vehicles.${i}.count" value="${esc(c.count)}">`)}
         ${rowCtl('park.vehicles',i)}
       </div>
       <div class="row">
-        <input type="text" placeholder="${L('th_plate')}" data-rep="park.vehicles.${i}.plate" value="${esc(c.plate)}">
-        <input type="text" placeholder="${L('th_height')}" style="flex:0 0 92px" data-rep="park.vehicles.${i}.height" value="${esc(c.height)}">
+        ${rf(L('th_plate'),`<input type="text" placeholder="${L('th_plate')}" data-rep="park.vehicles.${i}.plate" value="${esc(c.plate)}">`)}
+        ${rf(L('th_height'),`<input type="text" inputmode="decimal" placeholder="${L('th_height')}" style="flex:0 0 92px" data-rep="park.vehicles.${i}.height" value="${esc(c.height)}">`)}
       </div>
     </div>`);
   mountRepeat("rep-inputs",S.inputs,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-in">
       <div class="row">
         <span class="chno" title="${L('th_ch')}">${i+1}</span>
-        <input type="text" placeholder="${L('th_input')}" data-rep="inputs.${i}.input" value="${esc(c.input)}">
-        <input type="text" placeholder="${L('th_micdi')}" data-mic autocomplete="off" style="flex:0 0 110px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">
+        ${rf(L('th_input'),`<input type="text" placeholder="${L('th_input')}" data-rep="inputs.${i}.input" value="${esc(c.input)}">`)}
+        ${rf(L('th_micdi'),`<input type="text" placeholder="${L('th_micdi')}" data-mic autocomplete="off" style="flex:0 0 110px" data-rep="inputs.${i}.micdi" value="${esc(c.micdi)}">`)}
         ${rowCtl('inputs',i,1)}
       </div>
       <div class="row">
-        <input type="text" placeholder="${L('th_48v')}" style="flex:0 0 48px" data-rep="inputs.${i}.p48" value="${esc(c.p48)}">
-        <input type="text" placeholder="${L('th_stand')}" data-rep="inputs.${i}.stand" value="${esc(c.stand)}">
-        <input type="text" placeholder="${L('th_position')}" data-rep="inputs.${i}.pos" value="${esc(c.pos)}">
+        ${rf(L('th_48v'),`<input type="text" placeholder="${L('th_48v')}" style="flex:0 0 48px" data-rep="inputs.${i}.p48" value="${esc(c.p48)}">`)}
+        ${rf(L('th_stand'),`<input type="text" placeholder="${L('th_stand')}" data-rep="inputs.${i}.stand" value="${esc(c.stand)}">`)}
+        ${rf(L('th_position'),`<input type="text" placeholder="${L('th_position')}" data-rep="inputs.${i}.pos" value="${esc(c.pos)}">`)}
       </div>
-      <input type="text" placeholder="${L('th_notes')}" data-rep="inputs.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+      ${rf(L('th_notes'),`<input type="text" placeholder="${L('th_notes')}" data-rep="inputs.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">`)}
     </div>`);
   mountRepeat("rep-auxes",S.auxes,(c,i)=>`
-    <div class="repeat">
+    <div class="repeat rep-aux">
       <div class="row">
         <span class="chno" title="${L('th_aux')}" style="flex-basis:42px">${esc(c.n)}</span>
-        <input type="text" placeholder="${L('th_dest')}" data-rep="auxes.${i}.dest" value="${esc(c.dest)}">
-        <select data-rep="auxes.${i}.type" style="flex:0 0 86px;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${auxTypeOpts(c.type)}</select>
+        ${rf(L('th_dest'),`<input type="text" placeholder="${L('th_dest')}" data-rep="auxes.${i}.dest" value="${esc(c.dest)}">`,"full")}
+        ${rf(L('th_type'),`<select data-rep="auxes.${i}.type" style="flex:0 0 86px;padding:8px 4px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:13px;color:var(--ink)">${auxTypeOpts(c.type)}</select>`)}
         <label class="stchk" title="${esc(L('aria_stereo'))}"><input type="checkbox"${c.st?" checked":""} onchange="setRep('auxes.${i}.st',this.checked?'X':'');renumberAuxes();renderForm();renderPreview()">ST</label>
         ${rowCtl('auxes',i,1)}
       </div>
-      <input type="text" placeholder="${L('th_notes')}" data-rep="auxes.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">
+      ${rf(L('th_notes'),`<input type="text" placeholder="${L('th_notes')}" data-rep="auxes.${i}.notes" value="${esc(c.notes)}" style="margin-top:6px">`,"full")}
     </div>`);
 }
 function mountRepeat(id,arr,tpl){const el=$(id);if(!el)return;el.innerHTML=arr.map(tpl).join("");
