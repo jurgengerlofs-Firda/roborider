@@ -654,9 +654,9 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
 
 <!-- Account / cloud modal -->
 <div class="modal-bg" id="acctModal">
-  <div class="modal" style="max-width:460px">
+  <div class="modal" style="max-width:560px">
     <div class="modal-head"><h3 id="acctTitle">Account</h3><span class="spacer"></span><button class="btn ghost" onclick="closeAcctModal()">✕</button></div>
-    <div style="padding:24px">
+    <div style="padding:24px;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch">
       <div id="acctLogin">
         <p id="acctIntro" style="font-size:13px;color:var(--soft);margin:0 0 16px;line-height:1.5"></p>
         <label class="fld" id="acctEmailLbl"></label>
@@ -991,6 +991,9 @@ const AI_ENDPOINT = SUPABASE_URL + "/functions/v1/ai";
 const AI_ENABLED = false;   /* set true once the 'ai' Edge Function is live */
 const AI_FREE_TRIES = 2;    /* free Polish/Translate actions before Pro is required */
 let sb=null, user=null, currentRiderId=null, riderCount=0, shareToken=null;
+/* The rider being edited survives a reload (the rider itself is restored from localStorage), so its cloud id has to survive too — otherwise every reload made autosave insert a fresh copy and the account list filled up with duplicates. */
+try{ currentRiderId=localStorage.getItem("rr_rider_id")||null; }catch(e){}
+function setRid(id){ currentRiderId=id||null; try{ if(currentRiderId) localStorage.setItem("rr_rider_id",currentRiderId); else localStorage.removeItem("rr_rider_id"); }catch(e){} }
 let sharedMode = /[?&]share=/.test(location.search);  // viewing a shared rider (read-only)
 let demoMode = new URLSearchParams(location.search).get("demo")==="1";  // viewing the ?demo=1 sample rider (read-only, same reasoning as sharedMode — never overwrite the visitor's own autosave just because they looked at the demo, switched language, etc.)
 try{
@@ -1247,8 +1250,10 @@ async function initAuth(){
 }
 async function onAuthChange(){
   updateAccountUI();
-  if(user){ await loadProfilePro(); const list=await refreshRiderList(); maybeAutoOpenLast(list); }
-  else { currentRiderId=null; }
+  if(user){ await loadProfilePro(); const list=await refreshRiderList();
+    if(currentRiderId && list && !list.some(function(r){return r.id===currentRiderId;})) setRid(null);   // remembered rider was deleted or belongs to another account
+    maybeAutoOpenLast(list); }
+  else { setRid(null); }
 }
 function isBlankState(){
   try{ const b=blank(); b.lang=S.lang; const cur=Object.assign({},S); cur.lang=S.lang; return JSON.stringify(b)===JSON.stringify(cur); }
@@ -1308,7 +1313,7 @@ async function sendMagicLink(){
 }
 async function signOut(){
   try{ await sb.auth.signOut(); }catch(e){}
-  user=null; currentRiderId=null;
+  user=null; setRid(null);
   try{ if(!localStorage.getItem("rr_pro")){ PRO=false; updateProUI(); renderPreview(); } }catch(_){}
   updateAccountUI(); closeAcctModal();
 }
@@ -1336,7 +1341,7 @@ async function refreshRiderList(){
       const title=esc(r.title&&r.title.trim()?r.title:L("acct_untitled"));
       return '<div style="padding:12px 0;border-bottom:1px solid var(--hair)">'
         +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:9px">'
-          +'<span style="flex:1;font-family:var(--display);font-weight:500;font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+title+'</span>'
+          +'<span style="flex:1;font-family:var(--display);font-weight:500;font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.id===currentRiderId?'<span style="color:var(--clay)" aria-hidden="true">● </span>':"")+title+'</span>'
           +'<span style="color:var(--muted);font-size:11px;flex:0 0 auto">'+ds+'</span>'
         +'</div>'
         +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
@@ -1362,7 +1367,7 @@ async function cloudSaveCurrent(){
     }else{
       if(!PRO && riderCount>=1){ $("acctMsg").textContent=L("free_limit"); return; }
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data){ currentRiderId=data.id; riderCount++; }
+      if(data){ setRid(data.id); riderCount++; }
     }
     $("acctMsg").textContent=L("acct_saved");
     refreshRiderList();
@@ -1373,7 +1378,7 @@ async function cloudLoad(id,auto){
   if(!auto && !isBlankState() && !confirm(L("confirm_switch_rider"))) return;
   try{
     const {data}=await sb.from("riders").select("data,title,share_id").eq("id",id).single();
-    if(data&&data.data){ S=Object.assign(blank(),data.data); currentRiderId=id; shareToken=data.share_id||null; selPlot=null; applyChrome(); renderForm(); renderPreview(); closeAcctModal(); }
+    if(data&&data.data){ S=Object.assign(blank(),data.data); setRid(id); shareToken=data.share_id||null; selPlot=null; applyChrome(); renderForm(); renderPreview(); closeAcctModal(); }
   }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
 async function cloudRename(id){
@@ -1382,7 +1387,7 @@ async function cloudRename(id){
 }
 async function cloudDelete(id){
   if(!confirm(L("acct_delete_q"))) return;
-  try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) currentRiderId=null; refreshRiderList(); }catch(e){ $("acctMsg").textContent=L("acct_err"); }
+  try{ await sb.from("riders").delete().eq("id",id); if(currentRiderId===id) setRid(null); refreshRiderList(); }catch(e){ $("acctMsg").textContent=L("acct_err"); }
 }
 function flashCloud(){const e=$("saveStatus");if(!e)return;e.textContent="☁ "+L("acct_saved");e.style.color="var(--clay)";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},1800);}
 function flashCloudError(){const e=$("saveStatus");if(!e)return;e.textContent="⚠ "+L("acct_err");e.style.color="#a85a5a";clearTimeout(e._t);e._t=setTimeout(function(){e.style.color="var(--muted)";e.textContent="";},3200);}
@@ -1400,7 +1405,7 @@ async function cloudSaveQuick(){
       await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
     }else{
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data){ currentRiderId=data.id; riderCount++; }
+      if(data){ setRid(data.id); riderCount++; }
     }
     flashCloud();
   }catch(e){ flashCloudError(); }
@@ -1424,7 +1429,7 @@ async function cloudAutoSave(){
       await sb.from("riders").update({title:title,data:S,updated_at:new Date().toISOString()}).eq("id",currentRiderId);
     }else{
       const {data}=await sb.from("riders").insert({user_id:user.id,title:title,data:S}).select("id").single();
-      if(data){ currentRiderId=data.id; riderCount++; }
+      if(data){ setRid(data.id); riderCount++; }
     }
     flashCloud();
   }catch(e){ flashCloudError(); }
@@ -3137,7 +3142,7 @@ function exportJSON(){
 function newDoc(){
   if(!confirm(L("confirm_new")))return;
   const lang=S.lang;
-  S=blank();S.lang=lang;selPlot=null;currentRiderId=null;shareToken=null;
+  S=blank();S.lang=lang;selPlot=null;setRid(null);shareToken=null;
   try{localStorage.removeItem("roborider");}catch(e){}
   if($("aiInput"))$("aiInput").value="";if($("aiResult"))$("aiResult").textContent="";
   applyChrome();renderForm();renderPreview();
@@ -3145,7 +3150,7 @@ function newDoc(){
 function importJSON(){
   const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";
   inp.onchange=e=>{const f=e.target.files[0];const r=new FileReader();
-    r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));currentRiderId=null;applyChrome();renderForm();renderPreview();}catch(err){alert("Could not read file.");}};
+    r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));setRid(null);applyChrome();renderForm();renderPreview();}catch(err){alert("Could not read file.");}};
     r.readAsText(f);};
   inp.click();
 }
@@ -3321,7 +3326,7 @@ function loadExample(auto){
   /* Fixed flagship example — "Velvet Hours", matches the homepage showcase. Shows everything the builder can do. */
   if(!auto && !confirm(L("confirm_example")))return;
   if(!auto)track("example_load");
-  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; currentRiderId=null; shareToken=null;
+  const lang=S.lang; S=blank(); S.lang=lang; selPlot=null; setRid(null); shareToken=null;
   S.band={name:"Velvet Hours", subtitle:"Technical & Hospitality Rider · Club tour 2026", validUntil:"2026-12-31", version:"2026 · V1", presskit:"", accent:"#1b1a17", logo:""};
   S.intro="Five-piece band — drums, bass, guitar, keys and vocals. We keep it simple and friendly: everything you need is below, and we're happy to talk anything through in advance. Let's make a great show day with your crew.";
   S.contacts=[
