@@ -82,9 +82,10 @@ Klaar als: `site-check` slaagt, en de schermbeelden van voor en na gelijk zijn o
 - **Modals:** achtergrond fadet, venster komt van `opacity:0; scale(.97)` in `--dur-ui`, sluit in
   `--dur-exit`. De stageplot-editor fadet alleen, zonder schaal: die is schermvullend op telefoon en het
   3D-podium meet zichzelf bij openen.
-- **Meldingen** (opgeslagen, gekopieerd): schuiven in vanaf hun rand en gaan langs dezelfde rand weg.
-- **Bevestiging:** een vinkje dat zich in 400ms tekent bij een gelukte PDF-export en bij Pro-activatie, één
-  keer per gebeurtenis.
+- **Meldingen:** de builder heeft geen losse meldingen; "opgeslagen" is een statustekst in de balk en blijft
+  zoals hij is.
+- **Bevestiging:** een vinkje dat zich in 400ms tekent bij Pro-activatie, één keer. Niet bij PDF-export: dat
+  is de afdrukfunctie van de browser, en de pagina kan niet weten of er echt is opgeslagen.
 - **Lege staat (C7):** het voorbeeld toont een korte uitnodiging zolang er nog niets is ingevuld.
 - **Rijen in de inputlijst:** `addRow()` tekent nu het hele formulier opnieuw. Een nieuwe rij krijgt alleen
   een eigen binnenkomst als dat kan zonder `renderForm()` te herbouwen. Het plan begint met die vraag; is het
