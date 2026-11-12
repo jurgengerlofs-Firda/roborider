@@ -264,6 +264,30 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     ok('polish', 'install tip is gone after closing', await page.evaluate(() => document.getElementById('rrInstallPill').hidden));
     await ctx.close();
   }
+  for (const [name, fmtOpt] of [['laptop', laptop], ['phone', iphone]]) {
+    /* builder windows: fade and scale with the shared timing, the stage plot editor only fades, and nothing gets stuck */
+    const { ctx, page } = await open(fmtOpt, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html?demo=1'); await page.waitForTimeout(1500);
+    const state = () => page.evaluate(() => { const m = document.getElementById('proModal'), c = getComputedStyle(m), hit = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+      return { display: c.display, opacity: c.opacity, dur: c.transitionDuration, box: getComputedStyle(m.querySelector('.modal')).transform, covers: !!hit && m.contains(hit) }; });
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(450);
+    let r = await state();
+    ok('polish', name + ': Pro window fades and scales in', r.display === 'flex' && r.opacity === '1' && r.box === 'none' && r.dur.includes('0.22s'), JSON.stringify(r));
+    await page.evaluate(() => document.getElementById('proModal').classList.remove('open')); await page.waitForTimeout(450);
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(80);
+    await page.evaluate(() => document.getElementById('proModal').classList.remove('open')); await page.waitForTimeout(450);
+    r = await state();
+    ok('polish', name + ': a window that is closed right away is gone', r.display === 'none' && !r.covers, JSON.stringify(r));
+    const plotBox = await page.evaluate(() => { openPlotModal(); return getComputedStyle(document.querySelector('#plotModal .modal')).transform; });
+    ok('polish', name + ': stage plot editor fades without scaling', plotBox === 'none', plotBox);
+    await page.waitForTimeout(400);
+    await page.evaluate(() => document.getElementById('plotModal').classList.remove('open')); await page.waitForTimeout(300);
+    await page.addStyleTag({ content: '*,*::before,*::after{transition:none!important;animation:none!important}' });
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(40);
+    r = await state();
+    ok('polish', name + ': windows still open without the new CSS', r.display === 'flex' && r.opacity === '1' && r.covers, JSON.stringify(r));
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

@@ -14,10 +14,25 @@
 .btn{transition:transform var(--dur-press) var(--ease-out),background var(--dur-press) var(--ease-out),color var(--dur-press) var(--ease-out)}
 .btn:active{transform:scale(.97)}
 
+/* windows (builder): .open on .modal-bg switches display none <-> flex. The backdrop fades, the window
+   scales in from .97; closing is quicker than opening. Browsers without @starting-style / allow-discrete
+   simply show and hide at once. */
+.modal-bg{opacity:0;transition:opacity var(--dur-exit) var(--ease-out),display var(--dur-exit) allow-discrete}
+.modal-bg:not(.open){pointer-events:none}
+.modal-bg.open{opacity:1;transition-duration:var(--dur-ui)}
+.modal-bg .modal{transform:scale(.97);transition:transform var(--dur-exit) var(--ease-out)}
+.modal-bg.open .modal{transform:none;transition-duration:var(--dur-ui)}
+@starting-style{.modal-bg.open{opacity:0}.modal-bg.open .modal{transform:scale(.97)}}
+/* the stage plot editor only fades: it fills the screen on phones and the 3D stage measures itself on open */
+#plotModal .modal,#plotModal.open .modal{transform:none;transition:none}
+@starting-style{#plotModal.open .modal{transform:none}}
+
 /* reduce motion: movement and scale go, a short fade may stay, nothing loops, nothing stays hidden.
    Every selector starts with :root so it beats the page's own rule, which loads after this file. */
 @media (prefers-reduced-motion:reduce){
   :root .btn:active{transform:none}
+  :root .modal-bg .modal{transform:none;transition:none}
+  :root .modal-bg.open{transition-duration:var(--dur-exit)}
   :root .hero-mark,:root .hero-mark .eye{animation:none}
   :root .reveal{opacity:1;transform:none;transition:none}
   :root .faq summary::after{transition:none}
