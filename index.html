@@ -86,6 +86,9 @@
   @media(max-width:820px){.grid{grid-template-columns:1fr}.hero h1{font-size:44px}}
   .card{border:none;border-bottom:1px solid var(--hair);border-right:1px solid var(--hair);border-radius:0;padding:38px 30px;background:none}
   .grid .card:nth-child(3n){border-right:none}
+  /* features: eight cards, so four across on a laptop and two on a tablet, never a loose one */
+  @media(min-width:1000px){#features .grid{grid-template-columns:repeat(4,1fr)}#features .card{padding:34px 24px}#features .card:nth-child(3n){border-right:1px solid var(--hair)}#features .card:nth-child(4n){border-right:none}}
+  @media(min-width:621px) and (max-width:999px){#features .grid{grid-template-columns:repeat(2,1fr)}#features .card:nth-child(3n){border-right:1px solid var(--hair)}#features .card:nth-child(2n){border-right:none}}
   .card .ic{font-size:20px;filter:grayscale(1);opacity:.55}
   .card h3{margin:18px 0 8px;font-size:20px;font-weight:400}
   .card p{margin:0;color:var(--soft);font-size:14px;font-weight:400;line-height:1.65}
@@ -305,6 +308,8 @@
     <div class="card"><div class="ic" aria-hidden="true">🌍</div><h3 data-i="f4_h"></h3><p data-i="f4_p"></p></div>
     <div class="card"><div class="ic" aria-hidden="true">📄</div><h3 data-i="f5_h"></h3><p data-i="f5_p"></p></div>
     <div class="card"><div class="ic" aria-hidden="true">⚡</div><h3 data-i="f6_h"></h3><p data-i="f6_p"></p></div>
+    <div class="card"><div class="ic" aria-hidden="true">🎭</div><h3 data-i="f7_h"></h3><p data-i="f7_p"></p></div>
+    <div class="card"><div class="ic" aria-hidden="true">🎹</div><h3 data-i="f8_h"></h3><p data-i="f8_p"></p></div>
   </div>
 </div></section>
 
@@ -331,7 +336,7 @@
       <span class="tag" data-i="p2_tag"></span>
       <h3 data-i="p2_h"></h3><div class="amt">€29<small> <span data-i="p2_per">once</span></small></div>
       <div class="p2val" data-i="p2_val"></div>
-      <ul><li data-i="p2_1"></li><li data-i="p2_2"></li><li data-i="p2_3"></li><li data-i="p2_4"></li></ul>
+      <ul><li data-i="p2_1"></li><li data-i="p2_2"></li><li data-i="p2_3"></li><li data-i="p2_4"></li><li data-i="p2_5"></li></ul>
       <a class="btn primary" id="p2btn" href="#feedback" data-i="p2_cta"></a>
     </div>
     <div class="plan" style="display:none">
@@ -428,6 +433,10 @@ const T={
   f5_p:"Clean A4 layout with your logo and accent colour. Looks like it came from a production company.",
   f6_h:"Smart presets",
   f6_p:"Add a full drum kit input list, standard PA/FOH/monitor text or a dressing-room block in one click.",
+  f7_h:"Your stage in 3D",
+  f7_p:"Flip the stage plot to 3D and look around the stage the way the crew will see it.",
+  f8_h:"Instrument library",
+  f8_p:"Pick the gear you actually play: grand or upright, the size of the drum kit, the mic, seated or standing.",
   how_h:"From zero to sent in three steps",
   how_lead:"No manual needed.",
   s1_h:"Describe or paste",
@@ -439,7 +448,7 @@ const T={
   price_h:"Simple pricing",
   price_lead:"Start free. Pay when you tour enough to need it.",
   p1_h:"Free", p1_1:"Full builder + stage plot", p1_2:"Smart auto-fill", p1_3:"PDF with watermark", p1_4:"Free account · 1 saved rider", p1_cta:"Start free",
-  p2_tag:"Most popular", p2_h:"Pro", p2_1:"Watermark-free PDF exports", p2_2:"Unlimited saved riders", p2_3:"Priority email support", p2_4:"Support an indie tool", p2_per:"once", p2_cta:"Get Pro",
+  p2_tag:"Most popular", p2_h:"Pro", p2_1:"Watermark-free PDF exports", p2_2:"Unlimited saved riders", p2_3:"Priority email support", p2_4:"Support an indie tool", p2_5:"Move your gear in 3D", p2_per:"once", p2_cta:"Get Pro",
   p3_h:"Band", p3_1:"Multiple riders & tours", p3_2:"Shareable venue links", p3_3:"Version history", p3_cta:"Coming soon",
   price_note:"Free to use, with a small watermark on exports. Go Pro to remove it.",
   guides_h:"Guides &amp; resources", guides_lead:"Practical guides on building riders, stage plots and input lists.", foot_guides:"Guides", testi_h:"What musicians say",
@@ -496,6 +505,10 @@ const T={
   f5_p:"Strakke A4-opmaak met je logo en accentkleur. Alsof het van een productiebedrijf komt.",
   f6_h:"Slimme presets",
   f6_p:"Voeg een volledige drum-inputlijst, standaard PA/FOH/monitor-tekst of een kleedkamerblok toe in één klik.",
+  f7_h:"Je podium in 3D",
+  f7_p:"Zet je stageplot om naar 3D en kijk rond op het podium zoals de crew het straks ziet.",
+  f8_h:"Instrumentbibliotheek",
+  f8_p:"Kies wat je echt speelt: vleugel of piano, de maat van het drumstel, de microfoon, zittend of staand.",
   how_h:"Van nul tot verstuurd in drie stappen",
   how_lead:"Geen handleiding nodig.",
   s1_h:"Beschrijf of plak",
@@ -507,7 +520,7 @@ const T={
   price_h:"Simpele prijzen",
   price_lead:"Begin gratis. Betaal als je genoeg tourt om het nodig te hebben.",
   p1_h:"Gratis", p1_1:"Volledige builder + stageplot", p1_2:"Slim automatisch invullen", p1_3:"PDF met watermerk", p1_4:"Gratis account · 1 opgeslagen rider", p1_cta:"Gratis starten",
-  p2_tag:"Populairst", p2_h:"Pro", p2_1:"Export zonder watermerk", p2_2:"Onbeperkt opgeslagen riders", p2_3:"Voorrang bij support", p2_4:"Steun een onafhankelijke tool", p2_per:"eenmalig", p2_cta:"Pro kopen",
+  p2_tag:"Populairst", p2_h:"Pro", p2_1:"Export zonder watermerk", p2_2:"Onbeperkt opgeslagen riders", p2_3:"Voorrang bij support", p2_4:"Steun een onafhankelijke tool", p2_5:"Verplaats je spullen in 3D", p2_per:"eenmalig", p2_cta:"Pro kopen",
   p3_h:"Band", p3_1:"Meerdere riders & tours", p3_2:"Deelbare zaal-links", p3_3:"Versiehistorie", p3_cta:"Binnenkort",
   price_note:"Gratis te gebruiken, met een klein watermerk op de export. Met Pro haal je dat weg.",
   guides_h:"Gidsen &amp; uitleg", guides_lead:"Praktische gidsen over riders, stageplots en inputlijsten maken.", foot_guides:"Gidsen", testi_h:"Wat muzikanten zeggen",
@@ -564,6 +577,10 @@ const T={
   f5_p:"Sauberes A4-Layout mit deinem Logo und deiner Akzentfarbe. Sieht aus wie von einer Produktionsfirma.",
   f6_h:"Smarte Vorlagen",
   f6_p:"Füge eine komplette Drum-Inputliste, Standard-PA/FOH/Monitor-Text oder einen Garderoben-Block mit einem Klick hinzu.",
+  f7_h:"Deine Bühne in 3D",
+  f7_p:"Schalte den Stageplot auf 3D und sieh dich auf der Bühne um, so wie die Crew sie sehen wird.",
+  f8_h:"Instrumenten-Bibliothek",
+  f8_p:"Wähle, was du wirklich spielst: Flügel oder Klavier, die Größe des Drumsets, das Mikrofon, sitzend oder stehend.",
   how_h:"In drei Schritten von null bis verschickt",
   how_lead:"Gemacht dafür, wie Touren wirklich laufen.",
   s1_h:"Beschreiben oder einfügen",
@@ -575,7 +592,7 @@ const T={
   price_h:"Einfache Preise",
   price_lead:"Gratis starten. Zahlen, wenn du genug tourst, um es zu brauchen.",
   p1_h:"Gratis", p1_1:"Voller Builder + Stageplan", p1_2:"Intelligentes Auto-Ausfüllen", p1_3:"PDF mit Wasserzeichen", p1_4:"Kostenloses Konto · 1 gespeicherter Rider", p1_cta:"Gratis starten",
-  p2_tag:"Am beliebtesten", p2_h:"Pro", p2_1:"PDF-Export ohne Wasserzeichen", p2_2:"Unbegrenzt gespeicherte Rider", p2_3:"Bevorzugter Support", p2_4:"Unterstütze ein Indie-Tool", p2_per:"einmalig", p2_cta:"Pro holen",
+  p2_tag:"Am beliebtesten", p2_h:"Pro", p2_1:"PDF-Export ohne Wasserzeichen", p2_2:"Unbegrenzt gespeicherte Rider", p2_3:"Bevorzugter Support", p2_4:"Unterstütze ein Indie-Tool", p2_5:"Bewege dein Equipment in 3D", p2_per:"einmalig", p2_cta:"Pro holen",
   p3_h:"Band", p3_1:"Mehrere Rider & Touren", p3_2:"Teilbare Venue-Links", p3_3:"Versionsverlauf", p3_cta:"Bald verfügbar",
   price_note:"Kostenlos nutzbar, mit kleinem Wasserzeichen beim Export. Mit Pro entfernst du es.",
   guides_h:"Ratgeber &amp; Ressourcen", guides_lead:"Praktische Anleitungen zu Ridern, Stageplänen und Inputlisten.", foot_guides:"Ratgeber", testi_h:"Was Musiker sagen",
@@ -632,6 +649,10 @@ const T={
   f5_p:"Mise en page A4 nette avec votre logo et votre couleur d'accent. On dirait que ça vient d'une société de production.",
   f6_h:"Préréglages intelligents",
   f6_p:"Ajoutez une liste d'entrées batterie complète, un texte PA/FOH/retours standard ou un bloc loge en un clic.",
+  f7_h:"Ta scène en 3D",
+  f7_p:"Passe le plan de scène en 3D et regarde la scène comme l'équipe la verra.",
+  f8_h:"Bibliothèque d'instruments",
+  f8_p:"Choisis ce que tu joues vraiment : piano à queue ou droit, la taille de la batterie, le micro, assis ou debout.",
   how_h:"De zéro à envoyé en trois étapes",
   how_lead:"Pensé pour la réalité des tournées.",
   s1_h:"Décrivez ou collez",
@@ -643,7 +664,7 @@ const T={
   price_h:"Tarifs simples",
   price_lead:"Commencez gratuitement. Payez quand vous tournez assez pour en avoir besoin.",
   p1_h:"Gratuit", p1_1:"Builder complet + plan de scène", p1_2:"Remplissage auto intelligent", p1_3:"PDF avec filigrane", p1_4:"Compte gratuit · 1 rider enregistré", p1_cta:"Commencer gratuitement",
-  p2_tag:"Le plus populaire", p2_h:"Pro", p2_1:"Export PDF sans filigrane", p2_2:"Riders enregistrés illimités", p2_3:"Support prioritaire", p2_4:"Soutiens un outil indépendant", p2_per:"une fois", p2_cta:"Obtenir Pro",
+  p2_tag:"Le plus populaire", p2_h:"Pro", p2_1:"Export PDF sans filigrane", p2_2:"Riders enregistrés illimités", p2_3:"Support prioritaire", p2_4:"Soutiens un outil indépendant", p2_5:"Déplace ton matériel en 3D", p2_per:"une fois", p2_cta:"Obtenir Pro",
   p3_h:"Groupe", p3_1:"Plusieurs riders & tournées", p3_2:"Liens partageables pour les salles", p3_3:"Historique des versions", p3_cta:"Bientôt",
   price_note:"Gratuit, avec un petit filigrane sur l'export. Passe à Pro pour le retirer.",
   guides_h:"Guides &amp; ressources", guides_lead:"Des guides pratiques pour créer riders, plans de scène et listes d'entrées.", foot_guides:"Guides", testi_h:"Ce que disent les musiciens",
@@ -700,6 +721,10 @@ const T={
   f5_p:"Diseño A4 limpio con tu logo y color de acento. Parece de una productora.",
   f6_h:"Ajustes inteligentes",
   f6_p:"Añade una lista de entradas de batería completa, texto estándar de PA/FOH/monitores o un bloque de camerino en un clic.",
+  f7_h:"Tu escenario en 3D",
+  f7_p:"Pasa el plano de escenario a 3D y mira el escenario como lo verá el equipo.",
+  f8_h:"Biblioteca de instrumentos",
+  f8_p:"Elige lo que tocas de verdad: piano de cola o vertical, el tamaño de la batería, el micro, sentado o de pie.",
   how_h:"De cero a enviado en tres pasos",
   how_lead:"Hecho para cómo funcionan las giras de verdad.",
   s1_h:"Describe o pega",
@@ -711,7 +736,7 @@ const T={
   price_h:"Precios sencillos",
   price_lead:"Empieza gratis. Paga cuando gires lo suficiente para necesitarlo.",
   p1_h:"Gratis", p1_1:"Builder completo + plano de escenario", p1_2:"Autocompletado inteligente", p1_3:"PDF con marca de agua", p1_4:"Cuenta gratuita · 1 rider guardado", p1_cta:"Empezar gratis",
-  p2_tag:"Más popular", p2_h:"Pro", p2_1:"Exportación PDF sin marca de agua", p2_2:"Riders guardados ilimitados", p2_3:"Soporte prioritario", p2_4:"Apoya una herramienta indie", p2_per:"una vez", p2_cta:"Conseguir Pro",
+  p2_tag:"Más popular", p2_h:"Pro", p2_1:"Exportación PDF sin marca de agua", p2_2:"Riders guardados ilimitados", p2_3:"Soporte prioritario", p2_4:"Apoya una herramienta indie", p2_5:"Mueve tu equipo en 3D", p2_per:"una vez", p2_cta:"Conseguir Pro",
   p3_h:"Banda", p3_1:"Varios riders y giras", p3_2:"Enlaces para salas compartibles", p3_3:"Historial de versiones", p3_cta:"Próximamente",
   price_note:"Gratis, con una pequeña marca de agua en la exportación. Hazte Pro para quitarla.",
   guides_h:"Guías y recursos", guides_lead:"Guías prácticas para crear riders, planos de escenario y listas de entradas.", foot_guides:"Guías", testi_h:"Lo que dicen los músicos",

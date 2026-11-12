@@ -175,7 +175,7 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
   {
     const { ctx, page } = await open(laptop, false, 'polish');
     for (const pg of await sitePages()) {
-      await page.goto(BASE + pg, { waitUntil: 'domcontentloaded' });
+      await page.goto(BASE + pg, { waitUntil: 'load' });
       const r = await page.evaluate(() => ({
         linked: !!document.querySelector('link[href="roborider.css"]') && getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim() === '220ms',
         own: [...document.querySelectorAll('style')].some(s => /--ink\s*:/.test(s.textContent))
@@ -202,6 +202,25 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     await page.screenshot({ path: `${OUT}/polish-phone-home.png` });
     await page.mouse.wheel(0, 300); await page.waitForTimeout(700);
     ok('polish', 'phone: install tip shows after scrolling', await page.evaluate(() => !document.getElementById('rrInstallPill').hidden));
+    await ctx.close();
+  }
+  for (const [name, fmtOpt] of [['laptop', laptop], ['phone', iphone]]) {
+    /* homepage: the newest features are listed, in every language, without spilling out of their cards */
+    const { ctx, page } = await open(fmtOpt, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    for (const l of ['en', 'nl', 'de', 'fr', 'es']) {
+      const r = await page.evaluate(l => {
+        setLang(l);
+        const txt = k => { const e = document.querySelector('[data-i="' + k + '"]'); return e ? e.textContent.trim().length : 0; };
+        const spill = [...document.querySelectorAll('#features .card, .plan.feat')].filter(e => e.scrollWidth > e.clientWidth + 1).length;
+        return { have: ['f7_h', 'f7_p', 'f8_h', 'f8_p', 'p2_5'].every(k => txt(k) > 3), spill };
+      }, l);
+      if (name === 'laptop') ok('polish', 'new features are on the homepage: ' + l, r.have);
+      ok('polish', name + ': feature cards do not overflow: ' + l, !r.spill, r.spill ? r.spill + ' too wide' : '');
+    }
+    await page.evaluate(() => { setLang('de'); document.getElementById('features').scrollIntoView(); });
+    await page.waitForTimeout(900);
+    await page.screenshot({ path: `${OUT}/polish-${name}-features.png` });
     await ctx.close();
   }
   if (LOCAL) {
