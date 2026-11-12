@@ -311,6 +311,16 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     ok('polish', 'Pro confirmation goes away by itself', gone);
     await ctx.close();
   }
+  {
+    /* builder: a new row is marked so it can ease in, and you can type in it straight away */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html?demo=1'); await page.waitForTimeout(1500);
+    const n = await page.evaluate(() => { addRow('contacts', { role: '', name: '', email: '', phone: '' }); return document.querySelectorAll('.row-new').length; });
+    let typed = false;
+    if (n === 1) { await page.locator('.row-new input').first().fill('Stage manager', { timeout: 2000 }).catch(() => {}); typed = await page.evaluate(() => S.contacts[S.contacts.length - 1].role === 'Stage manager'); }
+    ok('polish', 'a new row is marked and the form stays usable', n === 1 && typed, n + ' marked, typing ' + (typed ? 'works' : 'does not arrive'));
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

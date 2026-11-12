@@ -27,10 +27,15 @@
 #plotModal .modal,#plotModal.open .modal{transform:none;transition:none}
 @starting-style{#plotModal.open .modal{transform:none}}
 
+/* a row that was just added to a list in the builder eases in */
+.row-new{transition:opacity var(--dur-press) var(--ease-out),transform var(--dur-press) var(--ease-out)}
+@starting-style{.row-new{opacity:0;transform:translateY(-4px)}}
+
 /* reduce motion: movement and scale go, a short fade may stay, nothing loops, nothing stays hidden.
    Every selector starts with :root so it beats the page's own rule, which loads after this file. */
 @media (prefers-reduced-motion:reduce){
   :root .btn:active{transform:none}
+  :root .row-new{transition:none}
   :root #proDone .tick path{stroke-dashoffset:0;transition:none}
   :root .modal-bg .modal{transform:none;transition:none}
   :root .modal-bg.open{transition-duration:var(--dur-exit)}
