@@ -92,12 +92,13 @@ loops; nothing is left invisible.
 
 ```css
 @media (prefers-reduced-motion:reduce){
-  .btn:active,.modal-bg .modal,.toast{transform:none}
-  .hero-mark,.hero-mark .eye{animation:none}
+  :root .btn:active,:root .modal-bg .modal,:root .toast{transform:none}
+  :root .hero-mark,:root .hero-mark .eye{animation:none}
 }
 ```
 
-Add each new moving selector to that block in the same change. Setting durations to `.01ms` is not the
+Add each new moving selector to that block in the same change, starting with `:root`: the page's own
+`<style>` loads after `roborider.css`, so without it the page's rule wins and the motion stays on. Setting durations to `.01ms` is not the
 policy: it removes the fade as well.
 
 ## Check

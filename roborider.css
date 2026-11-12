@@ -14,9 +14,10 @@
 .btn{transition:transform var(--dur-press) var(--ease-out),background var(--dur-press) var(--ease-out),color var(--dur-press) var(--ease-out)}
 .btn:active{transform:scale(.97)}
 
-/* reduce motion: movement and scale go, a short fade may stay, nothing loops, nothing stays hidden */
+/* reduce motion: movement and scale go, a short fade may stay, nothing loops, nothing stays hidden.
+   Every selector starts with :root so it beats the page's own rule, which loads after this file. */
 @media (prefers-reduced-motion:reduce){
-  .btn:active{transform:none}
-  .hero-mark,.hero-mark .eye{animation:none}
-  .reveal{opacity:1;transform:none;transition:none}
+  :root .btn:active{transform:none}
+  :root .hero-mark,:root .hero-mark .eye{animation:none}
+  :root .reveal{opacity:1;transform:none;transition:none}
 }
