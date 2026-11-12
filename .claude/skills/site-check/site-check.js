@@ -7,6 +7,7 @@ const fs = require('fs');
 const BASE = (process.argv[2] || 'http://localhost:8765').replace(/\/$/, '');
 const OUT = process.argv[3] || '.';
 const LOCAL = /localhost|127\.0\.0\.1/.test(BASE);
+const ONLY = process.env.SITE_CHECK_ONLY || ''; /* SITE_CHECK_ONLY=polish skips the long walk-through */
 const results = [];
 const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, note: note || '' });
 
@@ -51,7 +52,7 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     return null;
   }
 
-  for (const [fmt, ctxOpt, isTouch] of formats) {
+  for (const [fmt, ctxOpt, isTouch] of ONLY ? [] : formats) {
     /* ---------- homepage (free visitor) ---------- */
     let { ctx, page, touch } = await open(ctxOpt, false, fmt);
     await page.goto(BASE + '/index.html'); await page.waitForTimeout(1500);
@@ -136,7 +137,7 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
   /* ---------- less motion: with "reduce motion" on, nothing loops or runs long and nothing stays hidden ----------
      SITE_CHECK_MOTION=full runs the same round with motion allowed, to prove the check can fail. */
   const reduce = process.env.SITE_CHECK_MOTION !== 'full';
-  for (const [fmt, ctxOpt] of formats.slice(0, 2)) {
+  for (const [fmt, ctxOpt] of ONLY ? [] : formats.slice(0, 2)) {
     const tag = fmt + '-less-motion';
     const { ctx, page } = await open({ ...ctxOpt, reducedMotion: reduce ? 'reduce' : 'no-preference' }, false, tag);
     const steps = [
@@ -156,6 +157,45 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
       ok(tag, 'nothing stays hidden: ' + where, !m.hidden, m.hidden ? m.hidden + ' hidden' : '');
       await page.screenshot({ path: `${OUT}/${tag}-${where.split(' ')[0]}.png` });
     }
+    await ctx.close();
+  }
+
+  /* ---------- polish: shared stylesheet, homepage, builder and guide details ---------- */
+  const sitePages = async () => {
+    let p = ['/index.html', '/rider-builder.html', '/404.html', '/privacy.html', '/terms.html'];
+    try {
+      const c = await browser.newContext();
+      const xml = await (await c.request.get(BASE + '/sitemap.xml')).text();
+      p = p.concat([...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map(m => m[1].replace(/^https?:\/\/[^/]+/, '')).filter(u => u && u !== '/'));
+      await c.close();
+    } catch (e) {}
+    return [...new Set(p)];
+  };
+  const laptop = formats[0][1], iphone = formats[1][1];
+  {
+    const { ctx, page } = await open(laptop, false, 'polish');
+    for (const pg of await sitePages()) {
+      await page.goto(BASE + pg, { waitUntil: 'domcontentloaded' });
+      const r = await page.evaluate(() => ({
+        linked: !!document.querySelector('link[href="roborider.css"]') && getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim() === '220ms',
+        own: [...document.querySelectorAll('style')].some(s => /--ink\s*:/.test(s.textContent))
+      }));
+      ok('polish', 'shared stylesheet is linked: ' + pg, r.linked);
+      ok('polish', 'page does not redefine shared colours: ' + pg, !r.own);
+    }
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(600);
+    ok('polish', 'buttons have a press state', await page.evaluate(() => getComputedStyle(document.querySelector('.btn')).transitionProperty.includes('transform')));
+    await ctx.close();
+  }
+  if (LOCAL) {
+    const ctx = await browser.newContext(laptop), page = await ctx.newPage();
+    await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());
+    await page.goto(BASE + '/index.html');
+    await page.evaluate(() => navigator.serviceWorker.ready); await page.waitForTimeout(2500);
+    await ctx.setOffline(true);
+    let v = '';
+    try { await page.reload({ waitUntil: 'domcontentloaded' }); await page.waitForTimeout(500); v = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim()); } catch (e) { v = 'page did not load'; }
+    ok('polish', 'homepage works offline with the shared stylesheet', v === '220ms', v);
     await ctx.close();
   }
 

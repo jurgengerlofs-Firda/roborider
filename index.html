@@ -30,10 +30,8 @@
 <meta name="apple-mobile-web-app-title" content="RoboRider">
 <link rel="canonical" href="https://roborider.nl/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RoboRider","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://roborider.nl/","description":"RoboRider builds a clean, professional technical & hospitality rider with a drag-and-drop stage plot, input list and polished PDF export. Free, in any language.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<link rel="stylesheet" href="roborider.css">
 <style>
-  :root{--ink:#1b1a17;--soft:#56544d;--muted:#6b665d;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#ffffff;--paper2:#eceae3;--clay:#9a7257;--clay-text:#89654d;
-    --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --display:'Jost','Inter',-apple-system,sans-serif}
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;font-family:var(--font);font-weight:400;color:var(--ink);line-height:1.6;background:var(--bg);-webkit-font-smoothing:antialiased;letter-spacing:.1px}
@@ -51,7 +49,7 @@
   .lang{display:flex;gap:6px}
   .lang button{border:1px solid var(--hair);background:none;border-radius:0;padding:6px 10px;min-width:40px;min-height:40px;font-family:var(--display);font-size:10px;letter-spacing:1.5px;cursor:pointer;color:var(--muted)}
   .lang button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .btn{display:inline-block;border:none;border-radius:0;padding:14px 26px;font-family:var(--display);font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .15s,color .15s}
+  .btn{display:inline-block;border:none;border-radius:0;padding:14px 26px;font-family:var(--display);font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none}
   .btn.primary,.btn.pop{background:var(--ink);color:var(--bg)}
   .btn.primary:hover,.btn.pop:hover{background:#000}
   .btn.outline{border:1px solid var(--ink);background:none;color:var(--ink)}
@@ -66,10 +64,8 @@
   .hero-mark .eye{transform-box:fill-box;transform-origin:center;animation:rr-blink 6s ease-in-out infinite}
   @keyframes rr-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
   @keyframes rr-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
-  @media (prefers-reduced-motion:reduce){.hero-mark,.hero-mark .eye{animation:none}}
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
   .reveal.visible{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
   .hero-mark text{font-family:var(--display);font-weight:400}
   .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .hero-stage{max-width:980px;margin:56px auto 0}
