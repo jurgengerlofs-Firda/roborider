@@ -20,4 +20,7 @@
   :root .btn:active{transform:none}
   :root .hero-mark,:root .hero-mark .eye{animation:none}
   :root .reveal{opacity:1;transform:none;transition:none}
+  :root .faq summary::after{transition:none}
+  :root .faq details::details-content{transition:opacity var(--dur-exit) var(--ease-out),content-visibility var(--dur-exit) allow-discrete}
+  :root #rrInstallPill,:root #rrInstallPill.show{translate:0 0;transition:opacity var(--dur-exit) var(--ease-out)}
 }

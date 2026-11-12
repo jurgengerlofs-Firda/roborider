@@ -238,6 +238,32 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     await page.screenshot({ path: `${OUT}/polish-laptop-showcase.png` });
     await ctx.close();
   }
+  {
+    /* homepage motion: FAQ and install tip use the shared timing, and still work without it */
+    let { ctx, page } = await open(laptop, false, 'polish');
+    const faq = async kill => {
+      await page.goto(BASE + '/index.html'); await page.waitForTimeout(600);
+      if (kill) await page.addStyleTag({ content: '*,*::before,*::after,*::details-content{transition:none!important;animation:none!important}' });
+      await page.evaluate(() => document.querySelector('.faq details').scrollIntoView({ block: 'center', behavior: 'instant' }));
+      await page.locator('.faq details summary').first().click();
+      await page.waitForTimeout(kill ? 60 : 450);
+      return page.evaluate(() => { const d = document.querySelector('.faq details'), p = d.querySelector('p'); const sup = CSS.supports('selector(::details-content)');
+        return { open: d.open && p.getBoundingClientRect().height > 0 && parseFloat(getComputedStyle(p).opacity) === 1, dur: sup ? getComputedStyle(d, '::details-content').transitionDuration : '0.22s' }; });
+    };
+    let r = await faq(false);
+    ok('polish', 'FAQ opens with the shared timing', r.open && r.dur.includes('0.22s'), 'duration ' + r.dur);
+    r = await faq(true);
+    ok('polish', 'FAQ still opens without the new CSS', r.open);
+    await ctx.close();
+    ({ ctx, page } = await open(iphone, false, 'polish'));
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    await page.mouse.wheel(0, 300); await page.waitForTimeout(900);
+    r = await page.evaluate(() => { const e = document.getElementById('rrInstallPill'), c = getComputedStyle(e), b = e.getBoundingClientRect(); return { on: !e.hidden && c.opacity === '1' && b.bottom <= innerHeight && b.height > 0, dur: c.transitionDuration }; });
+    ok('polish', 'install tip slides in from the bottom', r.on && r.dur.includes('0.3s'), 'duration ' + r.dur);
+    await page.locator('#rrPillX').click(); await page.waitForTimeout(500);
+    ok('polish', 'install tip is gone after closing', await page.evaluate(() => document.getElementById('rrInstallPill').hidden));
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

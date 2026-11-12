@@ -183,8 +183,12 @@
   .faq details{border-bottom:1px solid var(--hair)}
   .faq summary{list-style:none;cursor:pointer;padding:20px 2px;font-family:var(--display);font-weight:400;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:16px}
   .faq summary::-webkit-details-marker{display:none}
-  .faq summary::after{content:"+";color:var(--clay);font-size:22px;font-weight:300;flex:0 0 auto}
-  .faq details[open] summary::after{content:"–"}
+  .faq summary::after{content:"+";color:var(--clay);font-size:22px;font-weight:300;flex:0 0 auto;transition:transform var(--dur-ui) var(--ease-out)}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  /* answers ease open; browsers without ::details-content skip these rules and open at once, as before */
+  .faq details{interpolate-size:allow-keywords}
+  .faq details::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--dur-ui) var(--ease-out),opacity var(--dur-ui) var(--ease-out),content-visibility var(--dur-ui) allow-discrete}
+  .faq details[open]::details-content{block-size:auto;opacity:1}
   .faq details p{margin:0 0 22px;color:var(--soft);font-size:14.5px;font-weight:400;line-height:1.65;max-width:64ch}
   [data-i]{}
   @media(max-width:620px){
@@ -815,6 +819,9 @@ if("IntersectionObserver" in window){
 </div>
 <style>
 #rrInstallPill[hidden]{display:none}
+/* slides in from the bottom edge and leaves the same way (motion skill: toast recipe) */
+#rrInstallPill{translate:0 calc(100% + 18px);opacity:0;transition:translate var(--dur-exit) var(--ease-out),opacity var(--dur-exit) var(--ease-out)}
+#rrInstallPill.show{translate:0 0;opacity:1;transition-duration:var(--dur-enter)}
 #rrInstallPill{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;
   display:flex;align-items:center;gap:14px;max-width:min(92vw,440px);
   background:#fff;border:1px solid #1b1a17;box-shadow:0 18px 40px -20px rgba(27,26,23,.45);
@@ -851,9 +858,10 @@ if("IntersectionObserver" in window){
       x=document.getElementById('rrPillX');
   /* the tip waits for the first scroll, so it never covers the headline on arrival */
   var scrolled=false,wanted=false;
-  function show(){wanted=true;if(scrolled)pill.hidden=false;}
-  window.addEventListener('scroll',function(){scrolled=true;if(wanted)pill.hidden=false;},{once:true,passive:true});
-  function close(){wanted=false;pill.hidden=true;try{localStorage.setItem('rr_pwa_hint','off');}catch(e){}}
+  function reveal(){pill.hidden=false;void pill.offsetWidth;pill.classList.add('show');}
+  function show(){wanted=true;if(scrolled)reveal();}
+  window.addEventListener('scroll',function(){scrolled=true;if(wanted)reveal();},{once:true,passive:true});
+  function close(){wanted=false;pill.classList.remove('show');setTimeout(function(){pill.hidden=true;},180);try{localStorage.setItem('rr_pwa_hint','off');}catch(e){}}
   x.addEventListener('click',close);
   var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var deferred=null;
