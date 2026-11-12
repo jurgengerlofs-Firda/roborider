@@ -321,6 +321,22 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     ok('polish', 'a new row is marked and the form stays usable', n === 1 && typed, n + ' marked, typing ' + (typed ? 'works' : 'does not arrive'));
     await ctx.close();
   }
+  {
+    /* guides: each one shows a picture from the builder, unless it already has its own drawing or table */
+    const OWN = /^\/(stage-plot-voorbeeld|inputlijst-maken)(-en)?\.html$/;
+    const { ctx, page } = await open(iphone, false, 'polish');
+    for (const pg of (await sitePages()).filter(u => !/^\/(index|rider-builder|404|privacy|terms)\.html$/.test(u))) {
+      await page.goto(BASE + pg, { waitUntil: 'load' });
+      await page.evaluate(() => { const i = document.querySelector('figure.guide-fig img'); if (i) i.scrollIntoView(); }); await page.waitForTimeout(250);
+      const r = await page.evaluate(() => { const f = [...document.querySelectorAll('figure.guide-fig img')], i = f[0];
+        return { n: f.length, good: !!i && i.naturalWidth > 0 && (i.alt || '').length >= 20 && i.hasAttribute('width') && i.hasAttribute('height') && i.loading === 'lazy' && !!i.closest('figure').querySelector('figcaption'),
+          wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+      if (OWN.test(pg)) ok('polish', 'guide keeps its own drawing, no second picture: ' + pg, r.n === 0);
+      else ok('polish', 'guide has one picture: ' + pg, r.n === 1 && r.good, r.n + ' pictures');
+      ok('polish', 'guide does not scroll sideways on a phone: ' + pg, r.wide <= 1, r.wide + 'px too wide');
+    }
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

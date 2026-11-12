@@ -27,6 +27,11 @@
 #plotModal .modal,#plotModal.open .modal{transform:none;transition:none}
 @starting-style{#plotModal.open .modal{transform:none}}
 
+/* guides: one picture from the builder under the intro */
+.guide-fig{margin:26px 0 30px}
+.guide-fig img{display:block;width:100%;height:auto;border:1px solid var(--hair);background:#fff}
+.guide-fig figcaption{margin-top:8px;font-size:13px;color:var(--muted)}
+
 /* a row that was just added to a list in the builder eases in */
 .row-new{transition:opacity var(--dur-press) var(--ease-out),transform var(--dur-press) var(--ease-out)}
 @starting-style{.row-new{opacity:0;transform:translateY(-4px)}}

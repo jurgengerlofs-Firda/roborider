@@ -1,7 +1,7 @@
 /* Remakes the pictures of the example rider that the homepage and the guides show.
    node shots.js <base-url> <out-dir>     (out-dir is normally img/ in the site root)
-   Writes rider-sample.png (cover page), guide-stageplot.png (stage plot page, 2D as in the PDF)
-   and guide-inputlist.png (input list page). Pro is switched on locally so there is no watermark. */
+   Writes rider-sample.png (cover page), guide-stageplot.png (stage plot page, 2D as in the PDF),
+   guide-inputlist.png (input list page) and guide-hospitality.png (top of the hospitality page). Pro is switched on locally so there is no watermark. */
 const { chromium } = require('playwright');
 const BASE = (process.argv[2] || 'http://localhost:8765').replace(/\/$/, '');
 const OUT = process.argv[3] || 'img';
@@ -28,6 +28,10 @@ const OUT = process.argv[3] || 'img';
   await page.screenshot({ path: OUT + '/rider-sample.png', clip: { x: box.x, y: box.y, width: box.width, height: Math.min(box.height, low + 60) } });
   await (await pageWith('stage plot')).screenshot({ path: OUT + '/guide-stageplot.png' });
   await (await pageWith('input list')).screenshot({ path: OUT + '/guide-inputlist.png' });
+  /* the hospitality page is long: show its top part only */
+  const hosp = await pageWith('hospitality');
+  await hosp.evaluate(e => { e.style.maxHeight = '620px'; e.style.overflow = 'hidden'; });
+  await hosp.screenshot({ path: OUT + '/guide-hospitality.png' });
   await browser.close();
-  console.log('wrote rider-sample.png, guide-stageplot.png, guide-inputlist.png to ' + OUT);
+  console.log('wrote rider-sample.png, guide-stageplot.png, guide-inputlist.png, guide-hospitality.png to ' + OUT);
 })();
