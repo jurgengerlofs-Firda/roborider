@@ -133,6 +133,32 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     }
   }
 
+  /* ---------- less motion: with "reduce motion" on, nothing loops or runs long and nothing stays hidden ----------
+     SITE_CHECK_MOTION=full runs the same round with motion allowed, to prove the check can fail. */
+  const reduce = process.env.SITE_CHECK_MOTION !== 'full';
+  for (const [fmt, ctxOpt] of formats.slice(0, 2)) {
+    const tag = fmt + '-less-motion';
+    const { ctx, page } = await open({ ...ctxOpt, reducedMotion: reduce ? 'reduce' : 'no-preference' }, false, tag);
+    const steps = [
+      ['homepage', '/index.html', () => { window.scrollTo(0, document.documentElement.scrollHeight); const d = document.querySelector('.faq details'); if (d) d.open = true; }],
+      ['builder with the stage plot editor open', '/rider-builder.html?demo=1', () => { if (typeof openPlotModal === 'function') openPlotModal(); }]
+    ];
+    for (const [where, url, act] of steps) {
+      await page.goto(BASE + url); await page.waitForTimeout(1500);
+      await page.evaluate(act); await page.waitForTimeout(900);
+      const m = await page.evaluate(() => {
+        const name = a => (a.animationName || a.transitionProperty || 'animation') + ' on ' + ((a.effect && a.effect.target && (a.effect.target.id ? '#' + a.effect.target.id : '.' + String(a.effect.target.className.baseVal || a.effect.target.className).split(' ')[0])) || '?');
+        const moving = document.getAnimations().filter(a => { const t = a.effect && a.effect.getComputedTiming(); return a.playState === 'running' && t && (t.iterations === Infinity || t.activeDuration > 250); }).map(name);
+        const hidden = [...document.querySelectorAll('.reveal')].filter(e => getComputedStyle(e).opacity < 0.99).length;
+        return { moving: [...new Set(moving)], hidden };
+      });
+      ok(tag, 'nothing loops or runs long: ' + where, !m.moving.length, m.moving.slice(0, 4).join(', '));
+      ok(tag, 'nothing stays hidden: ' + where, !m.hidden, m.hidden ? m.hidden + ' hidden' : '');
+      await page.screenshot({ path: `${OUT}/${tag}-${where.split(' ')[0]}.png` });
+    }
+    await ctx.close();
+  }
+
   /* ---------- health: sitemap pages, internal links, deployed version ---------- */
   const ctx = await browser.newContext(), page = await ctx.newPage();
   const get = async u => { try { const r = await ctx.request.get(u, { maxRedirects: 5 }); return r.status(); } catch (e) { return 0; } };

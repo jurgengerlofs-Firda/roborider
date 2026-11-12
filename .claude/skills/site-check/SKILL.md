@@ -26,6 +26,10 @@ It writes screenshots to `<out-dir>` and prints one line per check (`OK` / `FAIL
   bar. Free and Pro both.
 - **Touch (iPhone):** tap selects, one-finger drag moves gear, one finger looks around, pinch zooms, and a
   vertical swipe over the homepage stage still scrolls the page.
+- **Less motion:** with "reduce motion" switched on (laptop and iPhone), the homepage scrolled to the end
+  and the builder with the stage plot editor open: nothing loops or runs longer than a quarter second, and
+  nothing that fades in on scroll stays hidden. To prove the check can fail, run once with
+  `SITE_CHECK_MOTION=full`: the homepage lines should then say `FAIL`.
 - **Health:** page errors, sideways scrolling, every page in `sitemap.xml` loads, internal links resolve,
   and the service worker version that is deployed.
 
@@ -48,5 +52,6 @@ It writes screenshots to `<out-dir>` and prints one line per check (`OK` / `FAIL
 ## Limits
 
 This is iPhone-sized Chrome, not Safari on a real phone. Layout and gestures are reliable; smoothness, heat
-and Safari-only quirks are not covered. Pro is switched on locally with a test value, so real payments and
+and Safari-only quirks are not covered. The less-motion round sees CSS animations and
+transitions, not the 3D stage, which draws its own frames. Pro is switched on locally with a test value, so real payments and
 license checks are not exercised.
