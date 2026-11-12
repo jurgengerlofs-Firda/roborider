@@ -288,6 +288,29 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     ok('polish', name + ': windows still open without the new CSS', r.display === 'flex' && r.opacity === '1' && r.covers, JSON.stringify(r));
     await ctx.close();
   }
+  {
+    /* builder: an empty rider invites you to start, and Pro activation is confirmed once */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html'); await page.waitForTimeout(1500);
+    const hint = () => page.evaluate(() => { const e = document.querySelector('#preview .preview-empty'); return !!e && e.getBoundingClientRect().height > 0 && e.textContent.trim().length > 10; });
+    ok('polish', 'empty preview invites to start', await hint());
+    await page.emulateMedia({ media: 'print' });
+    ok('polish', 'empty hint is not printed', !(await hint()));
+    await page.emulateMedia({ media: 'screen' });
+    await page.evaluate(() => { S.band.name = 'Test'; renderPreview(); });
+    ok('polish', 'empty hint goes away once there is content', !(await hint()));
+    const has = await page.evaluate(() => typeof showProDone === 'function');
+    let shown = false, dur = '', gone = false;
+    if (has) {
+      await page.evaluate(() => { document.getElementById('proModal').classList.add('open'); showProDone(); }); await page.waitForTimeout(500);
+      ({ shown, dur } = await page.evaluate(() => { const e = document.getElementById('proDone'), t = e.querySelector('.tick path'); return { shown: !e.hidden && e.getBoundingClientRect().height > 0 && e.textContent.trim().length > 5, dur: getComputedStyle(t).transitionDuration }; }));
+      await page.waitForTimeout(2300);
+      gone = await page.evaluate(() => document.getElementById('proDone').hidden && !document.getElementById('proModal').classList.contains('open'));
+    }
+    ok('polish', 'Pro confirmation shows a tick that draws in at most 0.4s', shown && parseFloat(dur) > 0 && parseFloat(dur) <= 0.4, 'duration ' + dur);
+    ok('polish', 'Pro confirmation goes away by itself', gone);
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

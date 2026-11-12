@@ -24,6 +24,7 @@ it with exactly these and link it, rather than writing values into a page.
 | `--dur-ui` | `220ms` | modals, accordions, small panels opening |
 | `--dur-exit` | `150ms` | closing and leaving |
 | `--dur-enter` | `300ms` | toasts and banners sliding in |
+| `--dur-delight` | `400ms` | the one rare moment of delight (Pro activated) |
 
 A duration or curve written as a number in a page is a bug. If no token fits, the answer is almost always
 "use the nearest token"; add a token only with the owner's agreement, and add it to this table.

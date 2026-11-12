@@ -256,6 +256,13 @@
   .doc-cover .contact{margin-top:40px;font-size:13px;font-weight:300;color:var(--ink)}
   .doc-cover .contact strong{display:block;font-size:18px;font-family:var(--display);font-weight:300;letter-spacing:.5px;margin-bottom:4px}
   #preview{counter-reset:secn}
+  .preview-empty{margin:0 auto 16px;padding:14px 18px;border:1px solid var(--hair);border-left:3px solid var(--clay);background:var(--bg);font-size:14px;color:var(--soft);line-height:1.5}
+  @media print{.preview-empty{display:none!important}}
+  #proDone{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;color:var(--ink)}
+  #proDone[hidden]{display:none}
+  #proDone .tick{flex:0 0 auto;color:var(--clay)}
+  #proDone .tick path{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset var(--dur-delight) var(--ease-out)}
+  #proDone.go .tick path{stroke-dashoffset:0}
   h2.sec-h{font-family:var(--display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:none;
     display:flex;align-items:baseline;gap:11px;padding:0 0 9px;border-bottom:1px solid var(--ink);border-radius:0;margin:0 0 18px;font-weight:500}
   h2.sec-h::before{counter-increment:secn;content:counter(secn,decimal-leading-zero);color:var(--clay);font-weight:500;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -617,6 +624,7 @@ body.shared .preview-wrap{max-width:900px;margin:0 auto;}
         <button class="btn primary" id="proActBtn" onclick="proActivate()" style="flex:0 0 auto"></button>
       </div>
       <p id="proMsg" class="hint" style="margin-top:8px"></p>
+      <div id="proDone" role="status" hidden><svg class="tick" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" pathLength="1"/></svg><span id="proDoneText"></span></div>
       <div id="proManageWrap" style="margin-top:16px;display:none"><button class="btn ghost" id="proRemoveBtn" onclick="deactivatePro();closeProModal();"></button></div>
     </div>
   </div>
@@ -698,7 +706,7 @@ var qrcode=(function(){var P=function(x,w){var g=236,l=17,n=x,s=O[w],t=null,r=0,
 /* ===================== i18n ===================== */
 const I18N = {
   en:{
-    tagline:"Rider Builder · demo", lang_label:"Language",
+    tagline:"Rider Builder · demo", lang_label:"Language", empty_hint:"Your rider appears here. Start with Quick start, or load the example.",
     btn_new:"New", btn_example:"Load example", btn_open:"Open…", btn_save:"Save (.json)", btn_pdf:"⬇ Export PDF", btn_translate:"Translate", btn_polish:"Polish", ai_need:"AI isn't set up yet.", ai_gate:"You've used your free AI actions. Upgrade to Pro for unlimited polish and translation.", btn_edit:"Edit", btn_preview:"Preview", saved:"Saved", saving:"Saving…", onboard:"New here? Start with Quick start below, or tap 'Load example' for a sample to explore.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgrade to RoboRider Pro?\n\nOK = go to checkout\nCancel = I already have a license key", pro_enter:"Paste your RoboRider Pro license key:", pro_ok:"Pro activated — watermark removed. Thank you!", pro_bad:"That license key isn't valid. Check it and try again.", pro_err:"Couldn't reach the license server. Please try again.", pro_manage:"RoboRider Pro is active on this browser. Remove it?", pro_soon:"Checkout isn't set up yet — paste your Lemon Squeezy link in the code first.",
     pro_cta:"Upgrade to Pro", pro_status_free:"You're on the Free plan. Exported PDFs carry a small RoboRider watermark.", pro_status_on:"RoboRider Pro is active on this browser — no watermark. Thanks for your support!", pro_sub_btn:"Unlock Pro — €29 once", pro_or:"or", pro_key_lbl:"Already bought Pro? Paste your license key", pro_act:"Activate", pro_remove:"Remove Pro from this browser",
@@ -755,7 +763,7 @@ const I18N = {
     aria_secnav:"Section {n}: {t}", aria_help:"Show help for this section"
   },
   nl:{
-    tagline:"Rider Builder · demo", lang_label:"Taal",
+    tagline:"Rider Builder · demo", lang_label:"Taal", empty_hint:"Hier verschijnt je rider. Begin met Snel starten, of laad het voorbeeld.",
     btn_new:"Nieuw", btn_example:"Voorbeeld laden", btn_open:"Openen…", btn_save:"Opslaan (.json)", btn_pdf:"⬇ Exporteer PDF", btn_translate:"Vertaal", btn_polish:"Oppoetsen", ai_need:"AI is nog niet ingesteld.", ai_gate:"Je hebt je gratis AI-acties gebruikt. Upgrade naar Pro voor onbeperkt oppoetsen en vertalen.", btn_edit:"Bewerken", btn_preview:"Voorbeeld", saved:"Opgeslagen", saving:"Opslaan…", onboard:"Nieuw hier? Begin met Snel starten hieronder, of klik 'Voorbeeld laden' voor een voorbeeld om te verkennen.",
     pro_off:"Pro", pro_on:"Pro", pro_choose:"Upgraden naar RoboRider Pro?\n\nOK = naar de checkout\nAnnuleren = ik heb al een licentiesleutel", pro_enter:"Plak je RoboRider Pro licentiesleutel:", pro_ok:"Pro geactiveerd — watermerk verwijderd. Bedankt!", pro_bad:"Die licentiesleutel is niet geldig. Controleer 'm en probeer opnieuw.", pro_err:"Kon de licentieserver niet bereiken. Probeer het opnieuw.", pro_manage:"RoboRider Pro is actief in deze browser. Verwijderen?", pro_soon:"De checkout is nog niet ingesteld — plak eerst je Lemon Squeezy-link in de code.",
     pro_cta:"Upgrade naar Pro", pro_status_free:"Je gebruikt de gratis versie. Geëxporteerde PDF's krijgen een klein RoboRider-watermerk.", pro_status_on:"RoboRider Pro is actief in deze browser — geen watermerk. Bedankt voor je steun!", pro_sub_btn:"Pro ontgrendelen — eenmalig €29", pro_or:"of", pro_key_lbl:"Pro al gekocht? Plak je licentiesleutel", pro_act:"Activeren", pro_remove:"Pro verwijderen uit deze browser",
@@ -810,7 +818,7 @@ const I18N = {
     aria_secnav:"Sectie {n}: {t}", aria_help:"Uitleg voor deze sectie tonen"
   },
   de:{
-    lang_label:"Sprache",
+    lang_label:"Sprache", empty_hint:"Hier erscheint dein Rider. Starte mit dem Schnellstart oder lade das Beispiel.",
     subtitle_default:"Technischer & Hospitality Rider", valid_until:"Gültig bis", bandname_ph:"BANDNAME",
     sec_general:"Allgemein", sec_hospitality:"Hospitality", sec_technical:"Technischer Rider", sec_lights:"Licht",
     sec_backline:"Backline", sec_inputlist:"Inputliste", sec_stageplot:"Bühnenplan",
@@ -825,7 +833,7 @@ const I18N = {
     plot_or_upload:"…oder stattdessen ein Bühnenplan-Bild hochladen"
   },
   fr:{
-    lang_label:"Langue",
+    lang_label:"Langue", empty_hint:"Ton rider apparaît ici. Commence par le démarrage rapide ou charge l'exemple.",
     subtitle_default:"Rider technique & hospitalité", valid_until:"Valable jusqu'au", bandname_ph:"NOM DU GROUPE",
     sec_general:"Général", sec_hospitality:"Hospitalité", sec_technical:"Rider technique", sec_lights:"Lumière",
     sec_backline:"Backline", sec_inputlist:"Liste des entrées", sec_stageplot:"Plan de scène",
@@ -840,7 +848,7 @@ const I18N = {
     plot_or_upload:"…ou importer une image de plan de scène"
   },
   es:{
-    lang_label:"Idioma",
+    lang_label:"Idioma", empty_hint:"Tu rider aparece aquí. Empieza con el inicio rápido o carga el ejemplo.",
     subtitle_default:"Rider técnico y de hospitalidad", valid_until:"Válido hasta", bandname_ph:"NOMBRE DEL GRUPO",
     sec_general:"General", sec_hospitality:"Hospitalidad", sec_technical:"Rider técnico", sec_lights:"Iluminación",
     sec_backline:"Backline", sec_inputlist:"Lista de entradas", sec_stageplot:"Plano de escenario",
@@ -859,6 +867,10 @@ function L(k){const l=S.lang||"en"; return (I18N[l]&&I18N[l][k]!==undefined)?I18
 const DATE_LOCALE={en:"en-GB",nl:"nl-NL",de:"de-DE",fr:"fr-FR",es:"es-ES"};
 
 /* ===================== State ===================== */
+/* true while nothing has been filled in yet (the chosen language does not count) */
+function isBlankRider(){ try{ const a=Object.assign({},S,{lang:""}), b=Object.assign({},blank(),{lang:""}); return JSON.stringify(a)===JSON.stringify(b); }catch(e){ return false; } }
+/* Pro activated: a tick draws itself once in the Pro window, which then closes */
+function showProDone(){ const e=$("proDone"); if(!e)return; $("proDoneText").textContent=L("pro_ok"); e.hidden=false; e.classList.remove("go"); void e.offsetWidth; e.classList.add("go"); clearTimeout(e._t); e._t=setTimeout(function(){ e.hidden=true; e.classList.remove("go"); closeProModal(); },2000); }
 const blank = () => ({
   lang:"en",
   band:{name:"",subtitle:"",validUntil:"",version:"",presskit:"",accent:"#1a1a1a",logo:"",logoSize:"m",logoPos:"left",cover:"",coverPos:50},
@@ -969,7 +981,7 @@ async function proActivate(){
     const r=await fetch("https://api.lemonsqueezy.com/v1/licenses/validate",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"},body:"license_key="+encodeURIComponent(key)});
     const j=await r.json();
     const storeOk = !LS_STORE_ID || String((j&&j.meta&&j.meta.store_id)||"")===LS_STORE_ID;
-    if(j&&j.valid&&storeOk){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;track("pro_activated");updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent=L("pro_ok");setTimeout(closeProModal,1100);}
+    if(j&&j.valid&&storeOk){try{localStorage.setItem("rr_pro",key);}catch(_){}if(sb&&user){try{await sb.from("profiles").update({is_pro:true,license_key:key}).eq("id",user.id);}catch(_){}}PRO=true;track("pro_activated");updateProUI();try{renderForm();}catch(e){}renderPreview();$("proMsg").textContent="";showProDone();}
     else{$("proMsg").textContent=L("pro_bad");track("pro_key_rejected");}
   }catch(err){$("proMsg").textContent=L("pro_err");}
   $("proActBtn").disabled=false;
@@ -2244,7 +2256,7 @@ function renderPreview(){
   if(hp) h+=pageBlock(L("sec_hospitality"),hp);
   if(pk) h+=pageBlock(L("sec_park"),pk);
   if(dl2) h+=pageBlock(L("sec_deal"),dl2);
-  $("preview").innerHTML=h;
+  $("preview").innerHTML=(isBlankRider()?`<div class="preview-empty">${L("empty_hint")}</div>`:"")+h;
   try{ mountPreview3d(); }catch(e){}
   saveLocal();
   if(typeof scheduleCloudSave==="function") scheduleCloudSave();
