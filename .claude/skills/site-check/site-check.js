@@ -223,6 +223,21 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     await page.screenshot({ path: `${OUT}/polish-${name}-features.png` });
     await ctx.close();
   }
+  {
+    /* homepage: shows what the result looks like, in text you can read */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    await page.evaluate(() => { const e = document.querySelector('.showcase'); if (e) e.scrollIntoView(); }); await page.waitForTimeout(1200);
+    const r = await page.evaluate(() => {
+      const i = document.querySelector('.showcase img');
+      const sizes = [...document.querySelectorAll('.send-item p, #features .card p, .step p')].map(e => parseFloat(getComputedStyle(e).fontSize));
+      return { img: !!i && i.naturalWidth > 0 && (i.alt || '').length >= 20 && i.hasAttribute('width') && i.hasAttribute('height') && i.loading === 'lazy', min: Math.min(...sizes) };
+    });
+    ok('polish', 'homepage shows a real rider page', r.img);
+    ok('polish', 'homepage body text is at least 15px', r.min >= 15, 'smallest is ' + r.min + 'px');
+    await page.screenshot({ path: `${OUT}/polish-laptop-showcase.png` });
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());
