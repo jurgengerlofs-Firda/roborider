@@ -1,0 +1,52 @@
+/* RoboRider shared styles: colour, type and motion tokens plus the rules every page uses.
+   Linked from every page before its own <style>. Motion rules: see .claude/skills/motion/SKILL.md */
+:root{
+  --ink:#1b1a17;--soft:#56544d;--muted:#6b665d;--line:#e6e2d9;--hair:#ded9ce;--bg:#f3f1ec;--card:#ffffff;
+  --paper2:#eceae3;--clay:#9a7257;--clay-text:#89654d;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:'Jost','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --dur-press:160ms;--dur-ui:220ms;--dur-exit:150ms;--dur-enter:300ms;--dur-delight:400ms;
+}
+
+/* press: every button */
+.btn{transition:transform var(--dur-press) var(--ease-out),background var(--dur-press) var(--ease-out),color var(--dur-press) var(--ease-out)}
+.btn:active{transform:scale(.97)}
+
+/* windows (builder): .open on .modal-bg switches display none <-> flex. The backdrop fades, the window
+   scales in from .97; closing is quicker than opening. Browsers without @starting-style / allow-discrete
+   simply show and hide at once. */
+.modal-bg{opacity:0;transition:opacity var(--dur-exit) var(--ease-out),display var(--dur-exit) allow-discrete}
+.modal-bg:not(.open){pointer-events:none}
+.modal-bg.open{opacity:1;transition-duration:var(--dur-ui)}
+.modal-bg .modal{transform:scale(.97);transition:transform var(--dur-exit) var(--ease-out)}
+.modal-bg.open .modal{transform:none;transition-duration:var(--dur-ui)}
+@starting-style{.modal-bg.open{opacity:0}.modal-bg.open .modal{transform:scale(.97)}}
+/* the stage plot editor only fades: it fills the screen on phones and the 3D stage measures itself on open */
+#plotModal .modal,#plotModal.open .modal{transform:none;transition:none}
+@starting-style{#plotModal.open .modal{transform:none}}
+
+/* guides: one picture from the builder under the intro */
+.guide-fig{margin:26px 0 30px}
+.guide-fig img{display:block;width:100%;height:auto;border:1px solid var(--hair);background:#fff}
+.guide-fig figcaption{margin-top:8px;font-size:13px;color:var(--muted)}
+
+/* a row that was just added to a list in the builder eases in */
+.row-new{transition:opacity var(--dur-press) var(--ease-out),transform var(--dur-press) var(--ease-out)}
+@starting-style{.row-new{opacity:0;transform:translateY(-4px)}}
+
+/* reduce motion: movement and scale go, a short fade may stay, nothing loops, nothing stays hidden.
+   Every selector starts with :root so it beats the page's own rule, which loads after this file. */
+@media (prefers-reduced-motion:reduce){
+  :root .btn:active{transform:none}
+  :root .row-new{transition:none}
+  :root #proDone .tick path{stroke-dashoffset:0;transition:none}
+  :root .modal-bg .modal{transform:none;transition:none}
+  :root .modal-bg.open{transition-duration:var(--dur-exit)}
+  :root .hero-mark,:root .hero-mark .eye{animation:none}
+  :root .reveal{opacity:1;transform:none;transition:none}
+  :root .faq summary::after{transition:none}
+  :root .faq details::details-content{transition:opacity var(--dur-exit) var(--ease-out),content-visibility var(--dur-exit) allow-discrete}
+  :root #rrInstallPill,:root #rrInstallPill.show{translate:0 0;transition:opacity var(--dur-exit) var(--ease-out)}
+}

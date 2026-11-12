@@ -16,6 +16,10 @@ python3 -m http.server 8765 &
 node .claude/skills/site-check/site-check.js http://localhost:8765 <out-dir>
 ```
 
+While working on one page, `SITE_CHECK_ONLY=polish` in front of the command skips the long walk-through
+of the 3D stage and runs only the polish and health checks (about twenty seconds instead of five minutes).
+Run the whole thing before you report.
+
 It writes screenshots to `<out-dir>` and prints one line per check (`OK` / `FAIL`), then `PROBLEMS: n`.
 
 ## What it covers
@@ -26,6 +30,18 @@ It writes screenshots to `<out-dir>` and prints one line per check (`OK` / `FAIL
   bar. Free and Pro both.
 - **Touch (iPhone):** tap selects, one-finger drag moves gear, one finger looks around, pinch zooms, and a
   vertical swipe over the homepage stage still scrolls the page.
+- **Less motion:** with "reduce motion" switched on (laptop and iPhone), the homepage scrolled to the end
+  and the builder with the stage plot editor open: nothing loops or runs longer than a quarter second, and
+  nothing that fades in on scroll stays hidden. To prove the check can fail, run once with
+  `SITE_CHECK_MOTION=full`: the homepage lines should then say `FAIL`.
+- **Polish:** every page links the shared stylesheet `roborider.css` and no longer defines the shared
+  colours itself; the homepage works offline; on an iPhone the headline and both buttons fit on the first
+  screen in all five languages and the install tip waits for the first scroll; the newest features are
+  listed and do not spill out of their cards; the homepage shows a real rider page and body text of at
+  least 15px; the FAQ, the install tip and the builder windows use the shared timing and still work in a
+  browser without it; a window closed right away is really gone; an empty rider shows an invitation that
+  is not printed; Pro activation shows a tick once; a new row is marked; every guide has one picture or
+  its own drawing.
 - **Health:** page errors, sideways scrolling, every page in `sitemap.xml` loads, internal links resolve,
   and the service worker version that is deployed.
 
@@ -48,5 +64,16 @@ It writes screenshots to `<out-dir>` and prints one line per check (`OK` / `FAIL
 ## Limits
 
 This is iPhone-sized Chrome, not Safari on a real phone. Layout and gestures are reliable; smoothness, heat
-and Safari-only quirks are not covered. Pro is switched on locally with a test value, so real payments and
+and Safari-only quirks are not covered. The less-motion round sees CSS animations and
+transitions, not the 3D stage, which draws its own frames. Pro is switched on locally with a test value, so real payments and
 license checks are not exercised.
+
+## Pictures of the example rider
+
+The homepage and the guides show pictures of the example rider (`img/rider-sample.png`,
+`img/guide-stageplot.png`, `img/guide-inputlist.png`, `img/guide-hospitality.png`). After a change to how
+the rider preview looks, remake them from the working copy and check them by eye:
+
+```bash
+node .claude/skills/site-check/shots.js http://localhost:8765 img
+```

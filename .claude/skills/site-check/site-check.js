@@ -7,6 +7,7 @@ const fs = require('fs');
 const BASE = (process.argv[2] || 'http://localhost:8765').replace(/\/$/, '');
 const OUT = process.argv[3] || '.';
 const LOCAL = /localhost|127\.0\.0\.1/.test(BASE);
+const ONLY = process.env.SITE_CHECK_ONLY || ''; /* SITE_CHECK_ONLY=polish skips the long walk-through */
 const results = [];
 const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, note: note || '' });
 
@@ -51,7 +52,7 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     return null;
   }
 
-  for (const [fmt, ctxOpt, isTouch] of formats) {
+  for (const [fmt, ctxOpt, isTouch] of ONLY ? [] : formats) {
     /* ---------- homepage (free visitor) ---------- */
     let { ctx, page, touch } = await open(ctxOpt, false, fmt);
     await page.goto(BASE + '/index.html'); await page.waitForTimeout(1500);
@@ -131,6 +132,232 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
       } else ok(tag, 'found an element to tap in 3D', false);
       await ctx.close();
     }
+  }
+
+  /* ---------- less motion: with "reduce motion" on, nothing loops or runs long and nothing stays hidden ----------
+     SITE_CHECK_MOTION=full runs the same round with motion allowed, to prove the check can fail. */
+  const reduce = process.env.SITE_CHECK_MOTION !== 'full';
+  for (const [fmt, ctxOpt] of ONLY ? [] : formats.slice(0, 2)) {
+    const tag = fmt + '-less-motion';
+    const { ctx, page } = await open({ ...ctxOpt, reducedMotion: reduce ? 'reduce' : 'no-preference' }, false, tag);
+    const steps = [
+      ['homepage', '/index.html', () => { window.scrollTo(0, document.documentElement.scrollHeight); const d = document.querySelector('.faq details'); if (d) d.open = true; }],
+      ['builder with the stage plot editor open', '/rider-builder.html?demo=1', () => { if (typeof openPlotModal === 'function') openPlotModal(); }]
+    ];
+    for (const [where, url, act] of steps) {
+      await page.goto(BASE + url); await page.waitForTimeout(1500);
+      await page.evaluate(act); await page.waitForTimeout(900);
+      const m = await page.evaluate(() => {
+        const name = a => (a.animationName || a.transitionProperty || 'animation') + ' on ' + ((a.effect && a.effect.target && (a.effect.target.id ? '#' + a.effect.target.id : '.' + String(a.effect.target.className.baseVal || a.effect.target.className).split(' ')[0])) || '?');
+        const moving = document.getAnimations().filter(a => { const t = a.effect && a.effect.getComputedTiming(); return a.playState === 'running' && t && (t.iterations === Infinity || t.activeDuration > 250); }).map(name);
+        const hidden = [...document.querySelectorAll('.reveal')].filter(e => getComputedStyle(e).opacity < 0.99).length;
+        return { moving: [...new Set(moving)], hidden };
+      });
+      ok(tag, 'nothing loops or runs long: ' + where, !m.moving.length, m.moving.slice(0, 4).join(', '));
+      ok(tag, 'nothing stays hidden: ' + where, !m.hidden, m.hidden ? m.hidden + ' hidden' : '');
+      await page.screenshot({ path: `${OUT}/${tag}-${where.split(' ')[0]}.png` });
+    }
+    await ctx.close();
+  }
+
+  /* ---------- polish: shared stylesheet, homepage, builder and guide details ---------- */
+  const sitePages = async () => {
+    let p = ['/index.html', '/rider-builder.html', '/404.html', '/privacy.html', '/terms.html'];
+    try {
+      const c = await browser.newContext();
+      const xml = await (await c.request.get(BASE + '/sitemap.xml')).text();
+      p = p.concat([...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map(m => m[1].replace(/^https?:\/\/[^/]+/, '')).filter(u => u && u !== '/'));
+      await c.close();
+    } catch (e) {}
+    return [...new Set(p)];
+  };
+  const laptop = formats[0][1], iphone = formats[1][1];
+  {
+    const { ctx, page } = await open(laptop, false, 'polish');
+    for (const pg of await sitePages()) {
+      await page.goto(BASE + pg, { waitUntil: 'load' });
+      const r = await page.evaluate(() => ({
+        linked: !!document.querySelector('link[href="roborider.css"]') && getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim() === '220ms',
+        own: [...document.querySelectorAll('style')].some(s => /--ink\s*:/.test(s.textContent))
+      }));
+      ok('polish', 'shared stylesheet is linked: ' + pg, r.linked);
+      ok('polish', 'page does not redefine shared colours: ' + pg, !r.own);
+    }
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(600);
+    ok('polish', 'buttons have a press state', await page.evaluate(() => getComputedStyle(document.querySelector('.btn')).transitionProperty.includes('transform')));
+    await ctx.close();
+  }
+  {
+    /* homepage on a phone: the pitch fits on the first screen */
+    const { ctx, page } = await open(iphone, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(1200);
+    const pillHidden = await page.evaluate(() => document.getElementById('rrInstallPill').hidden);
+    ok('polish', 'phone: install tip waits for the first scroll', pillHidden);
+    ok('polish', 'phone: language select text is 16px or more (no zoom on iPhone)', (await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('lgSel')).fontSize))) >= 16);
+    ok('polish', 'heading font keeps its full fallback list', (await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--display'))).includes('Segoe UI'));
+    ok('polish', 'phone: navigation is one row', (await page.evaluate(() => document.querySelector('nav').getBoundingClientRect().height)) <= 80);
+    for (const l of ['en', 'nl', 'de', 'fr', 'es']) {
+      const r = await page.evaluate(l => { setLang(l); const bs = [document.querySelector('.hero h1'), ...document.querySelectorAll('.hero .cta a')].map(e => Math.round(e.getBoundingClientRect().bottom)); return { low: Math.max(...bs), ih: innerHeight, n: bs.length }; }, l);
+      ok('polish', 'phone: headline and both buttons are above the fold: ' + l, r.n === 3 && r.low <= r.ih, 'lowest at ' + r.low + 'px on a ' + r.ih + 'px screen');
+    }
+    await page.evaluate(() => setLang('en'));
+    await page.screenshot({ path: `${OUT}/polish-phone-home.png` });
+    await page.mouse.wheel(0, 300); await page.waitForTimeout(700);
+    ok('polish', 'phone: install tip shows after scrolling', await page.evaluate(() => !document.getElementById('rrInstallPill').hidden));
+    await ctx.close();
+  }
+  for (const [name, fmtOpt] of [['laptop', laptop], ['phone', iphone]]) {
+    /* homepage: the newest features are listed, in every language, without spilling out of their cards */
+    const { ctx, page } = await open(fmtOpt, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    for (const l of ['en', 'nl', 'de', 'fr', 'es']) {
+      const r = await page.evaluate(l => {
+        setLang(l);
+        const txt = k => { const e = document.querySelector('[data-i="' + k + '"]'); return e ? e.textContent.trim().length : 0; };
+        const spill = [...document.querySelectorAll('#features .card, .plan.feat')].filter(e => e.scrollWidth > e.clientWidth + 1).length;
+        return { have: ['f7_h', 'f7_p', 'f8_h', 'f8_p', 'p2_5'].every(k => txt(k) > 3), spill };
+      }, l);
+      if (name === 'laptop') ok('polish', 'new features are on the homepage: ' + l, r.have);
+      ok('polish', name + ': feature cards do not overflow: ' + l, !r.spill, r.spill ? r.spill + ' too wide' : '');
+    }
+    await page.evaluate(() => { setLang('de'); document.getElementById('features').scrollIntoView(); });
+    await page.waitForTimeout(900);
+    await page.screenshot({ path: `${OUT}/polish-${name}-features.png` });
+    await ctx.close();
+  }
+  {
+    /* homepage: shows what the result looks like, in text you can read */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    await page.evaluate(() => { const e = document.querySelector('.showcase'); if (e) e.scrollIntoView(); }); await page.waitForTimeout(1200);
+    const r = await page.evaluate(() => {
+      const i = document.querySelector('.showcase img');
+      const sizes = [...document.querySelectorAll('.send-item p, #features .card p, .step p')].map(e => parseFloat(getComputedStyle(e).fontSize));
+      return { img: !!i && i.naturalWidth > 0 && (i.alt || '').length >= 20 && i.hasAttribute('width') && i.hasAttribute('height') && i.loading === 'lazy', min: Math.min(...sizes) };
+    });
+    ok('polish', 'homepage shows a real rider page', r.img);
+    ok('polish', 'homepage body text is at least 15px', r.min >= 15, 'smallest is ' + r.min + 'px');
+    await page.screenshot({ path: `${OUT}/polish-laptop-showcase.png` });
+    await ctx.close();
+  }
+  {
+    /* homepage motion: FAQ and install tip use the shared timing, and still work without it */
+    let { ctx, page } = await open(laptop, false, 'polish');
+    const faq = async kill => {
+      await page.goto(BASE + '/index.html'); await page.waitForTimeout(600);
+      if (kill) await page.addStyleTag({ content: '*,*::before,*::after,*::details-content{transition:none!important;animation:none!important}' });
+      await page.evaluate(() => document.querySelector('.faq details').scrollIntoView({ block: 'center', behavior: 'instant' }));
+      await page.locator('.faq details summary').first().click();
+      await page.waitForTimeout(kill ? 60 : 450);
+      return page.evaluate(() => { const d = document.querySelector('.faq details'), p = d.querySelector('p'); const sup = CSS.supports('selector(::details-content)');
+        return { open: d.open && p.getBoundingClientRect().height > 0 && parseFloat(getComputedStyle(p).opacity) === 1, dur: sup ? getComputedStyle(d, '::details-content').transitionDuration : '0.22s' }; });
+    };
+    let r = await faq(false);
+    ok('polish', 'FAQ opens with the shared timing', r.open && r.dur.includes('0.22s'), 'duration ' + r.dur);
+    r = await faq(true);
+    ok('polish', 'FAQ still opens without the new CSS', r.open);
+    await ctx.close();
+    ({ ctx, page } = await open(iphone, false, 'polish'));
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(800);
+    await page.mouse.wheel(0, 300); await page.waitForTimeout(900);
+    r = await page.evaluate(() => { const e = document.getElementById('rrInstallPill'), c = getComputedStyle(e), b = e.getBoundingClientRect(); return { on: !e.hidden && c.opacity === '1' && b.bottom <= innerHeight && b.height > 0, dur: c.transitionDuration }; });
+    ok('polish', 'install tip slides in from the bottom', r.on && r.dur.includes('0.3s'), 'duration ' + r.dur);
+    await page.locator('#rrPillX').click(); await page.waitForTimeout(500);
+    ok('polish', 'install tip is gone after closing', await page.evaluate(() => document.getElementById('rrInstallPill').hidden));
+    await ctx.close();
+  }
+  for (const [name, fmtOpt] of [['laptop', laptop], ['phone', iphone]]) {
+    /* builder windows: fade and scale with the shared timing, the stage plot editor only fades, and nothing gets stuck */
+    const { ctx, page } = await open(fmtOpt, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html?demo=1'); await page.waitForTimeout(1500);
+    const state = () => page.evaluate(() => { const m = document.getElementById('proModal'), c = getComputedStyle(m), hit = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+      return { display: c.display, opacity: c.opacity, dur: c.transitionDuration, box: getComputedStyle(m.querySelector('.modal')).transform, covers: !!hit && m.contains(hit) }; });
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(450);
+    let r = await state();
+    ok('polish', name + ': Pro window fades and scales in', r.display === 'flex' && r.opacity === '1' && r.box === 'none' && r.dur.includes('0.22s'), JSON.stringify(r));
+    await page.evaluate(() => document.getElementById('proModal').classList.remove('open')); await page.waitForTimeout(450);
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(80);
+    await page.evaluate(() => document.getElementById('proModal').classList.remove('open')); await page.waitForTimeout(450);
+    r = await state();
+    ok('polish', name + ': a window that is closed right away is gone', r.display === 'none' && !r.covers, JSON.stringify(r));
+    const plotBox = await page.evaluate(() => { openPlotModal(); return getComputedStyle(document.querySelector('#plotModal .modal')).transform; });
+    ok('polish', name + ': stage plot editor fades without scaling', plotBox === 'none', plotBox);
+    await page.waitForTimeout(400);
+    await page.evaluate(() => document.getElementById('plotModal').classList.remove('open')); await page.waitForTimeout(300);
+    await page.addStyleTag({ content: '*,*::before,*::after{transition:none!important;animation:none!important}' });
+    await page.evaluate(() => document.getElementById('proModal').classList.add('open')); await page.waitForTimeout(40);
+    r = await state();
+    ok('polish', name + ': windows still open without the new CSS', r.display === 'flex' && r.opacity === '1' && r.covers, JSON.stringify(r));
+    await ctx.close();
+  }
+  {
+    /* builder: an empty rider invites you to start, and Pro activation is confirmed once */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html'); await page.waitForTimeout(1500);
+    const hint = () => page.evaluate(() => { const e = document.querySelector('#preview .preview-empty'); return !!e && e.getBoundingClientRect().height > 0 && e.textContent.trim().length > 10; });
+    ok('polish', 'empty preview invites to start', await hint());
+    await page.emulateMedia({ media: 'print' });
+    ok('polish', 'empty hint is not printed', !(await hint()));
+    await page.emulateMedia({ media: 'screen' });
+    await page.evaluate(() => { S.band.name = 'Test'; renderPreview(); });
+    ok('polish', 'empty hint goes away once there is content', !(await hint()));
+    const has = await page.evaluate(() => typeof showProDone === 'function');
+    let shown = false, dur = '', gone = false;
+    if (has) {
+      await page.evaluate(() => { document.getElementById('proModal').classList.add('open'); showProDone(); }); await page.waitForTimeout(500);
+      ({ shown, dur } = await page.evaluate(() => { const e = document.getElementById('proDone'), t = e.querySelector('.tick path'); return { shown: !e.hidden && e.getBoundingClientRect().height > 0 && e.textContent.trim().length > 5, dur: getComputedStyle(t).transitionDuration }; }));
+      await page.waitForTimeout(2300);
+      gone = await page.evaluate(() => document.getElementById('proDone').hidden && !document.getElementById('proModal').classList.contains('open'));
+    }
+    ok('polish', 'Pro confirmation shows a tick that draws in at most 0.4s', shown && parseFloat(dur) > 0 && parseFloat(dur) <= 0.4, 'duration ' + dur);
+    ok('polish', 'Pro confirmation goes away by itself', gone);
+    if (has) {
+      await page.evaluate(() => { openProModal(); showProDone(); }); await page.waitForTimeout(300);
+      await page.evaluate(() => { closeProModal(); openProModal(); }); await page.waitForTimeout(2400);
+      const st = await page.evaluate(() => ({ open: document.getElementById('proModal').classList.contains('open'), done: !document.getElementById('proDone').hidden }));
+      ok('polish', 'a reopened Pro window stays open and shows no old confirmation', st.open && !st.done, JSON.stringify(st));
+    }
+    await ctx.close();
+  }
+  {
+    /* builder: a new row is marked so it can ease in, and you can type in it straight away */
+    const { ctx, page } = await open(laptop, false, 'polish');
+    await page.goto(BASE + '/rider-builder.html?demo=1'); await page.waitForTimeout(1500);
+    const n = await page.evaluate(() => { addRow('contacts', { role: '', name: '', email: '', phone: '' }); return document.querySelectorAll('.row-new').length; });
+    let typed = false;
+    if (n === 1) { await page.locator('.row-new input').first().fill('Stage manager', { timeout: 2000 }).catch(() => {}); typed = await page.evaluate(() => S.contacts[S.contacts.length - 1].role === 'Stage manager'); }
+    ok('polish', 'a new row is marked and the form stays usable', n === 1 && typed, n + ' marked, typing ' + (typed ? 'works' : 'does not arrive'));
+    await ctx.close();
+  }
+  {
+    /* guides: each one shows a picture from the builder, unless it already has its own drawing or table */
+    const OWN = /^\/(stage-plot-voorbeeld|inputlijst-maken)(-en)?\.html$/;
+    const { ctx, page } = await open(iphone, false, 'polish');
+    for (const pg of (await sitePages()).filter(u => !/^\/(index|rider-builder|404|privacy|terms)\.html$/.test(u))) {
+      await page.goto(BASE + pg, { waitUntil: 'load' });
+      await page.evaluate(() => { const i = document.querySelector('figure.guide-fig img'); if (i) i.scrollIntoView(); }); await page.waitForTimeout(250);
+      const r = await page.evaluate(() => { const f = [...document.querySelectorAll('figure.guide-fig img')], i = f[0];
+        return { n: f.length, good: !!i && i.naturalWidth > 0 && (i.alt || '').length >= 20 && i.hasAttribute('width') && i.hasAttribute('height') && i.loading === 'lazy' && !!i.closest('figure').querySelector('figcaption'),
+          wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+      if (OWN.test(pg)) ok('polish', 'guide keeps its own drawing, no second picture: ' + pg, r.n === 0);
+      else ok('polish', 'guide has one picture: ' + pg, r.n === 1 && r.good, r.n + ' pictures');
+      ok('polish', 'guide does not scroll sideways on a phone: ' + pg, r.wide <= 1, r.wide + 'px too wide');
+    }
+    await ctx.close();
+  }
+  if (LOCAL) {
+    const ctx = await browser.newContext(laptop), page = await ctx.newPage();
+    await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());
+    await page.goto(BASE + '/index.html');
+    await page.evaluate(() => navigator.serviceWorker.ready); await page.waitForTimeout(2500);
+    await ctx.setOffline(true);
+    let v = '';
+    try { await page.reload({ waitUntil: 'domcontentloaded' }); await page.waitForTimeout(500); v = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim()); } catch (e) { v = 'page did not load'; }
+    ok('polish', 'homepage works offline with the shared stylesheet', v === '220ms', v);
+    let pics = [];
+    try { pics = await page.evaluate(() => Promise.all(['rider-sample', 'guide-stageplot', 'guide-inputlist', 'guide-hospitality'].map(n => fetch('img/' + n + '.png').then(r => r.ok ? '' : n, () => n)))); } catch (e) { pics = ['page did not load']; }
+    ok('polish', 'pictures of the example rider are available offline', !pics.filter(Boolean).length, pics.filter(Boolean).join(', '));
+    await ctx.close();
   }
 
   /* ---------- health: sitemap pages, internal links, deployed version ---------- */
