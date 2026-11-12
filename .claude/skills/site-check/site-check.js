@@ -187,6 +187,23 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     ok('polish', 'buttons have a press state', await page.evaluate(() => getComputedStyle(document.querySelector('.btn')).transitionProperty.includes('transform')));
     await ctx.close();
   }
+  {
+    /* homepage on a phone: the pitch fits on the first screen */
+    const { ctx, page } = await open(iphone, false, 'polish');
+    await page.goto(BASE + '/index.html'); await page.waitForTimeout(1200);
+    const pillHidden = await page.evaluate(() => document.getElementById('rrInstallPill').hidden);
+    ok('polish', 'phone: install tip waits for the first scroll', pillHidden);
+    ok('polish', 'phone: navigation is one row', (await page.evaluate(() => document.querySelector('nav').getBoundingClientRect().height)) <= 80);
+    for (const l of ['en', 'nl', 'de', 'fr', 'es']) {
+      const r = await page.evaluate(l => { setLang(l); const bs = [document.querySelector('.hero h1'), ...document.querySelectorAll('.hero .cta a')].map(e => Math.round(e.getBoundingClientRect().bottom)); return { low: Math.max(...bs), ih: innerHeight, n: bs.length }; }, l);
+      ok('polish', 'phone: headline and both buttons are above the fold: ' + l, r.n === 3 && r.low <= r.ih, 'lowest at ' + r.low + 'px on a ' + r.ih + 'px screen');
+    }
+    await page.evaluate(() => setLang('en'));
+    await page.screenshot({ path: `${OUT}/polish-phone-home.png` });
+    await page.mouse.wheel(0, 300); await page.waitForTimeout(700);
+    ok('polish', 'phone: install tip shows after scrolling', await page.evaluate(() => !document.getElementById('rrInstallPill').hidden));
+    await ctx.close();
+  }
   if (LOCAL) {
     const ctx = await browser.newContext(laptop), page = await ctx.newPage();
     await page.route(/goatcounter|gc\.zgo\.org|supabase|fonts\.g/, r => r.abort());

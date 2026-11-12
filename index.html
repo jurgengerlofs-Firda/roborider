@@ -49,6 +49,7 @@
   .lang{display:flex;gap:6px}
   .lang button{border:1px solid var(--hair);background:none;border-radius:0;padding:6px 10px;min-width:40px;min-height:40px;font-family:var(--display);font-size:10px;letter-spacing:1.5px;cursor:pointer;color:var(--muted)}
   .lang button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .lang-sel{display:none;border:1px solid var(--hair);background:none;border-radius:0;padding:6px 10px;min-height:40px;font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--ink);cursor:pointer}
   .btn{display:inline-block;border:none;border-radius:0;padding:14px 26px;font-family:var(--display);font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none}
   .btn.primary,.btn.pop{background:var(--ink);color:var(--bg)}
   .btn.primary:hover,.btn.pop:hover{background:#000}
@@ -183,14 +184,20 @@
   .faq details p{margin:0 0 22px;color:var(--soft);font-size:14.5px;font-weight:400;line-height:1.65;max-width:64ch}
   [data-i]{}
   @media(max-width:620px){
-    /* The wrapped 3-row nav (logo/CTA/language switcher) is too tall to stay pinned while scrolling on a phone — let it scroll away with the page instead of eating the viewport permanently. */
+    /* Phone: one-row nav (logo + language select) that scrolls away with the page; the two hero buttons sit right below it, so the nav button is dropped here. */
     nav{position:static}
-    nav .wrap{flex-wrap:wrap;gap:10px 14px;padding:14px 20px}
+    nav .wrap{gap:10px 14px;padding:10px 20px}
+    nav .btn,.lang{display:none}
+    .lang-sel{display:block}
     .wrap{padding:0 20px}
     section{padding:60px 0}
-    .hero{padding:80px 0 70px}
-    .hero h1{font-size:38px}
-    .hero p.sub{font-size:16px}
+    /* the pitch (headline and both buttons) fits on the first screen of a phone */
+    .hero{padding:18px 0 70px}
+    .hero-mark{width:56px;margin-bottom:8px}
+    .hero .badge{margin-bottom:10px}
+    .hero h1{font-size:32px;margin-bottom:12px}
+    .hero p.sub{font-size:15px;line-height:1.55;margin-bottom:18px}
+    .hero .cta{gap:10px}
     h2.sec{font-size:30px}
     .feedback{padding:44px 24px}
     .card{border-right:none}
@@ -216,6 +223,7 @@
   <div class="logo"><svg class="logomark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="mic" cx="36%" cy="28%" r="72%"><stop offset="0%" stop-color="#f7f7f9"/><stop offset="48%" stop-color="#c7c8cc"/><stop offset="100%" stop-color="#86888f"/></radialGradient></defs><g transform="translate(0,4)"><line x1="32" y1="18" x2="32" y2="11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="7.5" r="3.6" fill="url(#mic)" stroke="currentColor" stroke-width="0.7"/><line x1="29" y1="6.5" x2="35" y2="6.5" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><line x1="28.7" y1="8.3" x2="35.3" y2="8.3" stroke="#6b6e74" stroke-width="0.45" opacity="0.85"/><rect x="11" y="18" width="42" height="30" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><rect x="11" y="45.6" width="42" height="2.4" fill="currentColor"/><rect x="17" y="24" width="11" height="9" fill="currentColor"/><rect x="36" y="24" width="11" height="9" fill="currentColor"/><ellipse cx="32" cy="40" rx="3.6" ry="3.2" fill="#9a7257"/></g></svg><span>roborider</span></div>
   <div class="spacer"></div>
   <a class="btn outline sm" href="rider-builder.html" data-i="nav_try">Open the builder</a>
+  <select id="lgSel" class="lang-sel" aria-label="Language" onchange="setLang(this.value)"><option value="en">EN</option><option value="nl">NL</option><option value="de">DE</option><option value="fr">FR</option><option value="es">ES</option></select>
   <div class="lang">
     <button onclick="setLang('en')" id="lg-en" class="on">EN</button>
     <button onclick="setLang('nl')" id="lg-nl">NL</button>
@@ -733,6 +741,7 @@ const TESTIMONIALS=[
 function setLang(l){
   document.querySelectorAll(".lang button").forEach(b=>b.classList.remove("on"));
   document.getElementById("lg-"+l).classList.add("on");
+  document.getElementById("lgSel").value=l;
   document.documentElement.lang=l;curLang=l;
   const d=T[l];
   document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(d[k]!==undefined)el.innerHTML=d[k];});
@@ -807,19 +816,23 @@ if("IntersectionObserver" in window){
       txt=document.getElementById('rrPillText'),
       btn=document.getElementById('rrPillBtn'),
       x=document.getElementById('rrPillX');
-  function close(){pill.hidden=true;try{localStorage.setItem('rr_pwa_hint','off');}catch(e){}}
+  /* the tip waits for the first scroll, so it never covers the headline on arrival */
+  var scrolled=false,wanted=false;
+  function show(){wanted=true;if(scrolled)pill.hidden=false;}
+  window.addEventListener('scroll',function(){scrolled=true;if(wanted)pill.hidden=false;},{once:true,passive:true});
+  function close(){wanted=false;pill.hidden=true;try{localStorage.setItem('rr_pwa_hint','off');}catch(e){}}
   x.addEventListener('click',close);
   var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var deferred=null;
   window.addEventListener('beforeinstallprompt',function(e){
     e.preventDefault();deferred=e;
-    txt.textContent=t.title;btn.textContent=t.btn;btn.style.display='';pill.hidden=false;
+    txt.textContent=t.title;btn.textContent=t.btn;btn.style.display='';show();
   });
   btn.addEventListener('click',function(){
     if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(){close();});deferred=null;
   });
   if(isIOS){
-    txt.textContent=t.ios;btn.style.display='none';pill.hidden=false;
+    txt.textContent=t.ios;btn.style.display='none';show();
   }
 })();
 </script>
