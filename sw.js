@@ -1,5 +1,5 @@
 /* RoboRider service worker — bump CACHE version on every deploy to push updates */
-const CACHE = 'roborider-v99';
+const CACHE = 'roborider-v100';
 
 /* App shell precached so the tool opens instantly and works offline */
 const SHELL = [
@@ -30,6 +30,10 @@ const SHELL = [
   'privacy.html',
   'terms.html',
   'roborider.css',
+  'img/rider-sample.png',
+  'img/guide-stageplot.png',
+  'img/guide-inputlist.png',
+  'img/guide-hospitality.png',
   'manifest.webmanifest',
   'roborider-favicon.svg',
   'favicon.ico',

@@ -971,7 +971,7 @@ function openProModal(){
   $("proMsg").textContent="";
   $("proModal").classList.add("open");
 }
-function closeProModal(){$("proModal").classList.remove("open");}
+function closeProModal(){$("proModal").classList.remove("open");const d=$("proDone");if(d){clearTimeout(d._t);d.hidden=true;d.classList.remove("go");}}
 function proSubscribe(){ track("pro_checkout_click"); if(CHECKOUT_URL.indexOf("REPLACE")>=0){$("proMsg").textContent=L("pro_soon");}else{window.open(CHECKOUT_URL,"_blank");} }
 async function proActivate(){
   const key=($("proKeyInput").value||"").trim(); if(!key){$("proMsg").textContent=L("pro_enter");return;}

@@ -193,6 +193,8 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     await page.goto(BASE + '/index.html'); await page.waitForTimeout(1200);
     const pillHidden = await page.evaluate(() => document.getElementById('rrInstallPill').hidden);
     ok('polish', 'phone: install tip waits for the first scroll', pillHidden);
+    ok('polish', 'phone: language select text is 16px or more (no zoom on iPhone)', (await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('lgSel')).fontSize))) >= 16);
+    ok('polish', 'heading font keeps its full fallback list', (await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--display'))).includes('Segoe UI'));
     ok('polish', 'phone: navigation is one row', (await page.evaluate(() => document.querySelector('nav').getBoundingClientRect().height)) <= 80);
     for (const l of ['en', 'nl', 'de', 'fr', 'es']) {
       const r = await page.evaluate(l => { setLang(l); const bs = [document.querySelector('.hero h1'), ...document.querySelectorAll('.hero .cta a')].map(e => Math.round(e.getBoundingClientRect().bottom)); return { low: Math.max(...bs), ih: innerHeight, n: bs.length }; }, l);
@@ -309,6 +311,12 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     }
     ok('polish', 'Pro confirmation shows a tick that draws in at most 0.4s', shown && parseFloat(dur) > 0 && parseFloat(dur) <= 0.4, 'duration ' + dur);
     ok('polish', 'Pro confirmation goes away by itself', gone);
+    if (has) {
+      await page.evaluate(() => { openProModal(); showProDone(); }); await page.waitForTimeout(300);
+      await page.evaluate(() => { closeProModal(); openProModal(); }); await page.waitForTimeout(2400);
+      const st = await page.evaluate(() => ({ open: document.getElementById('proModal').classList.contains('open'), done: !document.getElementById('proDone').hidden }));
+      ok('polish', 'a reopened Pro window stays open and shows no old confirmation', st.open && !st.done, JSON.stringify(st));
+    }
     await ctx.close();
   }
   {
@@ -346,6 +354,9 @@ const ok = (fmt, what, pass, note) => results.push({ fmt, what, pass: !!pass, no
     let v = '';
     try { await page.reload({ waitUntil: 'domcontentloaded' }); await page.waitForTimeout(500); v = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dur-ui').trim()); } catch (e) { v = 'page did not load'; }
     ok('polish', 'homepage works offline with the shared stylesheet', v === '220ms', v);
+    let pics = [];
+    try { pics = await page.evaluate(() => Promise.all(['rider-sample', 'guide-stageplot', 'guide-inputlist', 'guide-hospitality'].map(n => fetch('img/' + n + '.png').then(r => r.ok ? '' : n, () => n)))); } catch (e) { pics = ['page did not load']; }
+    ok('polish', 'pictures of the example rider are available offline', !pics.filter(Boolean).length, pics.filter(Boolean).join(', '));
     await ctx.close();
   }
 
